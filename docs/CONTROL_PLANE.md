@@ -77,6 +77,8 @@ The transaction uses a project lock plus a private SQLite ownership proof, durab
 
 After a partial failure, completed writes are rolled back if unchanged. A fresh setup preview can recover an owned interrupted receipt and temporary inode. Undo restores exact original bytes when possible, or removes only the exact owned hook while retaining unrelated later edits. Modified/duplicated owned files cause a conflict requiring manual review. Keep the private backups; do not erase app data before undoing project hooks.
 
+Windows Node 22 can report a missing path-stat device while handle-stat supplies the volume identity; the compatibility guard permits only that missing-device case. Inodes remain exact BigInts for bounded reads; nonzero device mismatches, symlink/replacement changes and canonical-path changes still fail. Lock/temp receipts compare identity captured from the same path-stat API. This addresses the hosted Windows failure without disabling file ownership checks. See the [libuv Windows filesystem implementation](https://github.com/libuv/libuv/blob/v1.49.2/src/win/fs.c) and the PR validation history.
+
 ## Managed runtime and ownership
 
 Codex inherits terminal stdin/stdout/stderr, project working directory, model/policy arguments and exit code. `--` separates Shrinkcage arguments from Codex arguments. No shell is used. Project-changing/remote/worktree flags are rejected because they invalidate approved project scope. For optimized runs, conflicting Codex profiles/provider/MCP/hook overrides are rejected too; ordinary model and reasoning-effort choices remain yours.
@@ -98,7 +100,7 @@ Serena/Headroom MCP relays forward stdio in memory. Only successful protocol ini
 
 ## Extending the catalog
 
-`shrinkcage extension inspect FILE.json` validates without importing; `extension import` saves declarative preview metadata only. The schema accepts version/id/name/source/layers/description and guided mode, rejects unknown executable/install/hook/environment fields, reserved IDs and unsupported capabilities. It never fetches a URL or loads code from a manifest. HTTPS links are documentation, not executable sources.
+`shrinkcage extension inspect FILE.json` validates without importing; `extension import` saves declarative preview metadata only. The full versioned schema requires catalog metadata (identity, HTTPS source, layers, permissions, supported agents/platforms, mechanism, guidance and limitations) with guided mode and no executable dependency graph. It rejects unknown fields, executable/install/hook/environment payloads, reserved IDs and unsupported capabilities. It never fetches a URL or loads code from a manifest. HTTPS links are documentation, not executable sources.
 
 A working lifecycle adapter requires a reviewed code change implementing `detect`, `plan`, `apply`, `verify`, `observe`, `undo`; ownership and version contracts; and isolated regression/security/platform tests. Do not promote a guided catalog entry merely because a binary or HTTP page exists. See `server/control/types.ts`, `catalog.ts`, `adapters.ts`, the pure planner and the T01–T20 matrix.
 

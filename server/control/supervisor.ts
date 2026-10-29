@@ -12,7 +12,7 @@ export async function supervise(){
   const finish=(code:number|null,signal:NodeJS.Signals|null)=>{if(finished)return;finished=true;if(force)clearTimeout(force);clearInterval(timer);send({type:'exited',code,signal:stopSignal??signal});process.exitCode=stopSignal==='SIGINT'?130:stopSignal==='SIGTERM'?143:signal?1:code??1;
     if(orphaned)void(async()=>{let store:ControlStore|undefined;try{store=new ControlStore(process.env.SHRINKCAGE_DATA_DIR);const session=store.sessions().find(s=>s.id===context.id);const token=process.env.SHRINKCAGE_SESSION_TOKEN!;if(session&&store.owns(context.id,token)){session.status='abandoned';session.signal=stopSignal??signal;session.exitCode=code;session.endedAt=new Date().toISOString();session.heartbeatAt=session.endedAt;session.elapsedMs=Date.now()-Date.parse(session.startedAt);session.diagnostics.push('Owning CLI disconnected. Its guardian stopped the owned child without using a persisted PID.');store.updateSession(session,token);}await rm(context.path,{recursive:true,force:true});}catch{/* Heartbeat expiry remains a safe fallback; no unrelated PID is touched. */}finally{store?.close();}})();
     if(process.connected)process.disconnect?.();};
-  const timer=setInterval(()=>{void runtimeAlive(context.path).then(alive=>{if(!alive)stop();});},4000);timer.unref();
+  const timer=setInterval(()=>{void runtimeAlive(context.path).then(alive=>{if(!alive){orphaned=true;stop();}});},4000);timer.unref();
   process.on('message',message=>{void(async()=>{
     if(!message||typeof message!=='object')return;const m=message as {type?:unknown;program?:unknown;args?:unknown;binaryFingerprint?:unknown;signal?:unknown};
     if(m.type==='stop'){stop(m.signal==='SIGINT'?'SIGINT':'SIGTERM');return;}

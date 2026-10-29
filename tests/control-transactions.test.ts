@@ -9,6 +9,7 @@ import { ControlStore } from '../server/control/store.js';
 import { projectDirectory,guardedFile,readBounded } from '../server/control/paths.js';
 import { previewSetup,applySetup,previewUndo,undoSetup,atomicProjectWrite,mergeHookRollback,nativeHookCommand,rtkChanges } from '../server/control/transactions.js';
 import { digest } from '../server/control/schema.js';
+import { sameOpenedFile } from '../server/control/paths.js';
 import { inspectConfiguration } from '../server/control/config.js';
 import { DEFAULT_PROFILES } from '../server/control/profiles.js';
 async function fixture(){const dir=await mkdtemp(join(tmpdir(),'shrinkcage-config-'));const project=join(dir,'project');await mkdir(project);const {path,ref}=await projectDirectory(project);const store=new ControlStore(join(dir,'data'));return {dir,project:path,ref,store,close:async()=>{store.close();await rm(dir,{recursive:true,force:true});}};}
@@ -73,6 +74,8 @@ test('T19 mid-apply failure rolls back only completed writes; interrupted receip
   }finally{await f.close();}
 });
 test('T14 compare-before-write detects simultaneous edits, unsafe targets and oversized files',async()=>{
+  const opened={ino:9007199254740993n,dev:123n};assert.equal(sameOpenedFile({ino:opened.ino,dev:0n},opened,'win32'),true);for(const [named,platform] of [[{ino:opened.ino+1n,dev:0n},'win32'],[{ino:opened.ino,dev:124n},'win32'],[{ino:opened.ino,dev:0n},'linux']] as const)assert.equal(sameOpenedFile(named,opened,platform),false);
+
   const f=await fixture();try{
     await mkdir(join(f.project,'.codex'));const target=join(f.project,'.codex/hooks.json');await writeFile(target,'{}');const old=digest('{}');
     await assert.rejects(atomicProjectWrite(f.project,'.codex/hooks.json','wrong',Buffer.from('new')),/changed/);

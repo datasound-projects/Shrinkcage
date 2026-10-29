@@ -4,7 +4,7 @@ import { basename, dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { ControlError, digest, fingerprint, stable } from './schema.js';
-import { directoryIdentity, guardedFile, readBounded, type ProjectFile } from './paths.js';
+import { directoryIdentity, guardedFile, readBounded,sameOpenedFile, type ProjectFile } from './paths.js';
 import type { ControlStore } from './store.js';
 import type { ProjectRef, SetupPreview, SetupReceipt } from './types.js';
 
@@ -60,7 +60,7 @@ async function projectLock(root:string,projectId:string,store:ControlStore):Prom
     catch(e){store.releaseLock(projectId,token);throw new ControlError((e as NodeJS.ErrnoException).code==='EEXIST'?'An unowned project lock exists; no file takeover is allowed.':'Could not acquire the project configuration lock.');}
   }
   if(!handle)throw new ControlError('Project configuration is locked. Inspect an interrupted operation before removing its lock.','conflict',409);
-  const identity=await handle.stat();return async()=>{await handle!.close();try{const current=await lstat(path);if(current.ino===identity.ino&&current.dev===identity.dev&&(await readFile(path,'utf8'))===token)await unlink(path);}catch{/* never remove a replaced or unowned lock */}store.releaseLock(projectId,token);};
+  const opened=await handle.stat(),identity=await lstat(path);if(identity.isSymbolicLink()||!sameOpenedFile(identity,opened)){await handle.close();throw new ControlError('Project lock identity changed.');}return async()=>{await handle!.close();try{const current=await lstat(path);if(current.ino===identity.ino&&current.dev===identity.dev&&(await readFile(path,'utf8'))===token)await unlink(path);}catch{/* never remove a replaced or unowned lock */}store.releaseLock(projectId,token);};
 }
 
 export async function atomicProjectWrite(root:string,path:ProjectFile,expected:string,next:Buffer|null,beforeCommit?:()=>Promise<void>,journal?:{id:string;created:(info:{name:string;dev:number;ino:number;hash:string})=>void}):Promise<void>{
@@ -69,7 +69,7 @@ export async function atomicProjectWrite(root:string,path:ProjectFile,expected:s
   if(hash(previous)!==expected)throw new ControlError('Configuration changed since approval.','conflict',409);
   const temporary=join(parent,'.'+basename(target)+'.shrinkcage-'+(journal?.id??randomUUID())+'.tmp');let handle;let identity:{dev:number;ino:number}|undefined;
   try{
-    if(next!==null){handle=await open(temporary,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL,0o600);const info=await handle.stat();identity={dev:info.dev,ino:info.ino};await handle.writeFile(next);if(previous!==null)await handle.chmod((await lstat(target)).mode&0o777);await handle.sync();journal?.created({name:basename(temporary),...identity,hash:digest(next)});await handle.close();handle=undefined;}
+    if(next!==null){handle=await open(temporary,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL,0o600);const opened=await handle.stat(),info=await lstat(temporary);if(info.isSymbolicLink()||!sameOpenedFile(info,opened))throw new ControlError('Owned temporary identity changed.');identity={dev:info.dev,ino:info.ino};await handle.writeFile(next);if(previous!==null)await handle.chmod((await lstat(target)).mode&0o777);await handle.sync();journal?.created({name:basename(temporary),...identity,hash:digest(next)});await handle.close();handle=undefined;}
     await beforeCommit?.();await guardedFile(root,path);
     if(await directoryIdentity(parent)!==parentId||hash(await readBounded(target))!==expected)throw new ControlError('Configuration or its parent changed before commit.','conflict',409);
     if(next===null){if(previous!==null)await unlink(target);}else await rename(temporary,target);

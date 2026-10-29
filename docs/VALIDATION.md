@@ -12,7 +12,7 @@ Executed on macOS arm64 with Node **22.14.0**, October 30, 2026. The local brows
 |---|---|
 | `npm ci` | Locked dependency clean install succeeded |
 | `npm test` | 78 passed, 0 failed, 0 skipped (40 original + 38 new isolated tests) |
-| `npm run coverage` | Planner/transaction gate passed; 100% statements/functions/lines and 93.21% aggregate branches in the final 24-test coverage run |
+| `npm run coverage` | Planner/transaction gate passed; 100% statements/functions/lines and 92.69% aggregate branches in the final 24-test coverage run |
 | `npm run build` | Frontend/backend TypeScript and production Vite build passed; control workspace split into a separate chunk |
 | `node scripts/check-public.mjs` | No recognized credential/private-user-path patterns in distributable source |
 | `npm run package` | Versioned actual TGZ, SHA256SUMS and regenerated third-party notices |

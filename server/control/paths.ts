@@ -5,11 +5,17 @@ import { homedir } from 'node:os';
 import { ControlError, digest } from './schema.js';
 import type { ProjectRef } from './types.js';
 
+// Some Windows/libuv fast lstat paths report dev=0 while descriptor fstat reports
+// the volume serial. Keep inode checks unconditional; never relax a nonzero device.
+export function sameOpenedFile(named:{ino:number|bigint;dev:number|bigint},opened:{ino:number|bigint;dev:number|bigint},platform:NodeJS.Platform=process.platform){
+  return named.ino===opened.ino&&(named.dev===opened.dev||platform==='win32'&&(named.dev===0||named.dev===0n));
+}
 export async function readBounded(path:string,max=262144):Promise<Buffer|null>{
   let handle;try{
-    const before=await lstat(path);if(before.isSymbolicLink()||!before.isFile()||before.size>max)throw new ControlError('Unsafe, non-regular or oversized configuration file.');
-    handle=await open(path,constants.O_RDONLY|(constants.O_NOFOLLOW??0));const info=await handle.stat();
-    if(info.ino!==before.ino||info.dev!==before.dev||info.size>max)throw new ControlError('Configuration changed during inspection.');
+    const before=await lstat(path,{bigint:true});if(before.isSymbolicLink()||!before.isFile()||before.size>BigInt(max))throw new ControlError('Unsafe, non-regular or oversized configuration file.');
+    const canonical=await realpath(path);handle=await open(path,constants.O_RDONLY|(constants.O_NOFOLLOW??0));const info=await handle.stat({bigint:true});
+    const after=await lstat(path,{bigint:true});
+    if(!info.isFile()||!sameOpenedFile(before,info)||after.isSymbolicLink()||after.ino!==before.ino||after.dev!==before.dev||await realpath(path)!==canonical||info.size>BigInt(max))throw new ControlError('Configuration changed during inspection.');
     const value=Buffer.alloc(max+1);const {bytesRead}=await handle.read(value,0,max+1,0);if(bytesRead>max)throw new ControlError('Configuration file exceeds the size limit.');return value.subarray(0,bytesRead);
   }catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')return null;throw e;}finally{await handle?.close();}
 }
@@ -35,4 +41,4 @@ export async function guardedFile(root:string,file:ProjectFile):Promise<string>{
   if(info&&(!info.isFile()||info.isSymbolicLink()))throw new ControlError('Configuration target is a symlink or is not a file.');
   return target;
 }
-export async function directoryIdentity(path:string){const s=await stat(path);return `${s.dev}:${s.ino}`;}
+export async function directoryIdentity(path:string){const s=await stat(path,{bigint:true});return `${s.dev}:${s.ino}`;}
