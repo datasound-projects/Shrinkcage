@@ -27,7 +27,7 @@ Automated ownership checks include real SIGINT/SIGTERM, parent SIGKILL, mid-tran
 
 ## Native interfaces checked locally
 
-Read-only `doctor` detected Codex **0.165.0**, RTK **1.1.0**, Serena **2.1.0**, Headroom **0.42.0**, and a healthy existing Headroom proxy. Claude/Gemini and guided codemem/LiteLLM/Langfuse executables were not available in this environment; observed saved-history parsing remains covered by synthetic fixtures.
+Read-only `doctor` detected Codex **0.165.0**, RTK **1.1.0**, Serena **2.1.0**, Headroom **0.42.0**, and a healthy existing Headroom proxy. Claude was present on PATH but has no managed-version compatibility claim; Gemini and guided codemem/LiteLLM/Langfuse executables were not detected. Observed saved-history parsing remains covered by synthetic fixtures.
 
 - RTK's real native Codex hook returned the expected rewrite when supplied its actual required permission/event fields.
 - The real Headroom wrapper was exercised with isolated HOME and fake Codex using all managed no-write flags; it exited successfully and created no files in that isolated home.

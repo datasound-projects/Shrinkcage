@@ -1,7 +1,7 @@
 import { constants } from 'node:fs';
 import { lstat, mkdir, open, readFile, realpath, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath,pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 import { digest, ControlError } from './schema.js';
 import { readBounded } from './paths.js';
@@ -10,7 +10,7 @@ import type { ToolId } from './types.js';
 export interface ReceiptEvent { tool:ToolId; phase:'agent_connected'|'usage_observed'|'failed'; name:string; at:string }
 export function runtimeEntry(name:'supervisor'|'mcp-bridge'|'entry'):{command:string;args:string[]}{
   const source=import.meta.url.endsWith('.ts');const entry=fileURLToPath(new URL('./'+name+(source?'.ts':'.js'),import.meta.url));
-  return {command:process.execPath,args:source?['--import',createRequire(import.meta.url).resolve('tsx'),entry]:[entry]};
+  return {command:process.execPath,args:source?['--import',pathToFileURL(createRequire(import.meta.url).resolve('tsx')).href,entry]:[entry]};
 }
 export async function prepareRuntime(dataDir:string,id:string,token:string,tools:ToolId[],fingerprints:Record<string,string|null>={}){
   const parent=resolve(dataDir,'control','runtime');await mkdir(parent,{recursive:true,mode:0o700});if((await lstat(parent)).isSymbolicLink()||await realpath(parent)!==parent)throw new ControlError('Unsafe runtime directory.');

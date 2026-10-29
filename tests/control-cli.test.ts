@@ -8,7 +8,7 @@ import { ControlPlane } from '../server/control/core.js';
 import { OwnedResources } from '../server/control/ownership.js';
 import { ControlStore } from '../server/control/store.js';
 import { executable,headroomPort,runBounded,detectTool } from '../server/control/probe.js';
-import { prepareRuntime,receiptEvents,writeReceipt } from '../server/control/runtime.js';
+import { prepareRuntime,receiptEvents,writeReceipt,runtimeEntry } from '../server/control/runtime.js';
 import { validateAgentArguments } from '../server/control/runner.js';
 import { fakeWorkspace,cli,ENTRY,TSX } from './control-fixtures.js';
 import type { ManagedSession,OptimizationPlan } from '../server/control/types.js';
@@ -45,6 +45,7 @@ test('T04 planning never installs missing project hooks and required tools fail 
   }finally{await f.close();}
 });
 test('T08 native terminal streams, cwd, Unicode arguments and nonzero exits survive without a shell',async()=>{
+  assert.match(runtimeEntry('supervisor').args[1],/^file:\/\//,'ESM preload uses a URL, including on Windows drive-letter paths');
   const f=await fakeWorkspace();try{
     await setup(f);const p=await plan(f,'lean');assert.deepEqual(p.tools,['rtk']);const capture=join(f.root,'capture.json');const argument='PRIVATE_PROMPT_DO_NOT_STORE ; $(touch owned-by-shell) "π"';
     const run=await cli(['run','codex','--profile','lean','--project',f.project,'--approve',p.fingerprint,'--','--exit','7',argument],{...f.env,FIXTURE_CAPTURE:capture,FIXTURE_USE_HOOK:'1'},f.project);
