@@ -11,7 +11,7 @@ Release candidate: Shrinkcage 1.0.0. This document distinguishes implemented sup
 | Gemini CLI | Existing JSONL histories read; executable absent on PATH; not a live-agent test |
 | Browser UI | Isolated Chromium-compatible browser checks with synthetic fixtures; light/dark and phone/tablet/desktop layouts |
 | Built archive | Local install/version/server/frontend smoke test; see release verification output |
-| Linux / Windows | Implementations and GitHub Actions matrix provided; hosted CI has not been run from this unpublished repository |
+| macOS / Linux / Windows CI | GitHub Actions runs tests, production builds, packaging and clean-install startup checks on Node 22.14 and 24. Consult the [latest verification results](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml) for each platform. |
 | Node 24 | CI target configured; not claimed locally executed |
 
 Before marking a public release fully verified, run the provided CI on the destination repository and resolve failures. Then review the archive file list, checksums, security settings and documentation screenshots. No application can promise compatibility with every future CLI format or host permission policy; unsupported input remains visible and isolated.

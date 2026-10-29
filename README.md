@@ -4,6 +4,8 @@
 
 [GitHub](https://github.com/datasound-projects/Shrinkcage) · [Report an issue](https://github.com/datasound-projects/Shrinkcage/issues)
 
+[![Verify Shrinkcage](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml/badge.svg)](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml)
+
 Clone with `git clone https://github.com/datasound-projects/Shrinkcage.git`, then run the startup script from the `Shrinkcage` folder.
 
 **A private, local view of your coding agents, sessions and optimization tools.**
