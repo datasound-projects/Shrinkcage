@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 export const sections = [
   ['overview', 'grid', 'Overview'],
   ['analytics', 'chart', 'Analytics'],
+  ['optimizers', 'layers', 'Optimizers'],
+  ['profiles', 'grid', 'Profiles'],
+  ['managed', 'terminal', 'Managed runs'],
+  ['benchmarks', 'chart', 'Comparisons'],
   ['sessions', 'folder', 'Sessions'],
   ['connectors', 'plug', 'Connectors'],
   ['headroom', 'layers', 'Headroom'],

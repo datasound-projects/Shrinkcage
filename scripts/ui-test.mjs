@@ -6,6 +6,8 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import assert from 'node:assert/strict';
 import {normalizeHeadroom,normalizeRtk,normalizeSerena} from '../dist-server/server/adapters.js';
+import {CATALOG} from '../dist-server/server/control/catalog.js';
+import {DEFAULT_PROFILES} from '../dist-server/server/control/profiles.js';
 const base=process.env.SHRINKCAGE_TEST_URL||'http://localhost:8790';
 let child,temp,browser;
 const now=new Date().toISOString(),earlier=new Date(Date.now()-3600000).toISOString();
@@ -18,6 +20,7 @@ const instance=normalizeSerena(24282,{stats:{find_symbol:{num_times_called:16,in
 const log=[{id:2,observedAt:now,since:earlier,port:24282,tool:'find_symbol',kind:'calls',count:2,total:16},{id:1,observedAt:earlier,since:null,port:24282,tool:'read_file',kind:'snapshot',count:null,total:8}];
 const serena={state:'connected',checkedAt:now,lastSuccess:now,errors:[],notes:['Synthetic UI fixture.'],instances:[instance],ports:[24282],calls:24,rows:instance.rows,history:[{date:earlier,calls:22,saved:null,input:null,output:null},{date:now,calls:24,saved:null,input:null,output:null}],activity:'recorded',reportingInstances:1,emptyInstances:0,unavailableInstances:0,activityLog:log};
 const metrics={updatedAt:now,headroom,rtk,serena,services:[{name:'Shrinkcage',port:8790,listening:true,reachable:true,integration:'Running',process:'node',pid:null,dashboard:base}],systemErrors:[],snapshots:false};
+const controlState={schemaVersion:1,version:'1.1.0',platform:'test',updatedAt:now,csrfToken:'0'.repeat(48),catalog:CATALOG,profiles:DEFAULT_PROFILES,projects:[{id:'a'.repeat(24),label:'Atlas'}],sessions:[],benchmarks:[],receipts:[],diagnostics:['Illustrative automated-test metadata only.'],agents:[],detections:CATALOG.map(t=>({id:t.id,installed:t.mode==='managed',version:t.minVersion,compatible:t.mode==='managed',configured:null,serviceHealthy:t.id==='headroom'?true:null,agentConnected:null,effective:null,usageObserved:null,status:t.mode==='managed'?'installed':'missing',checkedAt:now,binaryFingerprint:null,evidence:[],diagnostics:[]}))};
 try{
   if(!process.env.SHRINKCAGE_TEST_URL){
     const existing=await fetch(base+'/api/health',{signal:AbortSignal.timeout(400)}).catch(()=>null);if(existing)throw new Error('Port 8790 is occupied. Stop the owned server or explicitly set SHRINKCAGE_TEST_URL to use its frontend assets.');
@@ -30,7 +33,9 @@ try{
   page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!r.url().startsWith(base)&&!r.url().startsWith('data:'))external.push(r.url());});
   await page.route('**/api/**',async route=>{
     const url=new URL(route.request().url());let data;
-    if(url.pathname==='/api/metrics'||url.pathname==='/api/refresh')data=metrics;
+    if(url.pathname==='/api/control/v1/state')data=controlState;
+    else if(url.pathname==='/api/control/v1/discover')data={refreshed:true};
+    else if(url.pathname==='/api/metrics'||url.pathname==='/api/refresh')data=metrics;
     else if(url.pathname==='/api/workspace'||url.pathname==='/api/discover')data=ws;
     else if(url.pathname==='/api/connectors/config'){configSaved=true;data=ws;}
     else if(url.pathname==='/api/sessions'){let items=sessions;for(const key of ['agent','model'])if(url.searchParams.get(key))items=items.filter(s=>s[key]===url.searchParams.get(key));if(url.searchParams.get('provider'))items=items.filter(s=>(s.provider??'unknown')===url.searchParams.get('provider'));if(url.searchParams.get('project'))items=items.filter(s=>s.project.id===url.searchParams.get('project'));const q=(url.searchParams.get('search')||'').toLowerCase();items=items.filter(s=>`${s.project.label} ${s.model}`.toLowerCase().includes(q));data={items,total:items.length,offset:0,limit:50,updatedAt:now};}
@@ -54,7 +59,7 @@ try{
   const response=page.waitForResponse(r=>r.url().endsWith('/api/refresh'));await page.getByRole('button',{name:'Refresh',exact:true}).click();assert.equal((await response).status(),200);
   await page.getByRole('button',{name:'Switch to dark mode'}).click();await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:'artifacts/dark.png'});await page.reload();await page.locator('.session-inspector').waitFor();assert.equal(await page.locator('html').getAttribute('class'),'dark');await page.getByRole('button',{name:'Switch to light mode'}).click();
   for(const width of [320,390,768,1024,1440]){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`No page overflow at ${width}`);}
-  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:'artifacts/mobile.png',fullPage:true});
+  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.screenshot({path:'artifacts/mobile.png'});
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
   if(process.env.SHRINKCAGE_DOC_SCREENSHOTS==='1'){await mkdir('docs/images',{recursive:true});for(const name of ['overview','sessions','dark','mobile'])await copyFile(`artifacts/${name}.png`,`docs/images/${name}.png`);}
   const logo=await browser.newPage();await logo.goto(base+'/icon.svg');
