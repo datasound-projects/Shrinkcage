@@ -1,3 +1,4 @@
+import { VERSION } from './version.js';
 import { constants } from 'node:fs';
 import { access, lstat, mkdir, open, readFile, readdir, realpath, rename, stat, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
@@ -110,7 +111,7 @@ export function createWorkspaceRepository(options:{home?:string;dataDir?:string;
     details=new Map();for(const s of collected.sort((a,b)=>a.updatedAt.localeCompare(b.updatedAt)))details.set(s.id,s);
     const all=[...details.values()];const projects=[...new Map(all.map(s=>[s.project.id,s.project])).values()].sort((a,b)=>a.label.localeCompare(b.label));
     for(const connector of connectors){const unique=all.filter(s=>s.agent===connector.id);connector.sessions=unique.length;connector.sampledSessions=unique.filter(s=>s.coverage==='sampled').length;}
-    return current={updatedAt:now,version:'1.0.0',platform,csrfToken,connectors,totalSessions:all.length,projects,providers:[...new Set(all.map(s=>s.provider).filter((p):p is string=>!!p))].sort(),models:[...new Set(all.map(s=>s.model).filter((p):p is string=>!!p))].sort(),scanLimited,settingsError};
+    return current={updatedAt:now,version:VERSION,platform,csrfToken,connectors,totalSessions:all.length,projects,providers:[...new Set(all.map(s=>s.provider).filter((p):p is string=>!!p))].sort(),models:[...new Set(all.map(s=>s.model).filter((p):p is string=>!!p))].sort(),scanLimited,settingsError};
   };
   const get=(force=false):Promise<Workspace>=>{if(flight)return flight;if(current&&!force&&Date.now()-completed<15000)return Promise.resolve(current);flight=scan().then(v=>{completed=Date.now();return v;}).finally(()=>{flight=null;});return flight;};
   return {
