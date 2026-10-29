@@ -51,7 +51,10 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
     const args=program==='headroom'?['wrap','codex','--no-proxy','--no-mcp','--code-memory','none','--port',String(plan.headroomPort),'--',...agentArgs]:agentArgs;
     session.metrics=await (options.snapshot??(()=>sharedObservations(plane.env)))();
     session.status='starting';plane.store.updateSession(session,token);
-    const entry=runtimeEntry('supervisor');const child=spawn(entry.command,entry.args,{cwd:projectPath,env:{...plane.env,SHRINKCAGE_DATA_DIR:plane.canonicalDataDir,SHRINKCAGE_SESSION_ID:id,SHRINKCAGE_SESSION_TOKEN:token,SHRINKCAGE_HEADROOM_PORT:String(plan.headroomPort??8787),HEADROOM_BEACON:'off',HEADROOM_OFFLINE:'1',DO_NOT_TRACK:'1'},shell:false,stdio:['inherit','inherit','inherit','ipc'],windowsHide:false});
+    // Windows libuv kills non-detached children when the parent's job closes.
+    // Only the guardian escapes that job; it retains inherited streams, live IPC
+    // and ownership of the actual agent, and exits after durable owner acknowledgement.
+    const entry=runtimeEntry('supervisor');const child=spawn(entry.command,entry.args,{cwd:projectPath,env:{...plane.env,SHRINKCAGE_DATA_DIR:plane.canonicalDataDir,SHRINKCAGE_SESSION_ID:id,SHRINKCAGE_SESSION_TOKEN:token,SHRINKCAGE_HEADROOM_PORT:String(plan.headroomPort??8787),HEADROOM_BEACON:'off',HEADROOM_OFFLINE:'1',DO_NOT_TRACK:'1'},shell:false,stdio:['inherit','inherit','inherit','ipc'],detached:process.platform==='win32',windowsHide:process.platform==='win32'});
     supervisor=child;
     if(!options.quiet)console.error(`Shrinkcage managed session ${id.slice(0,8)} · ${plan.profile}. Stop in this terminal with Ctrl+C.`);
     let ready=false,launchError=false,actualCode:number|null=null,actualSignal:string|null=null;let reportExit:(code:number)=>void=()=>{};

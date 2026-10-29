@@ -34,7 +34,7 @@ Read-only `doctor` detected Codex **0.165.0**, RTK **1.1.0**, Serena **2.1.0**, 
 - Actual installed Serena and Headroom stdio MCP servers completed initialize/initialized/tools-list handshakes with a disposable synthetic project and isolated HOME. Each supplied three tools. No successful native tool invocation or live model-session savings is claimed from those checks.
 - The original monitor reads real local endpoints/binaries; unavailable fields are preserved as unavailable. No live metrics or transcripts are shipped in public screenshots or fixtures.
 
-No paid model requests, real interactive Codex optimizer task, Claude/Gemini managed run, native Windows/Linux tool build or remote Langfuse/LiteLLM/codemem activation was exercised. Native authentication/trust/provider behavior and unreviewed versions remain explicit integration limits, not test successes.
+No paid model requests, real interactive Codex optimizer task, Claude/Gemini managed run, native Windows/Linux tool build or remote Langfuse/LiteLLM/codemem activation was exercised. Native authentication/trust/provider behavior and unreviewed versions remain explicit integration limits, not test successes. Windows guardian detachment is exercised by hosted forced-termination tests; native Windows console/TTY behavior still requires manual verification on a Windows terminal.
 
 ## Hosted platform verification
 
