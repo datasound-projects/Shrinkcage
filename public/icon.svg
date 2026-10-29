@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Shrinkcage</title>
+  <desc id="desc">Golden coins compress from a wide stack at the top into one smaller coin below.</desc>
+  <style>
+    .coin{transform-box:fill-box;transform-origin:center;animation-duration:5.6s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.4,0,.2,1)}
+    .top{animation-name:reduce-top}.second{animation-name:reduce-second}.third{animation-name:reduce-third}.base{animation-name:settle}
+    @keyframes reduce-top{0%,10%,100%{opacity:1;transform:translateY(0) scale(1)}30%,78%{opacity:0;transform:translateY(31px) scale(.52)}88%{opacity:0;transform:translateY(0) scale(1)}}
+    @keyframes reduce-second{0%,24%,100%{opacity:1;transform:translateY(0) scale(1)}46%,78%{opacity:0;transform:translateY(20px) scale(.63)}88%{opacity:0;transform:translateY(0) scale(1)}}
+    @keyframes reduce-third{0%,40%,100%{opacity:1;transform:translateY(0) scale(1)}62%,78%{opacity:0;transform:translateY(10px) scale(.77)}88%{opacity:0;transform:translateY(0) scale(1)}}
+    @keyframes settle{0%,48%,78%,100%{transform:translateY(0) scale(1)}62%{transform:translateY(1px) scale(1.08,.9)}}
+    @media(prefers-reduced-motion:reduce){.coin{animation:none}}
+  </style>
+  <rect width="64" height="64" rx="17" fill="#292a25"/>
+  <rect x=".5" y=".5" width="63" height="63" rx="16.5" fill="none" stroke="#f7d483" stroke-opacity=".13"/>
+  <g class="coin base">
+    <path d="M22 47v4c0 6 20 6 20 0v-4" fill="#ad7927"/>
+    <ellipse cx="32" cy="47" rx="10" ry="3.7" fill="#f5cb68" stroke="#ffe4a1" stroke-width=".8"/>
+    <path d="M28 46.3c2-1 6-1 8 0M25 50v2m5-1v2m5-2v2m4-3v2" fill="none" stroke="#84571d" stroke-opacity=".65" stroke-width=".8"/>
+  </g>
+  <g class="coin third">
+    <path d="M19 36v4c0 7 26 7 26 0v-4" fill="#b3822e"/>
+    <ellipse cx="32" cy="36" rx="13" ry="4.2" fill="#f3c76a" stroke="#ffe3a2" stroke-width=".8"/>
+    <ellipse cx="32" cy="36" rx="8.5" ry="2.4" fill="none" stroke="#d5a54c" stroke-width=".8"/>
+    <path d="M23 39.5v2m6-1v2m6-1v2m6-3v2" stroke="#81561f" stroke-opacity=".6" stroke-width=".8"/>
+  </g>
+  <g class="coin second">
+    <path d="M16 25v4c0 8 32 8 32 0v-4" fill="#bc8a32"/>
+    <ellipse cx="32" cy="25" rx="16" ry="4.8" fill="#f4cd73" stroke="#ffe4a4" stroke-width=".8"/>
+    <ellipse cx="32" cy="25" rx="11" ry="2.9" fill="none" stroke="#d6a84e" stroke-width=".8"/>
+    <path d="M21 28.5v2m6-1v2m6-1v2m6-2v2m5-3v2" stroke="#845c23" stroke-opacity=".6" stroke-width=".8"/>
+  </g>
+  <g class="coin top">
+    <path d="M13 14v4c0 9 38 9 38 0v-4" fill="#c29138"/>
+    <ellipse cx="32" cy="14" rx="19" ry="5.4" fill="#f8d888" stroke="#ffe9b5" stroke-width=".8"/>
+    <ellipse cx="32" cy="14" rx="13.7" ry="3.5" fill="none" stroke="#dcaf58" stroke-width=".8"/>
+    <path d="M17 17.5v2m6-1v2m6-1v2m6-1v2m6-2v2m6-3v2M29 12.5l6 3m0-3-6 3" stroke="#997127" stroke-opacity=".65" stroke-width=".8" stroke-linecap="round"/>
+  </g>
+</svg>

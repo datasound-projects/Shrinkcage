@@ -1,0 +1,1 @@
+try { if ((localStorage.getItem('codex-monitor-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark') document.documentElement.classList.add('dark'); } catch (_) {}

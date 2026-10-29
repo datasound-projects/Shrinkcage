@@ -1,0 +1,64 @@
+{
+  "name": "shrinkcage-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build && tsc -p tsconfig.server.json",
+    "start": "node dist-server/server/index.js",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "tsc --noEmit",
+    "launch": "node scripts/start.mjs",
+    "package": "npm run build && node scripts/licenses.mjs && node scripts/package.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.4.0",
+    "playwright": "1.64.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.3.0",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "^6.4.0"
+  },
+  "description": "Private local monitoring for coding agents, sessions and optimization tools",
+  "license": "MIT",
+  "bin": {
+    "shrinkcage": "bin/shrinkcage.mjs"
+  },
+  "files": [
+    "dist/",
+    "dist-server/server/",
+    "bin/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "docs/CONNECTORS.md",
+    "docs/PRIVACY.md",
+    "THIRD_PARTY_NOTICES.md",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "docs/VALIDATION.md",
+    "public/icon.svg",
+    "docs/images/overview.png",
+    "docs/images/sessions.png"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/datasound-projects/Shrinkcage.git"
+  },
+  "homepage": "https://github.com/datasound-projects/Shrinkcage#readme",
+  "bugs": {
+    "url": "https://github.com/datasound-projects/Shrinkcage/issues"
+  }
+}
