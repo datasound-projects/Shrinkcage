@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn,type ChildProcess } from 'node:child_process';
 import { randomBytes,randomUUID } from 'node:crypto';
 import { normalizeHeadroom,normalizeRtk } from '../adapters.js';
 import { ControlPlane } from './core.js';
@@ -43,7 +43,7 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
   const id=randomUUID(),token=randomBytes(32).toString('hex'),now=new Date().toISOString();
   const session:ManagedSession={schemaVersion:1,id,origin:'managed',project:plan.project,agent:plan.agent,agentVersion:plan.agentVersion,profile:plan.profile,profileRevision:plan.profileRevision,planFingerprint:plan.fingerprint,status:'preflight',startedAt:now,endedAt:null,heartbeatAt:now,exitCode:null,signal:null,plannedTools:plan.tools,appliedTools:[],evidence:plan.evidence.map(e=>({...e,status:'configured',scope:plan.tools.includes(e.tool)&&e.tool==='rtk'?'project':'process',confidence:'inconclusive'})),diagnostics:[...plan.warnings,'Running means an owned launch process; tool connections and usage require separate receipt evidence.'],elapsedMs:null,toolActivity:[],metrics:[]};
   const runtime=await prepareRuntime(plane.canonicalDataDir,id,token,plan.tools,plan.binaryFingerprints);let created=false;const applied:AppliedResources[]=[];let heartbeat:ReturnType<typeof setInterval>|undefined,beating=false;const started=Date.now();let lastSignal:NodeJS.Signals|null=null;
-  const context={plane,plan,approved:input.approved,session};let interrupt:(()=>void)|undefined,terminate:(()=>void)|undefined;
+  let supervisor:ChildProcess|undefined;const context={plane,plan,approved:input.approved,session};let interrupt:(()=>void)|undefined,terminate:(()=>void)|undefined;
   try{
     plane.store.createSession(session,token);created=true;
     for(const tool of plan.tools)applied.push(await adapter(tool).apply({...context,events:[]}));
@@ -52,14 +52,15 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
     session.metrics=await (options.snapshot??(()=>sharedObservations(plane.env)))();
     session.status='starting';plane.store.updateSession(session,token);
     const entry=runtimeEntry('supervisor');const child=spawn(entry.command,entry.args,{cwd:projectPath,env:{...plane.env,SHRINKCAGE_DATA_DIR:plane.canonicalDataDir,SHRINKCAGE_SESSION_ID:id,SHRINKCAGE_SESSION_TOKEN:token,SHRINKCAGE_HEADROOM_PORT:String(plan.headroomPort??8787),HEADROOM_BEACON:'off',HEADROOM_OFFLINE:'1',DO_NOT_TRACK:'1'},shell:false,stdio:['inherit','inherit','inherit','ipc'],windowsHide:false});
+    supervisor=child;
     if(!options.quiet)console.error(`Shrinkcage managed session ${id.slice(0,8)} · ${plan.profile}. Stop in this terminal with Ctrl+C.`);
-    let ready=false,launchError=false,actualCode:number|null=null,actualSignal:string|null=null;
+    let ready=false,launchError=false,actualCode:number|null=null,actualSignal:string|null=null;let reportExit:(code:number)=>void=()=>{};
     const sendStop=(signal:NodeJS.Signals)=>{if(lastSignal)return;lastSignal=signal;session.status='stopping';if(child.connected)child.send({type:'stop',signal},()=>{});};
     interrupt=()=>sendStop('SIGINT');terminate=()=>sendStop('SIGTERM');process.once('SIGINT',interrupt);process.once('SIGTERM',terminate);
     const readyTimeout=setTimeout(()=>{if(!ready){launchError=true;if(child.exitCode===null&&child.signalCode===null)child.kill('SIGTERM');}},10000);readyTimeout.unref();
-    child.on('message',message=>{if(!message||typeof message!=='object')return;const m=message as {type?:string;code?:number|null;signal?:string|null};if(m.type==='ready'){ready=true;clearTimeout(readyTimeout);child.send({type:'launch',program,args,binaryFingerprint:binary.fingerprint},()=>{});}else if(m.type==='spawned'){session.status='running';session.appliedTools=plan.tools.slice();}else if(m.type==='exited'){actualCode=m.code??null;actualSignal=m.signal??null;}else if(m.type==='launch-error')launchError=true;});
+    child.on('message',message=>{if(!message||typeof message!=='object')return;const m=message as {type?:string;code?:number|null;signal?:string|null};if(m.type==='ready'){ready=true;clearTimeout(readyTimeout);child.send({type:'launch',program,args,binaryFingerprint:binary.fingerprint},()=>{});}else if(m.type==='spawned'){session.status='running';session.appliedTools=plan.tools.slice();}else if(m.type==='exited'){actualCode=m.code??null;actualSignal=m.signal??null;reportExit(actualCode??1);}else if(m.type==='launch-error')launchError=true;});
     heartbeat=setInterval(()=>{if(beating)return;beating=true;void(async()=>{await runtime.beat();session.heartbeatAt=new Date().toISOString();await updateEvidence(session,context,await receiptEvents(runtime.path));if(session.evidence.some(e=>e.status==='failed')&&session.status==='running')session.status='degraded';plane.store.updateSession(session,token);})().catch(()=>{if(!session.diagnostics.includes('A heartbeat or receipt update failed.'))session.diagnostics.push('A heartbeat or receipt update failed.');}).finally(()=>{beating=false;});},2000);heartbeat.unref();
-    const code=await new Promise<number>(resolve=>{child.once('error',()=>{launchError=true;resolve(1);});child.once('close',code=>resolve(code??1));});
+    const code=await new Promise<number>(resolve=>{reportExit=resolve;child.once('error',()=>{launchError=true;resolve(1);});child.once('close',code=>resolve(code??1));});
     clearTimeout(readyTimeout);clearInterval(heartbeat);while(beating)await new Promise(r=>setTimeout(r,10));
     await new Promise(r=>setTimeout(r,100));await updateEvidence(session,context,await receiptEvents(runtime.path));session.metrics.push(...await (options.snapshot??(()=>sharedObservations(plane.env)))());
     const finalCode=lastSignal==='SIGINT'?130:lastSignal==='SIGTERM'?143:actualCode??code;
@@ -70,6 +71,7 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
     for(const resources of applied.reverse())await adapter(resources.tool).undo(resources).catch(()=>{session.diagnostics.push('An owned resource cleanup needs review.');});
     session.endedAt=new Date().toISOString();session.heartbeatAt=session.endedAt;session.elapsedMs=Date.now()-started;if(created)plane.store.updateSession(session,token);
     await runtime.close();
+    if(supervisor?.connected){const owned=supervisor;const closed=new Promise<void>(resolve=>{owned.once('close',()=>resolve());});owned.send({type:'owner-finalized'},()=>{});const force=setTimeout(()=>{if(owned.exitCode===null&&owned.signalCode===null)owned.kill('SIGTERM');},3000);await closed;clearTimeout(force);}
     if(interrupt)process.removeListener('SIGINT',interrupt);if(terminate)process.removeListener('SIGTERM',terminate);
   }
 }

@@ -110,8 +110,20 @@ test('T08-T09 terminal interruption and parent crash clean only the owned runtim
       let pid=0;for(let i=0;i<200;i++){try{pid=Number(await readFile(marker,'utf8'));if(pid)break;}catch{}await new Promise(r=>setTimeout(r,30));}
       assert.ok(pid,'owned fake agent should start');child.kill(crash?'SIGKILL':mode==='terminate'||process.platform==='win32'?'SIGTERM':'SIGINT');const code=await exit;if(!crash&&process.platform!=='win32')assert.equal(code,mode==='terminate'?143:130);
       let alive=true;for(let i=0;i<200;i++){try{process.kill(pid,0);}catch{alive=false;break;}await new Promise(r=>setTimeout(r,30));}assert.equal(alive,false,'guardian must stop its owned child');
-      const plane=new ControlPlane({dataDir:f.data,env:f.env});try{let session=plane.store.sessions()[0];for(let i=0;i<100&&['running','starting','stopping'].includes(session.status);i++){await new Promise(r=>setTimeout(r,30));session=plane.store.sessions()[0];}assert.ok(['exited','abandoned'].includes(session.status),JSON.stringify({mode,status:session.status,exitCode:session.exitCode,diagnostics:session.diagnostics}));await assert.rejects(lstat(join(f.data,'control/runtime',session.id)));}finally{plane.close();}
+      const plane=new ControlPlane({dataDir:f.data,env:f.env});try{let session=plane.store.sessions()[0];for(let i=0;i<500&&['preflight','running','starting','stopping','degraded'].includes(session.status);i++){await new Promise(r=>setTimeout(r,30));session=plane.store.sessions()[0];}assert.ok(['exited','abandoned'].includes(session.status),JSON.stringify({mode,status:session.status,exitCode:session.exitCode,diagnostics:session.diagnostics}));await assert.rejects(lstat(join(f.data,'control/runtime',session.id)));}finally{plane.close();}
       assert.equal((await fetch(`http://127.0.0.1:${f.env.SHRINKCAGE_HEADROOM_PORT}/health`)).status,200,'external service must survive');
     }
+  }finally{await f.close();}
+});
+
+test('T09 owner crash after agent exit still finalizes metadata and removes its owned runtime',async()=>{
+  const f=await fakeWorkspace();try{
+    const script=join(f.root,'owner-finalization.mjs'),marker=join(f.root,'finalizing');
+    const core=new URL('../server/control/core.ts',import.meta.url).href,runner=new URL('../server/control/runner.ts',import.meta.url).href;
+    await writeFile(script,`import {ControlPlane} from ${JSON.stringify(core)};import {runManaged} from ${JSON.stringify(runner)};import {writeFile} from 'node:fs/promises';const plane=new ControlPlane({dataDir:process.env.SHRINKCAGE_DATA_DIR});const {plan}=await plane.plan('codex','baseline',{path:process.cwd()});let snapshots=0;await runManaged(plane,{agent:'codex',profile:'baseline',project:{path:process.cwd()},approved:plan.fingerprint,args:[]},{snapshot:async()=>{if(snapshots++){await writeFile(process.env.FIXTURE_FINALIZING,'ready');await new Promise(r=>setTimeout(r,30000));}return[];}});plane.close();`);
+    const child=spawn(process.execPath,['--import',TSX,script],{cwd:f.project,env:{...f.env,FIXTURE_FINALIZING:marker},stdio:['ignore','pipe','pipe'],shell:false});child.stdout.resume();child.stderr.resume();const exited=new Promise(r=>child.once('close',r));
+    let ready=false;for(let i=0;i<300;i++){try{ready=(await readFile(marker,'utf8'))==='ready';if(ready)break;}catch{}await new Promise(r=>setTimeout(r,30));}assert.ok(ready,'agent must exit before the simulated owner crash');child.kill('SIGKILL');await exited;
+    const plane=new ControlPlane({dataDir:f.data,env:f.env});try{let session=plane.store.sessions()[0];for(let i=0;i<500&&session.status!=='abandoned';i++){await new Promise(r=>setTimeout(r,30));session=plane.store.sessions()[0];}assert.equal(session.status,'abandoned');await assert.rejects(lstat(join(f.data,'control/runtime',session.id)));}finally{plane.close();}
+    assert.equal((await fetch(`http://127.0.0.1:${f.env.SHRINKCAGE_HEADROOM_PORT}/health`)).status,200);
   }finally{await f.close();}
 });

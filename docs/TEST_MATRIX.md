@@ -1,6 +1,6 @@
 # Release test matrix · 1.1
 
-All fixtures are disposable test-only data. Production adapters have no synthetic fallback. `npm test` retains all 40 original tests and adds 38 control-plane tests (78 total). The separate coverage command runs 24 planner/transaction tests. Browser and package smoke checks are additional programs, not counted as unit tests.
+All fixtures are disposable test-only data. Production adapters have no synthetic fallback. `npm test` retains all 40 original tests and adds 39 control-plane tests (79 total). The separate coverage command runs 24 planner/transaction tests. Browser and package smoke checks are additional programs, not counted as unit tests.
 
 | ID | Release criterion | Executed check / evidence |
 |---|---|---|
@@ -12,7 +12,7 @@ All fixtures are disposable test-only data. Production adapters have no syntheti
 | T06 | Scoped config safety | Synthetic TOML/hooks/MCP/AGENTS.md preservation, same-alias layering, disabled hooks, exact backups/undo, edited-owned-resource conflicts and unsafe parse tests |
 | T07 | Concurrent managed sessions | Two distinct projects/profiles launched concurrently; isolated receipt/runtime/session ownership; external proxy survives |
 | T08 | Terminal lifecycle | Fake agent real stdin/stdout/Unicode argv/cwd/nonzero exit; SIGINT/SIGTERM; separate allocated-PTY `scripts/tty-test.mjs` confirms inherited TTY identity |
-| T09 | Ownership and recovery | Actual parent SIGKILL guardian cleanup; child-handle/refcount/unowned tests; unknown/live/reused-PID locks; actual SIGKILL mid-transaction temp/journal recovery |
+| T09 | Ownership and recovery | Actual parent SIGKILL guardian cleanup, including the post-agent-exit/pre-owner-finalization window; child-handle/refcount/unowned tests; unknown/live/reused-PID locks; actual SIGKILL mid-transaction temp/journal recovery |
 | T10 | RTK integration | Native JSON contract probe, reviewed shim registration, actual fake rewrite receipt, disabled/missing/duplicate hooks and original gain/history tests |
 | T11 | Serena evidence | Real stdio relay with fake JSON-RPC initialize/initialized/list/call/failure; health alone never promoted; receipt names/counts |
 | T12 | Headroom scope/failure | Fixed health checks, configured port guard, wrapper exit failure, external proxy survival, embedded-mode warning, isolated no-write real wrapper check |
