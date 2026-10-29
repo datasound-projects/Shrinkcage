@@ -41,3 +41,9 @@ No paid model requests, real interactive Codex optimizer task, Claude/Gemini man
 The existing [Verify Shrinkcage workflow](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml) runs macOS, Windows and Ubuntu × Node 22.14/24, with real clean install/unit/coverage/package/scan/archive-smoke steps and an additional Chromium browser job. A configured workflow alone is not a passed run. Publication must inspect the exact pushed PR head and then main; the verified run links/commit are recorded with the published PR and final release report.
 
 Release artifacts are prepared by a separate manually triggered workflow. Source builds and archive creation do not publish an npm package or GitHub release.
+
+### Verified hosted implementation
+
+Implementation commit `326f84f2f355231a7278e67a04522d8ce4500dc5` passed **all seven jobs** on both the [PR run](https://github.com/datasound-projects/Shrinkcage/actions/runs/40975468058) and [push run](https://github.com/datasound-projects/Shrinkcage/actions/runs/40975462042): Ubuntu/macOS/Windows × Node 22.14/24, plus Chromium. These are completed green runs, not just configured workflows. [PR #1](https://github.com/datasound-projects/Shrinkcage/pull/1) records publication and the checks on its final documentation head; main is verified again after merge.
+
+Hosted failures exposed and led to fixes for Windows ESM preload URLs, path/handle stat device differences and libuv parent-job teardown killing the guardian. All original tests remained enabled. Windows now runs the actual forced-termination and post-agent-exit owner-crash tests rather than skipping them. The guardian retains live ownership/IPC, waits for durable finalization acknowledgement, and survives owner job teardown without signaling persisted PIDs. Native Windows console/TTY use remains a separate manual-verification limit; hosted checks exercise real process streams with fake CLI sources.
