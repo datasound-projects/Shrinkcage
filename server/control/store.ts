@@ -17,10 +17,12 @@ export class ControlStore {
     if(existsSync(file)){const s=lstatSync(file);if(s.isSymbolicLink()||!s.isFile()||s.size>64*1024*1024)throw new ControlError('Unsafe or oversized control state.');}
     else{const fd=openSync(file,constants.O_CREAT|constants.O_EXCL|constants.O_WRONLY,0o600);closeSync(fd);}
     chmodSync(file,0o600);this.db=new DatabaseSync(file);
-    this.db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
+    try{
+    this.db.exec('PRAGMA busy_timeout=5000; PRAGMA foreign_keys=ON;');
     const version=(this.db.prepare('PRAGMA user_version').get() as {user_version:number}).user_version;
-    if(version>1){this.db.close();throw new ControlError('Control state was created by a newer Shrinkcage version.');}
-    this.db.exec(`CREATE TABLE IF NOT EXISTS profiles(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, value TEXT NOT NULL);
+    if(version>1)throw new ControlError('Control state was created by a newer Shrinkcage version.');
+    const journal=this.db.prepare('PRAGMA journal_mode').all()[0]?.journal_mode;if(journal!=='wal')this.db.exec('PRAGMA journal_mode=WAL;');
+    if(version===0)this.transaction(()=>this.db.exec(`CREATE TABLE IF NOT EXISTS profiles(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, value TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS projects(id TEXT PRIMARY KEY, label TEXT NOT NULL, path TEXT NOT NULL UNIQUE);
       CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY, token_hash TEXT NOT NULL, owner_pid INTEGER NOT NULL, value TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS receipts(id TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -28,7 +30,8 @@ export class ControlStore {
       CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY, at TEXT NOT NULL, event TEXT NOT NULL, resource TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS extensions(id TEXT PRIMARY KEY, value TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS locks(project_id TEXT PRIMARY KEY, token TEXT NOT NULL, pid INTEGER NOT NULL);
-      PRAGMA user_version=1;`);
+      PRAGMA user_version=1;`));
+    }catch(e){try{this.db.close();}catch{/* preserve the initialization failure */}throw e;}
   }
   close(){this.db.close();}
   lockProof(projectId:string){return this.db.prepare('SELECT token,pid FROM locks WHERE project_id=?').get(projectId) as {token:string;pid:number}|undefined;}

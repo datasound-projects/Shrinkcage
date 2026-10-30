@@ -140,3 +140,13 @@ test('T05-T19 unknown database versions and corrupt profile state fail closed wi
     const unchanged=new DatabaseSync(file);try{assert.equal(unchanged.prepare('SELECT value FROM profiles WHERE id=?').get('persisted')?.value,'{invalid');}finally{unchanged.close();}
   }finally{await f.close();}
 });
+
+
+test('T05-T19 opening an existing control store never commits a schema or version write',async()=>{
+  const f=await fixture();const watch=new DatabaseSync(join(f.dir,'data/control/state.sqlite'));try{
+    const version=()=>Number(watch.prepare('PRAGMA data_version').get()?.data_version);const before=version();
+    f.store.saveProfile({...DEFAULT_PROFILES[1].profile,id:'committed',name:'Committed'},0);assert.ok(version()>before,'observer must see real commits');const baseline=version();
+    for(let i=0;i<20;i++){const reader=new ControlStore(join(f.dir,'data'));try{assert.ok(reader.profiles().some(p=>p.profile.id==='committed'));}finally{reader.close();}}
+    assert.equal(version(),baseline,'readers must not create WAL/version writes during guardian recovery');
+  }finally{watch.close();await f.close();}
+});

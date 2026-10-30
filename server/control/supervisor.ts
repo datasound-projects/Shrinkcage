@@ -17,12 +17,23 @@ export async function supervise(){
   const send=(value:unknown)=>{if(process.connected)process.send?.(value as object,()=>{});};
   const disconnect=()=>{if(ack)clearTimeout(ack);if(process.connected)process.disconnect?.();};
   const abandoned=async()=>{
-    if(finalized)return;finalized=true;phase='recovering';record();disconnect();let store:ControlStore|undefined;
-    try{
-      store=new ControlStore(process.env.SHRINKCAGE_DATA_DIR);const session=store.sessions().find(s=>s.id===context.id),token=process.env.SHRINKCAGE_SESSION_TOKEN!;
-      if(session&&store.owns(context.id,token)){session.status='abandoned';session.signal=stopSignal??exitSignal;session.exitCode=exitCode;session.endedAt=new Date().toISOString();session.heartbeatAt=session.endedAt;session.elapsedMs=Date.now()-Date.parse(session.startedAt);session.diagnostics.push('Owning CLI disconnected before finalization. Its guardian stopped the owned child without using a persisted PID.');store.updateSession(session,token);}
-      await rm(context.path,{recursive:true,force:true});
-    }catch(e){failure=e instanceof Error&&'code' in e&&/^[A-Z_0-9]{1,40}$/.test(String(e.code))?String(e.code):'unavailable';phase='cleanup_failed';record();console.error('Managed guardian metadata cleanup was unavailable; stale heartbeat remains the safe fallback.');}finally{store?.close();}
+    if(finalized)return;finalized=true;phase='recovering';record();disconnect();
+    for(let attempt=0;attempt<2;attempt++){
+      let store:ControlStore|undefined;
+      try{
+        phase='opening_state';record();store=new ControlStore(process.env.SHRINKCAGE_DATA_DIR);
+        phase='updating_state';record();const session=store.sessions().find(s=>s.id===context.id),token=process.env.SHRINKCAGE_SESSION_TOKEN!;
+        if(session&&store.owns(context.id,token)){session.status='abandoned';session.signal=stopSignal??exitSignal;session.exitCode=exitCode;session.endedAt=new Date().toISOString();session.heartbeatAt=session.endedAt;session.elapsedMs=Date.now()-Date.parse(session.startedAt);session.diagnostics.push('Owning CLI disconnected before finalization. Its guardian stopped the owned child without using a persisted PID.');store.updateSession(session,token);}
+        phase='removing_runtime';record();await rm(context.path,{recursive:true,force:true});return;
+      }catch(e){
+        const error=e as {code?:unknown;errcode?:unknown};const sqlite=typeof error.errcode==='number'&&Number.isInteger(error.errcode)?error.errcode:null;
+        failure=typeof error.code==='string'&&/^[A-Z_0-9]{1,40}$/.test(error.code)?error.code+(sqlite===null?'':':'+sqlite):'unavailable';
+        // Reopening immediately after forced owner death can race WAL/OS recovery.
+        // Retry only transient SQLite classes, once; corruption is never retried.
+        if(attempt===0&&error.code==='ERR_SQLITE_ERROR'&&sqlite!==null&&[5,6,10,14,15].includes(sqlite&255)){store?.close();store=undefined;await new Promise(r=>setTimeout(r,100));continue;}
+        phase='cleanup_failed';record();console.error('Managed guardian metadata cleanup was unavailable; stale heartbeat remains the safe fallback.');return;
+      }finally{store?.close();}
+    }
   };
   const finish=(code:number|null,signal:NodeJS.Signals|null)=>{
     if(finished)return;finished=true;exitCode=code;exitSignal=signal;if(force)clearTimeout(force);clearInterval(timer);

@@ -1,6 +1,6 @@
 # Release test matrix · 1.1
 
-All fixtures are disposable test-only data. Production adapters have no synthetic fallback. `npm test` retains all 40 original tests and adds 39 control-plane tests (79 total). The separate coverage command runs 24 planner/transaction tests. Browser and package smoke checks are additional programs, not counted as unit tests.
+All fixtures are disposable test-only data. Production adapters have no synthetic fallback. `npm test` retains all 40 original tests and adds 40 control-plane tests (80 total). The separate coverage command runs 25 planner/transaction tests. Browser and package smoke checks are additional programs, not counted as unit tests.
 
 | ID | Release criterion | Executed check / evidence |
 |---|---|---|
