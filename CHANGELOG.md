@@ -7,6 +7,7 @@
 - Ship ten reviewed catalog entries and a separate Token Savior review candidate. Record primary-source versions, package provenance, license components, permissions and benchmark limitations.
 - Add fixed-host public GitHub/package/community discovery, rate limits, deduplication, incremental version monitoring and a scheduled review-only PR workflow. Candidate code never executes.
 - Add eight admission gates, maintainer review tooling/artifacts, structural schemas, private submissions/proposals, integrity-checked optional updates and offline cache. No automatic executable installation/update.
+- Preserve canonical registry JSON bytes on Windows; handle repository-disabled Actions PR creation with an explicit review-branch fallback, without changing permissions.
 - Reuse SDK adapters and typed settings for future plugins, with unknown interfaces held for implementation/review. Add registry unit/integration/security tests, real-backend A–F browser flows and packaged catalog smoke checks.
 - Keep existing monitor, CLI launch, authentication, billing, ownership, rollback and SQLite compatibility protections. See docs/REGISTRY.md and docs/VALIDATION.md for scope and actual evidence.
 

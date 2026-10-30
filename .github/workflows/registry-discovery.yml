@@ -23,7 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node --import tsx scripts/registry-discover.mjs --max 8 --community --packages
       - run: node --import tsx scripts/registry-validate.mjs
-      - name: Prepare a review-only pull request
+      - name: Prepare review branch and pull request where permitted
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -39,10 +39,7 @@ jobs:
           cat > /tmp/registry-review-body.md <<'BODY'
           Public metadata discovery only. New candidates and version changes require maintainer review through all eight admission gates. This PR does not modify the approved catalog, execute candidate code, install software or change local configurations. See the discovery artifact for rate limits and partial failures.
           BODY
-          if ! gh pr create --base main --head "$branch" --title "Review discovered optimizer candidates" --body-file /tmp/registry-review-body.md; then
-            echo "PR creation was denied. Candidate evidence remains on $branch and in the artifact; a maintainer must open the review PR." >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
+          node scripts/registry-review-pr.mjs "$branch" /tmp/registry-review-body.md
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -1,6 +1,6 @@
 # Release test matrix · 1.3
 
-The 121-test suite retains the original monitor/control-plane coverage and adds billing-aware managed sessions and the optimizer SDK. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
+The 123-test suite retains the original monitor/control-plane coverage and adds billing-aware managed sessions and the optimizer SDK. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
 
 | Area | Evidence |
 |---|---|
