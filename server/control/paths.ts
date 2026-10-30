@@ -24,7 +24,7 @@ export async function projectDirectory(value:string,home=homedir()):Promise<{pat
   const candidate=resolve(value);const info=await lstat(candidate).catch(()=>null);
   if(!info?.isDirectory()||info.isSymbolicLink())throw new ControlError('Choose an existing project directory, not a symlink.');
   const path=await realpath(candidate),actualHome=await realpath(home).catch(()=>resolve(home));
-  if(path===parse(path).root||path===actualHome||/[\\/](?:\.ssh|\.aws|\.gnupg|node_modules)(?:[\\/]|$)/i.test(path))throw new ControlError('The home, filesystem root and credential directories cannot be projects.');
+  if(path===parse(path).root||path===actualHome||/[\\/](?:\.ssh|\.aws|\.gnupg|\.codex|\.claude|\.gemini|Keychains|Credentials|node_modules)(?:[\\/]|$)/i.test(path))throw new ControlError('The home, filesystem root and credential directories cannot be projects.');
   return {path,ref:{id:digest(path).slice(0,24),label:basename(path).replace(/[\x00-\x1f<>]/g,'').slice(0,64)||'Project'}};
 }
 export const PROJECT_FILES=['.codex/hooks.json','.codex/shrinkcage-rtk.mjs'] as const;

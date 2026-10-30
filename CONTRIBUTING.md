@@ -13,3 +13,12 @@ Use disposable app data, HOME/CODEX_HOME and synthetic fake CLIs/endpoints in te
 Include the behavior change, validation commands/results and known limits in PRs. Keep unrelated user files out of commits, inspect the archive and staged diff for private paths/data, and avoid generated dependencies/test artifacts. CI must actually pass on all supported matrix jobs; do not hide a failure with a skip. No automatic repository, GitHub release or npm publication is part of build/test commands.
 
 Contributions use the project's [MIT license](LICENSE). Report vulnerabilities through [SECURITY.md](SECURITY.md).
+
+## Session control, billing and optimizer changes
+
+Use the shared control engine for both CLI and UI changes. Add executable integrations only as reviewed TypeScript adapters in `server/control/optimizers`; imported JSON stays guided. Preserve native authentication/permissions, independent session configuration, external resource ownership and the additive SQLite compatibility floor. Never price a mixed-model session from its latest model, sum overlapping savings, or invent a missing token/cost value.
+
+Run `npm ci`, `npm test`, `npm run coverage`, `npm run check`, `npm run package`, `node scripts/check-public.mjs`, `npm run smoke`, `npm run test:ui` and the TTY check. Tests must use isolated HOME/CODEX_HOME/CLAUDE_CONFIG_DIR, fixture CLIs and loopback services. Native read-only interface checks and authenticated model-backed tests are different evidence; report them separately. All macOS/Linux/Windows × Node 22.14/24 jobs and Chromium UI checks must pass for the pushed SHA.
+# Plugin development
+
+Start with [SDK v2](docs/PLUGINS.md), the [schema](sdk/optimizer.schema.json) and the [working MCP example](sdk/examples/line-window/). New executable templates need reviewed code, declared lifecycle support, isolation/ownership rules and security/conformance tests. Metadata import cannot execute code. Run `node --import tsx --test tests/plugin-sdk.test.ts` in addition to the normal release gates.

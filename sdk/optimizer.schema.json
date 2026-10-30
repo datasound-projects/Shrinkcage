@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/datasound-projects/Shrinkcage/blob/main/sdk/optimizer.schema.json",
+  "title": "Shrinkcage optimizer SDK v2",
+  "description": "Metadata only. The runtime parser additionally enforces argument safety, cross-field bounds, reserved fields and a 16 KiB limit. This schema never authorizes execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "source",
+    "description",
+    "mechanism",
+    "template",
+    "layers",
+    "agents",
+    "platforms",
+    "architectures",
+    "billingModes",
+    "permissions",
+    "arguments",
+    "configuration",
+    "dependencies",
+    "conflicts",
+    "toolVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,47}$",
+      "not": {
+        "anyOf": [
+          {
+            "enum": [
+              "rtk",
+              "serena",
+              "headroom",
+              "codemem",
+              "litellm",
+              "langfuse",
+              "context-mode",
+              "leanctx"
+            ]
+          },
+          {
+            "pattern": "^shrinkcage"
+          }
+        ]
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 300,
+      "pattern": "^https://[a-zA-Z0-9.-]+(?:/[a-zA-Z0-9_./#-]*)?$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "mechanism": {
+      "enum": [
+        "mcp-stdio",
+        "cli-wrapper",
+        "shell-hook",
+        "context-compressor",
+        "output-filter",
+        "api-gateway",
+        "prompt-cache",
+        "semantic-retrieval",
+        "local-memory",
+        "telemetry-observer"
+      ]
+    },
+    "template": {
+      "enum": [
+        "mcp-stdio",
+        "review-required"
+      ]
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "uniqueItems": true
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "codex",
+          "claude"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "darwin",
+          "linux",
+          "win32"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "architectures": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "any",
+          "x64",
+          "arm64"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "billingModes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "subscription",
+          "api",
+          "hybrid",
+          "unknown"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "project-read",
+          "project-write",
+          "network",
+          "persistent-memory"
+        ]
+      }
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 160,
+            "pattern": "^(?:\\.|-{0,2}[a-zA-Z0-9][a-zA-Z0-9_.:@=-]*)$"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "option"
+            ],
+            "properties": {
+              "option": {
+                "type": "string",
+                "pattern": "^[a-z][a-zA-Z0-9]{0,39}$"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-zA-Z0-9]{0,39}$",
+        "not": {
+          "enum": [
+            "command",
+            "args",
+            "env",
+            "token",
+            "apiKey",
+            "password",
+            "secret",
+            "timeoutSeconds"
+          ]
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "label",
+          "default"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "integer",
+              "boolean",
+              "enum"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "default": {
+            "type": [
+              "integer",
+              "boolean",
+              "string"
+            ]
+          },
+          "min": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "values": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "integer"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "min",
+                "max"
+              ],
+              "properties": {
+                "default": {
+                  "type": "integer"
+                }
+              },
+              "not": {
+                "required": [
+                  "values"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "boolean"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "default": {
+                  "type": "boolean"
+                }
+              },
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "min"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "max"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "values"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "enum"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "values"
+              ],
+              "properties": {
+                "default": {
+                  "type": "string"
+                }
+              },
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "min"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "max"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,47}$"
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{0,47}$"
+      }
+    },
+    "toolVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "maxMajor"
+      ],
+      "properties": {
+        "min": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "maxMajor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "mcp-stdio"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "mechanism": {
+            "const": "mcp-stdio"
+          }
+        }
+      }
+    }
+  ]
+}

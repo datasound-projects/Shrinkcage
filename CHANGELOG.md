@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.2.0 — session-aware token and cost optimization
+
+- First-run setup, explicit project approval, capability-based stack recommendations, safe Add Optimizer inspection, searchable Library and a seven-gate Validation center.
+- Plugin SDK v2 with a strict JSON schema, reviewed generic stdio MCP template, typed session configuration, real isolated protocol conformance and a functional bundled example. Unknown patterns produce review proposals.
+- Explicit local registration/update approval, changed-source blocking, session-pinned versions, retained rollback, ownership-checked removal and bounded validation/candidate history.
+- Concurrent future-plugin update/isolation, malformed protocol, malicious manifest, private environment and real-API onboarding/browser regression tests; optional manual official-upstream interface CI.
+
+- Independent managed Codex and modern Claude Code sessions, including concurrent launches in one project and process-scoped RTK hooks.
+- Billing-aware plans for subscriptions, APIs, hybrid and unknown modes; safe native status probes; native authentication retained.
+- Correlated native usage with explicit provenance, overlapping-category rules, mixed-model protection, cache-aware price estimates and subscription equivalents.
+- Adapter API 2 registry, lifecycle validation, guided context-mode/LeanCTX entries, stricter Maximum Savings and explicit next-launch configuration.
+- Session stack controls, restart previews, paged history, Cost & Usage, local pricing/budgets, qualified experiments and rule-based recommendations.
+- Additive SQLite storage preserving legacy running-launcher compatibility, existing rollback/ownership controls and original monitor APIs.
+- Expanded isolated CLI, billing, concurrency, malformed-data, migration, security and real-API browser checks.
+
+
 ## 1.1.0 · 2026-10-30
 
 Adds the local optimization control plane: reviewed six-tool catalog, versioned profiles, deterministic dependency/conflict planning, explicit fingerprint approval and genuine managed Codex terminal sessions. RTK gets reversible approved project-hook setup, while Serena and Headroom get scoped owned MCP relays with receipt evidence. Existing Headroom/RTK/Serena metrics, observed Codex/Claude/Gemini discovery, routes, startup and legacy app-data compatibility remain available.

@@ -1,4 +1,6 @@
-# Upgrade baseline
+# Historical 1.1 upgrade baseline
+
+Current release evidence is in [VALIDATION.md](VALIDATION.md). This document records the earlier 1.1 starting point.
 
 Starting commit: `4619fb158e382ecfb7861f81aaf9474735cc422a` on `origin/main`.
 Branch: `feat/optimization-control-plane`. The two user-provided specification files in the working directory were preserved and excluded from publication.

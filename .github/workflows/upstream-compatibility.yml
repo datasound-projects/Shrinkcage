@@ -1,0 +1,52 @@
+name: Upstream interface compatibility
+on:
+  workflow_dispatch:
+    inputs:
+      approve_upstream_execution:
+        description: Install official CLI packages and execute read-only version/help probes
+        required: true
+        type: boolean
+        default: false
+      codex_version:
+        description: Official Codex npm version or latest
+        default: latest
+        required: true
+      claude_version:
+        description: Official Claude Code npm version or latest
+        default: latest
+        required: true
+permissions:
+  contents: read
+jobs:
+  interfaces:
+    if: inputs.approve_upstream_execution
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Validate fixed publisher versions
+        env:
+          CODEX_VERSION: ${{ inputs.codex_version }}
+          CLAUDE_VERSION: ${{ inputs.claude_version }}
+        run: node -e "for(const k of ['CODEX_VERSION','CLAUDE_VERSION'])if(!/^(latest|[0-9]+\.[0-9]+\.[0-9]+)$/.test(process.env[k]||''))process.exit(2)"
+      - name: Install explicitly approved official packages
+        shell: bash
+        env:
+          CODEX_VERSION: ${{ inputs.codex_version }}
+          CLAUDE_VERSION: ${{ inputs.claude_version }}
+        run: npm install --global --ignore-scripts "@openai/codex@$CODEX_VERSION" "@anthropic-ai/claude-code@$CLAUDE_VERSION"
+      - name: Check native version and process-scoped interface contracts
+        run: node --import tsx scripts/upstream-check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: upstream-interfaces-${{ matrix.os }}
+          path: artifacts/upstream-interfaces.json

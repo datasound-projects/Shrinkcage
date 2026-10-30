@@ -20,6 +20,10 @@ The explicit RTK setup transaction **does write project hook files**. Its privat
 
 ## Bounds and cleanup
 
+- SDK metadata: up to 100 inspected candidates and 1,000 retained validation contexts (latest 100 exposed). Manifest/configuration byte limits bound each record. Approved executable paths and runtime binding snapshots remain private; public registration summaries omit paths. Owned plugin code copies and one rollback registration are retained until explicit removal and are not pruned as session data. Removal refuses unexpected files and never deletes external software.
+- Optional GitHub inspection is an explicit network action to fixed public `api.github.com` repository metadata/manifest endpoints, with no authentication header, redirect following, code download or execution. Local executable candidates are inspected without running them. Existing MCP summaries omit arguments, URLs, environment values and credentials. Unknown candidates remain non-operational.
+- Approved isolated plugin checks start only unchanged, explicitly registered programs in temporary workspaces with private HOME and no inherited provider keys/owner token. Raw stderr, arguments and tool outputs are not retained. This is not an OS sandbox; approved software retains the user's OS permissions.
+
 - Managed metadata: default 90-day pruning by end/heartbeat timestamp, maximum 2,000 stored runs; CLI list/export lookup and UI history are bounded (latest 200 records available to the control store, latest 50 in the workspace). `shrinkcage sessions prune --days N` accepts 1–3650 days. Remove completed metadata through the UI or CLI; active owned runs must first stop in their terminal.
 - Profiles: 100 custom records; private approved projects: 200; comparisons: latest 100; audit: latest 500 events; setup receipts: maximum 200; imported declarative entries: maximum 30. Reaching a hard cap fails clearly rather than creating unbounded storage.
 - Runtime receipts: one bounded lifecycle diagnostic (phase/flags/error code only, no payloads) plus a bounded 1 MiB readable stream, at most 10,000 projected events and bounded pending writes. Normal shutdown/guardian cleanup removes owned runtime directories. A machine crash before a guardian starts can leave small private runtime artifacts; review only after stopping your owned runs. No cleanup kills a PID discovered from disk.
@@ -34,3 +38,13 @@ App-data locations are listed in the [setup guide](SETUP.md); legacy Shrinkage p
 Default binding is 127.0.0.1. Host validation, exact-Origin checks, per-process request capability, bounded JSON and explicit approvals guard mutations. They are CSRF protections, not multi-user authentication. Anyone with access to the same local account/browser can inspect permitted metadata. Do not reverse-proxy the dashboard onto a network or treat it as a multi-tenant service.
 
 Before reporting bugs, use sanitized schemas and synthetic fixtures. Never attach real session transcripts, app-data backups, credentials or project contents to a public issue. See [Security](../SECURITY.md).
+
+## Session control and accounting in 1.2
+
+Managed Codex/Claude sessions add safe billing evidence, requested/observed model metadata, native usage, numeric estimates and separate next-launch preferences. A fresh owned session hook links native identity/project to a known history root; no timestamp-only or shared-counter attribution is used. Native logs are parsed transiently, and only allowlisted metadata survives. Mixed models/providers, missing model attribution, malformed/sampled records and stale observations withhold complete cost estimates.
+
+Authentication remains in each CLI. Shrinkcage uses safe status commands only after capability checks and never opens OAuth credentials, copies a CLI home, exports account data or changes login. Raw status output is discarded; billing mode evidence retains only enums, timestamp and limitations. Subscription API-equivalent value is an estimate, not money saved.
+
+Exact-model price rates, optional provider IDs, source URLs, review dates, budgets and a separately declared subscription fee are local SQLite settings. URLs are validation/documentation links, never arbitrary fetch targets. No remote OTLP/Langfuse exporter is enabled. Input/output token semantics follow GenAI conventions without exporting task content.
+
+Additive SQLite tables preserve the legacy v1 compatibility floor so an already-running owned launcher/guardian can finish safely. Pending stack edits do not overwrite the running session's launch record. Current charts cover the latest 50, budget recommendations the latest 200, and session history can page through the bounded 2,000-record store. No zero is substituted for unavailable usage/cost.

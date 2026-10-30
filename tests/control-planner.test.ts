@@ -11,7 +11,7 @@ const detections=():Detection[]=>CATALOG.map(m=>({id:m.id as Detection['id'],ins
 const agent={id:'codex' as const,installed:true,version:'0.165.0',compatible:true,binaryFingerprint:'codex'};
 const project={id:'a'.repeat(24),label:'Fixture'};
 const balanced=()=>structuredClone(DEFAULT_PROFILES.find(p=>p.profile.id==='balanced')!);
-const plan=(profile=balanced(),facts=config(),tools=detections(),platform=process.platform)=>composePlan({profile,project,agent,detections:tools,config:facts,platform});
+const plan=(profile=balanced(),facts=config(),tools=detections(),platform=process.platform)=>composePlan({profile,project,agent,detections:tools,config:facts,platform,billing:{mode:'api',nativeMode:'api',source:'native-status',checkedAt:'2026-01-01',limitations:[]}});
 const manifest=(id:string,dependencies:string[]=[],extra:Partial<OptimizerManifest>={}):OptimizerManifest=>({...CATALOG[0],id,dependencies,conflicts:[],...extra});
 
 test('T02 strict profile schemas reject executable payloads, duplicates and unavailable counters',()=>{
@@ -53,15 +53,17 @@ test('T04 complete plans cover activation, evidence, scoped ownership and finger
 test('T04 unavailable optional tools have explicit omissions; required or blocked fallback fails',()=>{
   const variants=[{id:'rtk',patch:{installed:false}},{id:'serena',patch:{compatible:false}},{id:'headroom',patch:{serviceHealthy:false}}] as const;
   for(const v of variants){const tools=detections().map(d=>d.id===v.id?{...d,...v.patch}:d);const p=plan(balanced(),config(),tools);assert.equal(p.ready,true);assert.equal(p.omitted[0].id,v.id);const required=balanced();required.profile.tools.forEach(t=>{if(t.id===v.id)t.required=true;});assert.equal(plan(required,config(),tools).ready,false);const blocked=balanced();blocked.profile.fallback='block';assert.equal(plan(blocked,config(),tools).ready,false);}
-  const facts=config();facts.rtkHooks=0;assert.match(plan(balanced(),facts).omitted[0].reason,/not configured/);
+  const facts=config();facts.rtkHooks=0;assert.equal(plan(balanced(),facts).isolation?.rtk,'process');assert.ok(plan(balanced(),facts).tools.includes('rtk'));
   assert.equal(plan(DEFAULT_PROFILES.find(p=>p.profile.id==='memory')!).omitted.some(t=>t.id==='codemem'),true);
 });
 test('T04 agent, OS and dependency restrictions do not get misreported as active',()=>{
-  const profile=balanced();profile.profile.agent='claude';const p=composePlan({profile,project,agent:{...agent,id:'claude'},config:config(),detections:detections(),platform:'win32'});assert.equal(p.ready,false);assert.equal(p.tools.length,0);
+  const timed=composePlan({profile:balanced(),project,agent:{...agent,version:null,compatible:false},config:config(),detections:detections(),platform:'linux'});assert.ok(timed.errors.some(e=>e.includes('Retry discovery')));assert.ok(!timed.errors.some(e=>e.includes('Upgrade')));
+
+  const profile=balanced();profile.profile.agent='claude';const p=composePlan({profile,project,agent:{...agent,id:'claude',version:'2.1.118'},config:config(),detections:detections(),platform:'win32'});assert.equal(p.ready,true);assert.deepEqual(p.tools,['rtk','serena']);assert.ok(p.omitted.some(t=>t.id==='headroom'));
   assert.equal(composePlan({profile,project,agent,config:config(),detections:[],platform:'linux'}).ready,false);
   assert.equal(composePlan({profile:balanced(),project,agent:{...agent,installed:false,compatible:false},config:config(),detections:detections(),platform:'linux'}).ready,false);
   const constrained=CATALOG.map(m=>m.id==='rtk'?{...m,platforms:[]}:m);assert.ok(composePlan({profile:balanced(),project,agent,config:config(),detections:detections(),platform:'linux',catalog:constrained}).omitted.some(t=>t.id==='rtk'));
-  const deps=CATALOG.map(m=>m.id==='serena'?{...m,dependencies:['rtk']}:m);const facts=config();facts.rtkHooks=0;assert.ok(composePlan({profile:balanced(),project,agent,config:facts,detections:detections(),platform:'linux',catalog:deps}).omitted.some(t=>t.reason.includes('dependency')));
+  const deps=CATALOG.map(m=>m.id==='serena'?{...m,dependencies:['rtk']}:m);const facts=config();facts.hooksDisabled=true;assert.ok(composePlan({profile:balanced(),project,agent,config:facts,detections:detections(),platform:'linux',catalog:deps}).omitted.some(t=>t.reason.includes('dependency')));
 });
 test('T04 duplicate hooks, memory capture, MCP collisions and malformed config are surfaced',()=>{
   for(const patch of [{rtkHooks:2},{reservedMcp:true},{errors:['Malformed config']}])assert.equal(plan(balanced(),{...config(),...patch}).ready,false);

@@ -43,7 +43,7 @@ try{
     else return route.continue();
     await route.fulfill({json:data??{error:'Not found'}});
   });
-  await page.goto(base);await page.getByRole('heading',{name:'Workspace overview'}).waitFor();await page.locator('.session-inspector').waitFor();await page.locator('#analytics .recharts-surface').waitFor();
+  await page.goto(base);await page.getByRole('heading',{name:'Your optimization control plane'}).waitFor();await page.locator('.session-inspector').waitFor();await page.locator('#analytics .recharts-surface').waitFor();
   await mkdir('artifacts',{recursive:true});
   await page.evaluate(()=>{const x=document.createElement('div');x.textContent='Illustrative test data';x.style.cssText='position:fixed;bottom:8px;right:12px;z-index:1000;background:#25352c;color:#fff;padding:4px 8px;border-radius:5px;font:10px sans-serif';document.body.append(x);});
   await page.screenshot({path:'artifacts/overview.png'});await page.locator('#sessions').screenshot({path:'artifacts/sessions.png'});

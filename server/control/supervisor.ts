@@ -52,8 +52,8 @@ export async function supervise(){
     if(!message||typeof message!=='object')return;const m=message as {type?:unknown;program?:unknown;args?:unknown;binaryFingerprint?:unknown;signal?:unknown};
     if(m.type==='owner-finalized'){if(finished&&!orphaned){finalized=true;disconnect();}return;}
     if(m.type==='stop'){stop(m.signal==='SIGINT'?'SIGINT':'SIGTERM');return;}
-    if(m.type!=='launch'||child||finished||!['codex','headroom'].includes(String(m.program))||!Array.isArray(m.args)||m.args.length>160||m.args.some(a=>typeof a!=='string'||a.includes('\0')||a.length>16384))throw Error('Invalid managed launch.');
-    const binary=await executable(m.program as 'codex'|'headroom');if(!binary||binary.fingerprint!==m.binaryFingerprint)throw Error('Executable changed after approval.');
+    if(m.type!=='launch'||child||finished||!['codex','claude','headroom'].includes(String(m.program))||!Array.isArray(m.args)||m.args.reduce((n,a)=>n+String(a).length,0)>65536||m.args.some(a=>typeof a!=='string'||a.includes('\0')||a.length>16384))throw Error('Invalid managed launch.');
+    const binary=await executable(m.program as 'codex'|'claude'|'headroom');if(!binary||binary.fingerprint!==m.binaryFingerprint)throw Error('Executable changed after approval.');
     child=spawn(binary.command,[...binary.prefix,...m.args],{cwd:process.cwd(),env:process.env,shell:false,stdio:'inherit',windowsHide:false});
     child.once('spawn',()=>send({type:'spawned'}));child.once('error',()=>finish(1,null));child.once('close',(code,signal)=>finish(code,signal));
   })().catch(()=>{send({type:'launch-error'});if(child)stop();else finish(1,null);});});
