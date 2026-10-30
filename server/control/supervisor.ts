@@ -2,6 +2,8 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { runtimeAlive,runtimeContext } from './runtime.js';
 import { executable } from './probe.js';
 import { rm } from 'node:fs/promises';
+import { constants,writeFileSync,openSync,closeSync } from 'node:fs';
+import { join } from 'node:path';
 import { ControlStore } from './store.js';
 
 export async function supervise(){
@@ -9,19 +11,22 @@ export async function supervise(){
   let child:ChildProcess|undefined,stopping=false,finished=false,orphaned=false,finalized=false;
   let stopSignal:NodeJS.Signals|null=null,exitCode:number|null=null,exitSignal:NodeJS.Signals|null=null;
   let force:ReturnType<typeof setTimeout>|undefined,ack:ReturnType<typeof setTimeout>|undefined;
+  let phase='started',failure:string|null=null;
+  const record=()=>{try{const fd=openSync(join(context.path,'guardian.json'),constants.O_CREAT|constants.O_WRONLY|constants.O_TRUNC|(constants.O_NOFOLLOW??0),0o600);try{writeFileSync(fd,JSON.stringify({phase,finished,orphaned,finalized,connected:process.connected,exitCode,exitSignal,stopSignal,failure,at:new Date().toISOString()}));}finally{closeSync(fd);}}catch{/* Never recreate a removed runtime or follow a replaced diagnostic file. */}};
+  record();process.once('exit',()=>{phase='guardian_exit';record();});
   const send=(value:unknown)=>{if(process.connected)process.send?.(value as object,()=>{});};
   const disconnect=()=>{if(ack)clearTimeout(ack);if(process.connected)process.disconnect?.();};
   const abandoned=async()=>{
-    if(finalized)return;finalized=true;disconnect();let store:ControlStore|undefined;
+    if(finalized)return;finalized=true;phase='recovering';record();disconnect();let store:ControlStore|undefined;
     try{
       store=new ControlStore(process.env.SHRINKCAGE_DATA_DIR);const session=store.sessions().find(s=>s.id===context.id),token=process.env.SHRINKCAGE_SESSION_TOKEN!;
       if(session&&store.owns(context.id,token)){session.status='abandoned';session.signal=stopSignal??exitSignal;session.exitCode=exitCode;session.endedAt=new Date().toISOString();session.heartbeatAt=session.endedAt;session.elapsedMs=Date.now()-Date.parse(session.startedAt);session.diagnostics.push('Owning CLI disconnected before finalization. Its guardian stopped the owned child without using a persisted PID.');store.updateSession(session,token);}
       await rm(context.path,{recursive:true,force:true});
-    }catch{console.error('Managed guardian metadata cleanup was unavailable; stale heartbeat remains the safe fallback.');}finally{store?.close();}
+    }catch(e){failure=e instanceof Error&&'code' in e&&/^[A-Z_0-9]{1,40}$/.test(String(e.code))?String(e.code):'unavailable';phase='cleanup_failed';record();console.error('Managed guardian metadata cleanup was unavailable; stale heartbeat remains the safe fallback.');}finally{store?.close();}
   };
   const finish=(code:number|null,signal:NodeJS.Signals|null)=>{
     if(finished)return;finished=true;exitCode=code;exitSignal=signal;if(force)clearTimeout(force);clearInterval(timer);
-    process.exitCode=stopSignal==='SIGINT'?130:stopSignal==='SIGTERM'?143:signal?1:code??1;
+    phase='agent_exited';record();process.exitCode=stopSignal==='SIGINT'?130:stopSignal==='SIGTERM'?143:signal?1:code??1;
     if(orphaned||!process.connected){void abandoned();return;}
     // Keep the guardian alive until the owner durably saves metadata and closes
     // runtime files. A successful send alone does not prove the owner survived.
