@@ -7,21 +7,21 @@ import { CATALOG } from './catalog.js';
 import { ControlError, digest } from './schema.js';
 import { readBounded } from './paths.js';
 import { versionCompatible } from './planner.js';
-import type { AgentDetection, Detection, ToolId } from './types.js';
+import type { AgentDetection, Detection, ToolId, BuiltinToolId } from './types.js';
 
 export interface Executable { command:string; prefix:string[]; fingerprint:string }
-const NAMES=['codex','claude','gemini','rtk','serena','headroom','codemem','litellm','langfuse'] as const;
+const NAMES=['codex','claude','gemini','rtk','serena','headroom','codemem','litellm','langfuse','context-mode','leanctx'] as const;
 export async function executable(name:typeof NAMES[number],env:NodeJS.ProcessEnv=process.env):Promise<Executable|null>{
   if(!NAMES.includes(name))throw new ControlError('Unknown executable.');
   const path=(env.PATH||env.Path||'').split(process.platform==='win32'?';':delimiter).filter(Boolean);
   for(const directory of path){
     if(/^[\\/]{2}/.test(directory))continue;
     for(const suffix of process.platform==='win32'?['.exe','.cmd','.bat','']:['']){
-      const file=join(directory.replace(/^"|"$/g,''),name+suffix);try{
+      const file=join(directory.replace(/^"|"$/g,''),(name==='leanctx'?'lean-ctx':name)+suffix);try{
         await access(file,process.platform==='win32'?constants.F_OK:constants.X_OK);const resolved=await realpath(file);const info=await stat(resolved);if(!info.isFile())continue;
         let command=resolved,prefix:string[]=[],scriptIdentity='';
         if(/\.(cmd|bat)$/i.test(resolved)){
-          const candidates=name==='codex'?[join(dirname(file),'node_modules','@openai','codex','bin','codex.js')]:[];
+          const candidates=name==='codex'?[join(dirname(file),'node_modules','@openai','codex','bin','codex.js')]:name==='claude'?[join(dirname(file),'node_modules','@anthropic-ai','claude-code','cli.js')]:[];
           const shim=await readBounded(file,16384);if(shim&&/\bnode(?:\.exe)?\b/i.test(shim.toString()))for(const extension of ['.mjs','.js'])if(shim.toString().includes(name+extension))candidates.push(join(dirname(file),name+extension));
           let js:string|undefined;for(const p of candidates){try{const s=await lstat(p);if(s.isFile()&&!s.isSymbolicLink()){js=await realpath(p);scriptIdentity=`${s.dev}:${s.ino}:${s.mtimeMs}:${s.size}`;break;}}catch{}}
           if(!js)continue;command=process.execPath;prefix=[js];
@@ -57,11 +57,11 @@ export async function headroomDocument(path:'health'|'stats',env:NodeJS.ProcessE
 export async function headroomHealth(env:NodeJS.ProcessEnv=process.env):Promise<boolean>{
   const data=await headroomDocument('health',env);return !!data&&typeof data.service==='string'&&/headroom/i.test(data.service)&&data.status==='healthy';
 }
-export async function detectAgent(env:NodeJS.ProcessEnv=process.env):Promise<AgentDetection>{
-  const binary=await executable('codex',env);const empty:AgentDetection={id:'codex',installed:!!binary,version:null,compatible:false,binaryFingerprint:binary?.fingerprint??null};if(!binary)return empty;
-  try{const [v,help]=await Promise.all([runBounded(binary,['--version'],{env}),runBounded(binary,['--help'],{env})]);const version=versionOf(v.stdout);return {...empty,version,compatible:v.code===0&&help.code===0&&versionCompatible(version,'0.165.0',0)&&/--config/.test(help.stdout)&&/--no-daemon/.test(help.stdout)};}catch{return empty;}
+export async function detectAgent(env:NodeJS.ProcessEnv=process.env,id:'codex'|'claude'='codex'):Promise<AgentDetection>{
+  const binary=await executable(id,env);const empty:AgentDetection={id,installed:!!binary,version:null,compatible:false,binaryFingerprint:binary?.fingerprint??null};if(!binary)return empty;
+  try{const [v,help]=await Promise.all([runBounded(binary,['--version'],{env}),runBounded(binary,['--help'],{env})]);const version=versionOf(v.stdout);const flags=id==='codex'?['--config','--no-daemon']:['--settings','--session-id','--mcp-config','--strict-mcp-config'];return {...empty,version,compatible:v.code===0&&help.code===0&&versionCompatible(version,id==='codex'?'0.165.0':'2.1.0',id==='codex'?0:2)&&flags.every(flag=>help.stdout.includes(flag))};}catch{return empty;}
 }
-export async function detectTool(id:ToolId,env:NodeJS.ProcessEnv=process.env):Promise<Detection>{
+export async function detectTool(id:BuiltinToolId,env:NodeJS.ProcessEnv=process.env):Promise<Detection>{
   const manifest=CATALOG.find(m=>m.id===id)!;const checkedAt=new Date().toISOString();const binary=await executable(id,env);
   const d:Detection={id,installed:!!binary,version:null,compatible:false,configured:null,serviceHealthy:null,agentConnected:null,effective:null,usageObserved:null,status:binary?'installed':'missing',checkedAt,binaryFingerprint:binary?.fingerprint??null,evidence:[],diagnostics:[]};
   if(!binary){d.diagnostics.push('Executable not found on PATH. '+manifest.installGuidance);return d;}

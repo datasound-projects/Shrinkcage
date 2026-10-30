@@ -19,7 +19,7 @@ async function setup(f:Awaited<ReturnType<typeof fakeWorkspace>>,project=f.proje
 test('T03 doctor, tools and inspect expose truthful installed/guided states without agent authentication',async()=>{
   const f=await fakeWorkspace();try{
     const doctor=await cli(['doctor','--json'],f.env,f.project);assert.equal(doctor.code,0,doctor.stderr);const d=JSON.parse(doctor.stdout);assert.equal(d.agents[0].compatible,true);assert.equal(d.tools.filter((t:{compatible:boolean})=>t.compatible).length,3);assert.ok(d.tools.every((t:{agentConnected:unknown;effective:unknown})=>t.agentConnected===null&&t.effective===null));
-    const tools=await cli(['tools','--json'],f.env,f.project);assert.equal(JSON.parse(tools.stdout).length,6);const inspect=await cli(['tool','inspect','headroom'],f.env,f.project);assert.equal(JSON.parse(inspect.stdout).detection.serviceHealthy,true);
+    const tools=await cli(['tools','--json'],f.env,f.project);assert.equal(JSON.parse(tools.stdout).length,8);const inspect=await cli(['tool','inspect','headroom'],f.env,f.project);assert.equal(JSON.parse(inspect.stdout).detection.serviceHealthy,true);
     const bad=await cli(['tool','install','codemem'],f.env,f.project);assert.equal(bad.code,2);assert.match(bad.stderr,/guided/);
     const missing=await detectTool('rtk',{...f.env,PATH:''});assert.equal(missing.status,'missing');const wrong=await detectTool('rtk',{...f.env,FIXTURE_RTK_BAD_VERSION:'1'});assert.equal(wrong.compatible,false);
     const unknown=await cli(['tools','--command','PRIVATE_COMMAND'],f.env,f.project);assert.equal(unknown.code,2);assert.ok(!unknown.stderr.includes('PRIVATE_COMMAND'));
@@ -35,11 +35,11 @@ test('T05 CLI profile create/edit/export/import uses strict schemas and revision
     await writeFile(file,JSON.stringify({...value,command:'PRIVATE_PAYLOAD'}));const invalid=await cli(['profile','import',file],f.env,f.project);assert.equal(invalid.code,2);assert.ok(!invalid.stderr.includes('PRIVATE_PAYLOAD'));
   }finally{await f.close();}
 });
-test('T04 planning never installs missing project hooks and required tools fail preflight',async()=>{
+test('T04 process hooks need no project writes and absent required tools fail preflight',async()=>{
   const f=await fakeWorkspace();try{
-    const p=await plan(f,'lean');assert.deepEqual(p.tools,[]);assert.ok(p.omitted.some(t=>t.id==='rtk'));await assert.rejects(lstat(join(f.project,'.codex/hooks.json')));
+    const p=await plan(f,'lean');assert.deepEqual(p.tools,['rtk']);assert.equal(p.isolation?.rtk,'process');await assert.rejects(lstat(join(f.project,'.codex/hooks.json')));
     assert.equal((await cli(['profile','create','strict','--tools','rtk','--required','rtk'],f.env,f.project)).code,0);
-    const blocked=await cli(['plan','codex','--profile','strict','--project',f.project,'--json'],f.env,f.project);assert.equal(blocked.code,2);assert.equal(JSON.parse(blocked.stdout).ready,false);
+    const blocked=await cli(['plan','codex','--profile','strict','--project',f.project,'--json'],{...f.env,FIXTURE_RTK_BAD_VERSION:'1'},f.project);assert.equal(blocked.code,2);assert.equal(JSON.parse(blocked.stdout).ready,false);
     const absent=await cli(['run','codex','--profile','baseline','--project',f.project,'--approve','0'.repeat(64)],f.env,f.project);assert.equal(absent.code,2);assert.equal(JSON.parse((await cli(['sessions','--json'],f.env,f.project)).stdout).length,0);
     const declined=await cli(['run','codex','--profile','baseline','--project',f.project],f.env,f.project);assert.equal(declined.code,2);assert.match(declined.stderr,/Non-interactive/);
   }finally{await f.close();}

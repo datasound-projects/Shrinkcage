@@ -6,16 +6,19 @@ import { createRequire } from 'node:module';
 import { digest, ControlError } from './schema.js';
 import { readBounded } from './paths.js';
 import type { ToolId } from './types.js';
+import type { RuntimePlugin } from './sdk/types.js';
 
 export interface ReceiptEvent { tool:ToolId; phase:'agent_connected'|'usage_observed'|'failed'; name:string; at:string }
-export function runtimeEntry(name:'supervisor'|'mcp-bridge'|'entry'):{command:string;args:string[]}{
+export function runtimeEntry(name:'supervisor'|'mcp-bridge'|'entry'|'session-hook'):{command:string;args:string[]}{
   const source=import.meta.url.endsWith('.ts');const entry=fileURLToPath(new URL('./'+name+(source?'.ts':'.js'),import.meta.url));
   return {command:process.execPath,args:source?['--import',pathToFileURL(createRequire(import.meta.url).resolve('tsx')).href,entry]:[entry]};
 }
-export async function prepareRuntime(dataDir:string,id:string,token:string,tools:ToolId[],fingerprints:Record<string,string|null>={}){
+export async function prepareRuntime(dataDir:string,id:string,token:string,tools:ToolId[],fingerprints:Record<string,string|null>={},plugins:Record<string,RuntimePlugin>={}){
+  const ownerValue=JSON.stringify({id,tokenHash:digest(token),tools,fingerprints});if(Buffer.byteLength(ownerValue)>65536)throw new ControlError('Owned runtime metadata exceeds its byte budget.');
   const parent=resolve(dataDir,'control','runtime');await mkdir(parent,{recursive:true,mode:0o700});if((await lstat(parent)).isSymbolicLink()||await realpath(parent)!==parent)throw new ControlError('Unsafe runtime directory.');
   const path=join(parent,id);await mkdir(path,{mode:0o700});const owner=await open(join(path,'owner.json'),constants.O_CREAT|constants.O_EXCL|constants.O_WRONLY,0o600);
-  try{await owner.writeFile(JSON.stringify({id,tokenHash:digest(token),tools,fingerprints}));await owner.sync();}finally{await owner.close();}
+  try{await owner.writeFile(ownerValue);await owner.sync();}finally{await owner.close();}
+  if(Object.keys(plugins).length){await mkdir(join(path,'tools'),{mode:0o700});for(const [name,snapshot]of Object.entries(plugins)){if(!/^[a-z][a-z0-9-]{0,47}$/.test(name)||!tools.includes(name))throw new ControlError('Invalid runtime plugin identity.');const value=JSON.stringify(snapshot);if(Buffer.byteLength(value)>65536)throw new ControlError('Plugin runtime snapshot exceeds its byte budget.');const h=await open(join(path,'tools',name+'.json'),constants.O_CREAT|constants.O_EXCL|constants.O_WRONLY,0o600);try{await h.writeFile(value);await h.sync();}finally{await h.close();}}}
   const heartbeat=await open(join(path,'heartbeat'),constants.O_CREAT|constants.O_EXCL|constants.O_RDWR,0o600);
   const beat=async()=>{const bytes=Buffer.from(new Date().toISOString());await heartbeat.write(bytes,0,bytes.length,0);};await beat();
   return {path,beat,close:async()=>{await heartbeat.close();await rm(path,{recursive:true,force:true});}};
@@ -24,7 +27,7 @@ export async function runtimeContext(env:NodeJS.ProcessEnv=process.env):Promise<
   const id=env.SHRINKCAGE_SESSION_ID,token=env.SHRINKCAGE_SESSION_TOKEN,root=env.SHRINKCAGE_DATA_DIR;
   if(!id||!/^[a-f0-9-]{36}$/.test(id)||!token||!/^[a-f0-9]{64}$/.test(token)||!root)return null;
   const path=resolve(root,'control','runtime',id);
-  try{if(await realpath(path)!==path||(await lstat(path)).isSymbolicLink())return null;const bytes=await readBounded(join(path,'owner.json'),2048);if(!bytes)return null;const owner=JSON.parse(bytes.toString('utf8'));if(owner.id!==id||owner.tokenHash!==digest(token)||!Array.isArray(owner.tools))return null;return {path,id,tools:owner.tools,fingerprints:owner.fingerprints??{}};}catch{return null;}
+  try{if(await realpath(path)!==path||(await lstat(path)).isSymbolicLink())return null;const bytes=await readBounded(join(path,'owner.json'),65536);if(!bytes)return null;const owner=JSON.parse(bytes.toString('utf8'));if(owner.id!==id||owner.tokenHash!==digest(token)||!Array.isArray(owner.tools)||owner.tools.some((t:unknown)=>typeof t!=='string'||!/^[a-z][a-z0-9-]{0,47}$/.test(t)))return null;return {path,id,tools:owner.tools,fingerprints:owner.fingerprints??{}};}catch{return null;}
 }
 export async function runtimeAlive(path:string){try{const value=await readBounded(join(path,'heartbeat'),40);return !!value&&Date.now()-Date.parse(value.toString('utf8'))<20000;}catch{return false;}}
 export async function writeReceipt(event:ReceiptEvent,env:NodeJS.ProcessEnv=process.env){
@@ -38,7 +41,7 @@ export async function receiptEvents(path:string):Promise<ReceiptEvent[]>{
   const events:ReceiptEvent[]=[];
   for(const line of data.toString('utf8').split('\n').slice(0,10000)){
     if(!line||line.length>512)continue;
-    try{const v=JSON.parse(line);if(['rtk','serena','headroom'].includes(v.tool)&&['agent_connected','usage_observed','failed'].includes(v.phase)&&typeof v.name==='string'&&/^[a-zA-Z0-9_.:-]{1,96}$/.test(v.name)&&typeof v.at==='string'&&Number.isFinite(Date.parse(v.at)))events.push({tool:v.tool,phase:v.phase,name:v.name,at:v.at});}catch{/* malformed receipt is not evidence */}
+    try{const v=JSON.parse(line);if(typeof v.tool==='string'&&/^[a-z][a-z0-9-]{0,47}$/.test(v.tool)&&['agent_connected','usage_observed','failed'].includes(v.phase)&&typeof v.name==='string'&&/^[a-zA-Z0-9_.:-]{1,96}$/.test(v.name)&&typeof v.at==='string'&&Number.isFinite(Date.parse(v.at)))events.push({tool:v.tool,phase:v.phase,name:v.name,at:v.at});}catch{/* malformed receipt is not evidence */}
   }
   return events;
 }

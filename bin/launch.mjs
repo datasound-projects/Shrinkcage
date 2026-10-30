@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {dirname,join,delimiter} from 'node:path';
 import {createConnection} from 'node:net';
 export const root=fileURLToPath(new URL('../',import.meta.url));
-export const version='1.1.0';
+export const version=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8')).version;
 export function checkRuntime(runtime=process.versions.node){const [major,minor]=runtime.split('.').map(Number);if(major<22||major===22&&minor<13)throw new Error('Shrinkcage requires Node.js 22.13 or newer. Install Node and npm, then try again.');}
 const exists=async p=>{try{await access(p);return true;}catch{return false;}};
 async function npmCli(){
@@ -21,7 +21,7 @@ function openBrowser(){if(process.env.OPEN_BROWSER==='0'||process.argv.includes(
 export async function launch({source=false}={}){
   checkRuntime();
   if(process.argv.includes('--version')){console.log(`Shrinkcage ${version}`);return;}
-  if(process.argv.includes('--help')){console.log('Shrinkcage — private local AI agent monitoring\n\nshrinkcage [--no-open]\n\nOpen http://localhost:8790. Ctrl+C stops the owned server.\nNode.js 22.13+ required. No agent installation or account is required.');return;}
+  if(process.argv.includes('--help')){console.log('Shrinkcage — local token and cost optimization for AI coding sessions\n\nshrinkcage [--no-open]\n\nOpen http://localhost:8790. Ctrl+C stops the owned server.\nNode.js 22.13+ required. No agent installation or account is required.');return;}
   if(process.argv.slice(2).some(a=>a!=='--no-open'))throw new Error('Unknown option. Use --help for supported options.');
   const running=await existing();if(running?.app==='shrinkcage'){console.log(`Shrinkcage is already running at http://localhost:8790 (version ${running.version}).`);openBrowser();return;}
   if(await occupied())throw new Error('Port 8790 is occupied by another application or an older Codex Monitor. Stop that application before starting Shrinkcage. No process was killed.');

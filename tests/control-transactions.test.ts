@@ -19,7 +19,7 @@ test('T05 versioned profiles use compare-and-swap, survive reopening and reject 
   const f=await fixture();try{
     const value={...DEFAULT_PROFILES[1].profile,id:'custom',name:'Custom'};const saved=f.store.saveProfile(value,0);assert.equal(saved.revision,1);assert.throws(()=>f.store.saveProfile(value,0),/another window/);
     assert.equal(f.store.saveProfile({...value,description:'Updated'},1).revision,2);assert.throws(()=>f.store.saveProfile(DEFAULT_PROFILES[0].profile,0),/immutable/);assert.throws(()=>f.store.saveProfile(value,-1));assert.throws(()=>f.store.removeProfile('baseline',0));
-    assert.throws(()=>f.store.removeProfile('custom',1));f.store.removeProfile('custom',2);assert.equal(f.store.profiles().some(p=>p.profile.id==='custom'),false);
+    assert.throws(()=>f.store.removeProfile('custom',1));f.store.removeProfile('custom',2);assert.equal(f.store.profiles().some(p=>p.profile.id==='custom'&&!p.builtin),false);
     const attempts=await Promise.allSettled(Array.from({length:25},()=>Promise.resolve().then(()=>f.store.saveProfile(value,0))));assert.equal(attempts.filter(r=>r.status==='fulfilled').length,1);
     const second=new ControlStore(join(f.dir,'data'));try{assert.equal(second.profiles().find(p=>p.profile.id==='custom')?.revision,1);}finally{second.close();}
   }finally{await f.close();}

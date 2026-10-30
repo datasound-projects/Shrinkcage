@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "line-window",
+  "name": "Line Window",
+  "version": "1.0.0",
+  "source": "https://github.com/datasound-projects/Shrinkcage",
+  "description": "Example MCP tool that removes adjacent duplicate lines and bounds supplied text. It acts only when called; no savings are assumed.",
+  "mechanism": "mcp-stdio",
+  "template": "mcp-stdio",
+  "layers": ["Tool output"],
+  "agents": ["codex", "claude"],
+  "platforms": ["darwin", "linux", "win32"],
+  "architectures": ["any"],
+  "billingModes": ["subscription", "api", "hybrid", "unknown"],
+  "permissions": [],
+  "arguments": ["--max-lines", {"option": "lineLimit"}],
+  "configuration": {
+    "lineLimit": {"type": "integer", "label": "Maximum returned lines", "min": 10, "max": 1000, "default": 100}
+  },
+  "dependencies": [],
+  "conflicts": [],
+  "toolVersion": {"min": "1.0.0", "maxMajor": 1}
+}
