@@ -13,6 +13,7 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - run: npm run registry:validate
       - run: npm test
       - run: npm run coverage
       - run: npm run package

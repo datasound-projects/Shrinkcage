@@ -1,6 +1,6 @@
 {
   "name": "shrinkcage-monitor",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -16,7 +16,10 @@
     "package": "npm run build && node scripts/licenses.mjs && node scripts/package.mjs",
     "smoke": "node --import tsx scripts/smoke.mjs",
     "coverage": "c8 node --import tsx --test tests/control-planner.test.ts tests/control-transactions.test.ts",
-    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs"
+    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs && node --import tsx scripts/registry-ui-test.mjs",
+    "registry:validate": "node --import tsx scripts/registry-validate.mjs",
+    "registry:discover": "node --import tsx scripts/registry-discover.mjs",
+    "registry:review": "node --import tsx scripts/registry-review.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.0",
@@ -66,7 +69,10 @@
     "sdk/",
     "docs/PLUGINS.md",
     "docs/COMPATIBILITY.md",
-    "docs/images/quick-setup.png"
+    "docs/images/quick-setup.png",
+    "registry/",
+    "docs/REGISTRY.md",
+    "docs/images/registry.png"
   ],
   "repository": {
     "type": "git",

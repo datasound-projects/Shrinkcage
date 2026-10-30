@@ -41,19 +41,22 @@ Replace the path with your project folder, for example `C:\Projects\my-app` on W
 
 Each launch gets its own ID, tools and configuration, including simultaneous sessions in the same project. New RTK hooks and MCP overrides expire with that session. Existing external hooks can limit isolation; the plan tells you when a tool cannot be independently disabled.
 
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.2.0.tgz`. Source/ZIP users can keep using `node bin/shrinkcage.mjs`. [Full setup and CLI reference →](docs/SETUP.md)
+For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.3.0.tgz`. Source/ZIP users can keep using `node bin/shrinkcage.mjs`. [Full setup and CLI reference →](docs/SETUP.md)
 
 ## What you can do
 
 - **Sessions:** inspect active and past launches, native usage, tool evidence and independent next-launch stacks.
-- **Optimizers:** discover installed tools, inspect compatibility and follow safe installation guidance.
+- **Optimizer Registry:** browse reviewed public tools, filter by purpose and compatibility, inspect evidence and add a supported tool to one session or profile.
+- **Local Library:** discover installed tools, inspect compatibility and follow safe installation guidance.
 - **Add tools:** inspect GitHub/local candidates or import manifests; approved stdio MCP plugins work through the versioned SDK without changing the session runner.
 - **Validation:** see seven gates, actionable failures, version changes and explicit update/rollback previews.
 - **Profiles:** build reusable stacks, preview omissions and review an exact terminal command.
 - **Cost & Usage:** separate API estimates from subscription API-equivalent value; configure exact-model prices, cache rates and budget alerts.
 - **Experiments:** compare baseline and optimized sessions with quality checks and visible confounders.
 
-![Shrinkcage session controls — illustrative test workspace](docs/images/managed.png)
+![Optimizer Registry — illustrative test workspace](docs/images/registry.png)
+
+The registry ships offline. Public review, local installation and observed session use are separate states. Ten tools have scoped catalog reviews; other discoveries stay in a review queue. Headroom, RTK, Serena and approved SDK MCP plugins can use managed session adapters. Other catalog tools provide guidance. No tool installs or updates itself. [Browse, add to a stack, or suggest a tool →](docs/REGISTRY.md)
 
 ## What works today
 
@@ -78,6 +81,6 @@ Try the bundled example with `node bin/shrinkcage.mjs optimizer add-example`, re
 
 Shrinkcage stores allowlisted metadata, not prompts, code or tool arguments/results. Authentication stays with the native CLI. It never reads OAuth credential files, silently installs agents or rewrites global agent settings. Monitoring remains available when a connector fails.
 
-[Setup & troubleshooting](docs/SETUP.md) · [Architecture](docs/CONTROL_PLANE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Optimizer SDK](docs/PLUGINS.md) · [Privacy](docs/PRIVACY.md) · [Security](SECURITY.md) · [Validation](docs/VALIDATION.md) · [Contributing](CONTRIBUTING.md)
+[Setup & troubleshooting](docs/SETUP.md) · [Architecture](docs/CONTROL_PLANE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Optimizer Registry](docs/REGISTRY.md) · [Optimizer SDK](docs/PLUGINS.md) · [Privacy](docs/PRIVACY.md) · [Security](SECURITY.md) · [Validation](docs/VALIDATION.md) · [Contributing](CONTRIBUTING.md)
 
 Screenshots use clearly labeled test data. CI exercises macOS, Windows and Linux with isolated fake CLIs; authenticated model-backed combinations are not universally verified. [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).

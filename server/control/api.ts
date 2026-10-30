@@ -12,6 +12,7 @@ import { parseLaunchOptions } from './schema.js';
 import { accountSession } from './accounting.js';
 const PREFIX='/api/control/v1';
 export async function controlRead(plane:ControlPlane,path:string,token:string):Promise<unknown>{
+  if(path===PREFIX+'/registry')return plane.registry.view();
   const state=await plane.state(token);switch(path.slice(PREFIX.length)){
     case '/state':return state;
     case '/tools':return {catalog:state.catalog,detections:state.detections,registry:optimizerRegistry.list()};
@@ -26,6 +27,14 @@ export async function controlRead(plane:ControlPlane,path:string,token:string):P
 function approved(value:unknown,keys:string[]){const data=object(value,[...keys,'approved']);if(data.approved!==true)throw new ControlError('Explicit action approval is required.','approval',403);return data;}
 export async function controlWrite(plane:ControlPlane,path:string,value:unknown):Promise<unknown>{
   switch(path.slice(PREFIX.length)){
+    case '/registry/inspect':{const d=approved(value,['source','value','repository']);if(!['github','documentation','manifest'].includes(String(d.source)))throw new ControlError('Choose a GitHub URL, documentation link, or SDK manifest.');return plane.registry.inspect({source:d.source as 'github',value:d.value,repository:typeof d.repository==='string'?d.repository:undefined});}
+    case '/registry/candidates/remove':{const d=approved(value,['id']);if(!id(d.id))throw new ControlError('Invalid candidate ID.');plane.store.removeRegistryCandidate(d.id as string);return {removed:true,officialCatalogChanged:false};}
+    case '/registry/proposal':{const d=approved(value,['id']);if(!id(d.id))throw new ControlError('Invalid candidate ID.');return plane.registry.proposal(d.id as string);}
+    case '/registry/discover':{const d=approved(value,['source','query']);if(!['github','releases','packages','community'].includes(String(d.source))||d.query!==undefined&&!['context','output','mcp','memory','analytics','topics'].includes(String(d.query)))throw new ControlError('Choose a supported public discovery source/query.');return plane.registry.startDiscovery({source:d.source as 'github',query:d.query as 'context'});}
+    case '/registry/update-preview':{approved(value,[]);const {bytes,integrity,...preview}=await plane.registry.updatePreview();return preview;}
+    case '/registry/update':{const d=approved(value,['fingerprint']);if(typeof d.fingerprint!=='string'||!/^[a-f0-9]{64}$/.test(d.fingerprint))throw new ControlError('Review the registry update fingerprint.');return plane.registry.update(d.fingerprint);}
+    case '/registry/stack-preview':
+    case '/registry/stack-apply':{const d=approved(value,['origin','id','target','projectId','billing','config','fingerprint']);if(!['curated','plugin'].includes(String(d.origin))||!id(d.id))throw new ControlError('Choose a reviewed entry or an approved personal plugin.');const target=object(d.target,['kind','id','name','agent']);if(typeof target.id!=='string'||!['profile','session','new-profile'].includes(String(target.kind))||target.agent!==undefined&&!['codex','claude'].includes(String(target.agent)))throw new ControlError('Choose a valid stack destination.');if(d.projectId!==undefined&&(typeof d.projectId!=='string'||!/^[a-f0-9]{24}$/.test(d.projectId)))throw new ControlError('Choose an approved project.');if(d.billing!==undefined&&!['subscription','api','hybrid','unknown'].includes(String(d.billing)))throw new ControlError('Unsupported billing mode.');const input={origin:d.origin,id:d.id,target,projectId:d.projectId,billing:d.billing,config:d.config} as import('../registry/service.js').StackRequest;return path.endsWith('stack-preview')?plane.registry.stackPreview(input):plane.registry.stackApply(input,String(d.fingerprint??''));}
     case '/onboarding/discover':{approved(value,[]);await plane.discover(true);const s=await plane.state();return {agents:await Promise.all(s.agents.filter(a=>['codex','claude'].includes(a.id)).map(async a=>({...a,billing:await inspectBilling(a,plane.env)}))),detections:s.detections};}
     case '/onboarding/complete':{approved(value,[]);plane.store.completeOnboarding();return {completed:true};}
     case '/projects/register':{const d=approved(value,['path']);if(typeof d.path!=='string'||!isAbsolute(d.path)||sensitiveLocation(d.path))throw new ControlError('Choose an absolute project directory outside private agent and credential folders.');return (await plane.project({path:d.path})).ref;}

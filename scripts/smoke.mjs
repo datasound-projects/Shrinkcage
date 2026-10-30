@@ -16,6 +16,7 @@ try{
   const help=await command(['--help']);assert.equal(help.code,0);assert.match(help.stdout,/doctor/);assert.match(help.stdout,/run codex|run <agent>/);
   const doctor=await command(['doctor','--json']);assert.equal(doctor.code,0,doctor.stderr);assert.equal(JSON.parse(doctor.stdout).agents[0].compatible,true);
   const tools=await command(['tools','--json']);assert.equal(tools.code,0);assert.ok(['rtk','serena','headroom','context-mode','leanctx'].every(id=>JSON.parse(tools.stdout).some(t=>t.id===id)));
+  const registryCLI=await command(['registry','list','--json']);assert.equal(registryCLI.code,0,registryCLI.stderr);assert.equal(JSON.parse(registryCLI.stdout).entries.length,10);
   const created=await command(['profile','create','package-check','--tools','rtk,serena,headroom','--required','rtk,serena,headroom']);assert.equal(created.code,0,created.stderr);
   const preview=await command(['tool','setup','rtk','--project',fixture.project,'--dry-run']);assert.equal(preview.code,0,preview.stderr);
   const configured=await command(['tool','setup','rtk','--project',fixture.project,'--approve',JSON.parse(preview.stdout).fingerprint]);assert.equal(configured.code,0,configured.stderr);
@@ -36,6 +37,7 @@ try{
   let ready=false;for(let i=0;i<60;i++){await new Promise(r=>setTimeout(r,150));const r=await fetch('http://127.0.0.1:8790/api/health',{signal:AbortSignal.timeout(500)}).catch(()=>null);if(r?.ok){const health=await r.json();assert.equal(health.app,'shrinkcage');ready=true;break;}}
   assert.ok(ready,output);assert.equal((await fetch('http://127.0.0.1:8790/')).status,200);const w=await(await fetch('http://127.0.0.1:8790/api/workspace')).json();assert.equal(w.totalSessions,0);assert.ok(w.connectors.every(c=>c.integration==='disabled'));
   const state=await(await fetch('http://127.0.0.1:8790/api/control/v1/state')).json();assert.equal(state.version,pkg.version);assert.equal(state.sessions.length,3);assert.ok(state.profiles.some(p=>p.profile.id==='package-check'));assert.ok(state.sessions.some(s=>s.toolActivity.some(a=>a.name==='compact_output')));
+  const registry=await(await fetch('http://127.0.0.1:8790/api/control/v1/registry')).json();assert.equal(registry.entries.length,10);assert.equal(registry.snapshot.source,'bundled');assert.equal(registry.candidates[0].entry.trust.state,'under_review');assert.ok(registry.entries.some(e=>e.id==='rtk'));assert.ok(!registry.entries.some(e=>e.id==='token-savior'));
   for(const args of [['--no-open'],['ui','--no-open']]){const reused=await command(args);assert.equal(reused.code,0,reused.stderr);assert.match(reused.stdout,/already running/);}
   assert.equal((await fetch(`http://127.0.0.1:${env.SHRINKCAGE_HEADROOM_PORT}/health`)).status,200);
   console.log('PASS: actual .tgz clean install, legacy CLI/UI reuse, doctor/tools/profiles/plan/setup/run/sessions, managed Codex/Claude and SDK registration/check/session/removal, accounting, all three built-in fake integrations, compiled frontend/API, disabled observed connectors and external service survival.');

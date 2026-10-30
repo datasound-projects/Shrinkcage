@@ -22,3 +22,7 @@ Run `npm ci`, `npm test`, `npm run coverage`, `npm run check`, `npm run package`
 # Plugin development
 
 Start with [SDK v2](docs/PLUGINS.md), the [schema](sdk/optimizer.schema.json) and the [working MCP example](sdk/examples/line-window/). New executable templates need reviewed code, declared lifecycle support, isolation/ownership rules and security/conformance tests. Metadata import cannot execute code. Run `node --import tsx --test tests/plugin-sdk.test.ts` in addition to the normal release gates.
+
+## Registry contributions
+
+Use the [registry checklist](registry/README.md) and [eight admission gates](docs/REGISTRY.md#maintainer-admission). Run `npm run registry:validate` as well as existing gates. Discovery may modify the public review queue/cursor only; approval requires a named, scoped review and repository PR. Never attach private local candidates automatically. Catalog approval is not a security audit or runtime receipt. The registry browser suite exercises scenarios A–F through the real backend.

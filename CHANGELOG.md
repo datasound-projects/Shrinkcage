@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.0 — Curated optimizer registry
+
+- Add the top-level Optimizer Registry: category/search/compatibility filters, details, licenses, scoped public reviews and independent local status.
+- Add validated Add-to-Stack previews for custom profiles and managed sessions; preserve per-session settings, conflict checks and real activation evidence.
+- Ship ten reviewed catalog entries and a separate Token Savior review candidate. Record primary-source versions, package provenance, license components, permissions and benchmark limitations.
+- Add fixed-host public GitHub/package/community discovery, rate limits, deduplication, incremental version monitoring and a scheduled review-only PR workflow. Candidate code never executes.
+- Add eight admission gates, maintainer review tooling/artifacts, structural schemas, private submissions/proposals, integrity-checked optional updates and offline cache. No automatic executable installation/update.
+- Reuse SDK adapters and typed settings for future plugins, with unknown interfaces held for implementation/review. Add registry unit/integration/security tests, real-backend A–F browser flows and packaged catalog smoke checks.
+- Keep existing monitor, CLI launch, authentication, billing, ownership, rollback and SQLite compatibility protections. See docs/REGISTRY.md and docs/VALIDATION.md for scope and actual evidence.
+
 ## 1.2.0 — session-aware token and cost optimization
 
 - First-run setup, explicit project approval, capability-based stack recommendations, safe Add Optimizer inspection, searchable Library and a seven-gate Validation center.

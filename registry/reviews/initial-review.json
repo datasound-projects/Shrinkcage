@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-30T05:40:19.853Z",
+  "reviewer": "datasound-projects (Codex-assisted)",
+  "authorization": "Repository owner explicitly requested research, curation, implementation and publication in the current coding session. This is not represented as an independent human security audit.",
+  "method": "Official GitHub metadata, release history, README blobs, license text, public package provenance and existing adapter test evidence; no untrusted upstream code execution.",
+  "reviews": [
+    {
+      "id": "headroom",
+      "decision": "approved",
+      "scope": "managed-adapter",
+      "version": "v0.42.0",
+      "readmeSha": "85a37b3fa579c2b38186d35cad025bd104e6ce97",
+      "license": "Apache-2.0",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "rtk",
+      "decision": "approved",
+      "scope": "managed-adapter",
+      "version": "v1.1.0",
+      "readmeSha": "6c7f7de477856221d34f27053d882e969c896616",
+      "license": "Apache-2.0",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "Output token reductions are estimates. The crates.io package named rtk belongs to a different repository; it is excluded from installation provenance.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed.",
+        "The unrelated crates.io rtk package was rejected by repository-provenance matching. No crates package is recommended."
+      ]
+    },
+    {
+      "id": "serena",
+      "decision": "approved",
+      "scope": "managed-adapter",
+      "version": "v2.1.0",
+      "readmeSha": "5965015ca4ea4b3192d1d7c147a8bc325a40feaa",
+      "license": "GPL-3.0-or-later; MIT components",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "Indexing may prepare project metadata or language-server dependencies. Tool activity is not a token-savings measurement.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "context-mode",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": "v1.0.169",
+      "readmeSha": "b796169524473691594af24995d21ca94027f7c7",
+      "license": "Elastic-2.0",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "Source-available under Elastic License 2.0. Shrinkcage has not reviewed a fully isolated session adapter for its hook and routing setup.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "token-savior",
+      "decision": "under-review",
+      "reason": "The upstream README identifies unreproducible headline benchmark claims and a withdrawn measurement with missing tool activation. Revalidation is required."
+    },
+    {
+      "id": "codemem",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": "v0.47.3",
+      "readmeSha": "5f77ab2f12294ce050b5dfcf19cae2b431b80cda",
+      "license": "MIT",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "Local storage does not guarantee local processing. Memory creation can send context to a model and incur charges or consume a subscription quota.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "litellm",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": "v1.106.6",
+      "readmeSha": "3f1f21f903e99b88ce9c7925caddda173b042aef",
+      "license": "MIT core; separate enterprise terms",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "MIT core and separately licensed enterprise directories. Gateway routing and logging require explicit credential and privacy review.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "ccusage",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": "v20.0.45",
+      "readmeSha": "cd98e230d5876eb69766d046ef05af4dc51f32cd",
+      "license": "MIT",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "Analytics alone does not reduce tokens. No ccusage runtime collector is enabled by Shrinkcage.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "langfuse",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": "v4.72.0",
+      "readmeSha": "3c4ad5773b846b6b1c16355640ebd87ff031f92e",
+      "license": "MIT core; separate enterprise terms",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "MIT core and separately licensed enterprise directories. Do not export private coding content without explicit review.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "llmlingua",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": "v0.2.2",
+      "readmeSha": "1ca17bc04f61ed8cad86d566a924d7e8f36e030a",
+      "license": "MIT",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "GitHub release recency and current repository activity differ. Research results do not establish coding-task quality or savings for this environment.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    },
+    {
+      "id": "mcp2cli",
+      "decision": "approved",
+      "scope": "metadata-guided",
+      "version": null,
+      "readmeSha": "40401dac0b12f4a456ac845a306ddf21dec8ca89",
+      "license": "MIT",
+      "reason": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+      "limitations": [
+        "The CLI accepts powerful connection and subprocess settings. Its interface has no reviewed Shrinkcage activation template; follow guidance only.",
+        "No upstream executable or install script was run during registry research.",
+        "Dependency audit and independent task benchmark were not performed."
+      ]
+    }
+  ],
+  "packageProvenanceRejected": [
+    {
+      "repo": "rtk-ai/rtk",
+      "repository": "reachingforthejack/rtk",
+      "metadata": {
+        "registry": "crates",
+        "name": "rtk",
+        "version": "0.1.0",
+        "url": "https://crates.io/crates/rtk",
+        "repositoryMatches": false,
+        "integrity": "471d45852f1a83a7ba112c4671b32b036b0f615c90be80c466de33eee78e0074",
+        "checkedAt": "2026-10-30T05:31:36.096Z"
+      }
+    }
+  ]
+}

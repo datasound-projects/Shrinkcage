@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "candidates": [
+    {
+      "schemaVersion": 1,
+      "id": "token-savior",
+      "entry": {
+        "id": "token-savior",
+        "name": "Token Savior",
+        "summary": "Combine structural code navigation, persistent memory and command-output rewriting.",
+        "category": "semantic-retrieval",
+        "tags": [
+          "memory",
+          "output",
+          "mcp"
+        ],
+        "role": "direct",
+        "source": {
+          "repository": "Mibayy/token-savior",
+          "repositoryId": 1196527539,
+          "url": "https://github.com/Mibayy/token-savior",
+          "documentation": "https://mibayy.github.io/token-savior/",
+          "licenseUrl": "https://github.com/Mibayy/token-savior/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/Mibayy/token-savior/blob/main/README.md",
+          "readmeSha": "4765e1c19b90cb056df58d17e04817af121e67a2",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "MIT",
+          "family": "open-source",
+          "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+        },
+        "upstream": {
+          "version": "v4.24.0",
+          "releaseUrl": "https://github.com/Mibayy/token-savior/releases/tag/v4.24.0",
+          "releasedAt": "2026-10-15T11:03:48Z",
+          "pushedAt": "2026-10-15T11:03:48Z",
+          "checkedAt": "2026-10-30T05:31:12.062Z",
+          "archived": false,
+          "issues": 7,
+          "ci": "https://github.com/Mibayy/token-savior/actions/runs/38724667141",
+          "history": [
+            {
+              "version": "v4.24.0",
+              "url": "https://github.com/Mibayy/token-savior/releases/tag/v4.24.0",
+              "publishedAt": "2026-10-15T11:03:48Z"
+            },
+            {
+              "version": "v4.23.2",
+              "url": "https://github.com/Mibayy/token-savior/releases/tag/v4.23.2",
+              "publishedAt": "2026-10-08T07:10:02Z"
+            },
+            {
+              "version": "v4.23.1",
+              "url": "https://github.com/Mibayy/token-savior/releases/tag/v4.23.1",
+              "publishedAt": "2026-10-07T21:02:08Z"
+            },
+            {
+              "version": "v4.23.0",
+              "url": "https://github.com/Mibayy/token-savior/releases/tag/v4.23.0",
+              "publishedAt": "2026-10-07T20:08:01Z"
+            },
+            {
+              "version": "v4.22.0",
+              "url": "https://github.com/Mibayy/token-savior/releases/tag/v4.22.0",
+              "publishedAt": "2026-10-07T15:47:39Z"
+            }
+          ]
+        },
+        "packages": [
+          {
+            "registry": "pypi",
+            "name": "token-savior",
+            "version": "1.0.0",
+            "url": "https://pypi.org/project/token-savior/",
+            "repositoryMatches": true,
+            "integrity": "719b955edb457fc1246acbc696fefbbccb43fa6b6500fdd6c4cd47ca66538e55",
+            "checkedAt": "2026-10-30T05:31:36.808Z"
+          }
+        ],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp",
+            "hook"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "guided",
+          "requirements": [
+            "Review each optimization layer and possible overlap with RTK, Serena and memory tools."
+          ],
+          "limitations": [
+            "The upstream README identifies unreproducible headline benchmark claims and a withdrawn measurement with missing tool activation. Revalidation is required.",
+            "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "minVersion": null,
+          "maxMajor": null,
+          "executables": []
+        },
+        "security": {
+          "permissions": [
+            "Project read and edit tools",
+            "Persistent memory",
+            "Agent hook configuration"
+          ],
+          "network": "The upstream README identifies unreproducible headline benchmark claims and a withdrawn measurement with missing tool activation. Revalidation is required.",
+          "warnings": [
+            "The upstream README identifies unreproducible headline benchmark claims and a withdrawn measurement with missing tool activation. Revalidation is required.",
+            "No upstream executable or install script was run during registry research.",
+            "Dependency audit and independent task benchmark were not performed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 0,
+            "checkedAt": "2026-10-30T05:31:13.545Z",
+            "url": "https://github.com/Mibayy/token-savior/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/Mibayy/token-savior",
+              "kind": "repository",
+              "observedAt": "2026-10-30T05:31:12.062Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/Mibayy/token-savior/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-10-30T05:31:12.843Z"
+            },
+            {
+              "label": "Authoritative upstream license",
+              "url": "https://github.com/Mibayy/token-savior/blob/main/LICENSE",
+              "kind": "license",
+              "observedAt": "2026-10-30T05:40:19.853Z"
+            },
+            {
+              "label": "Maintainer-authorized static registry review",
+              "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+              "kind": "review",
+              "observedAt": "2026-10-30T05:40:19.853Z"
+            },
+            {
+              "label": "Latest GitHub release observed",
+              "url": "https://github.com/Mibayy/token-savior/releases/tag/v4.24.0",
+              "kind": "release",
+              "observedAt": "2026-10-30T05:31:12.062Z"
+            },
+            {
+              "label": "Public package metadata; repository matched",
+              "url": "https://pypi.org/project/token-savior/",
+              "kind": "package",
+              "observedAt": "2026-10-30T05:31:36.808Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "upstream-reported",
+              "summary": "Headline results are not independently reproducible; a later measurement was withdrawn by upstream.",
+              "url": "https://mibayy.github.io/token-savior/",
+              "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+              "limitations": [
+                "The upstream README identifies unreproducible headline benchmark claims and a withdrawn measurement with missing tool activation. Revalidation is required.",
+                "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/Mibayy/token-savior",
+                "https://github.com/Mibayy/token-savior/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://mibayy.github.io/token-savior/"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/Mibayy/token-savior"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/Mibayy/token-savior"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://mibayy.github.io/token-savior/"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://mibayy.github.io/token-savior/"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "failed",
+              "method": "upstream-documentation",
+              "summary": "The upstream README identifies unreproducible headline benchmark claims and a withdrawn measurement with missing tool activation. Revalidation is required.",
+              "references": [
+                "https://mibayy.github.io/token-savior/"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/Mibayy/token-savior"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Hold for benchmark and integration review; public admission has not been granted.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-10-30T05:31:11.062Z",
+      "lastCheckedAt": "2026-10-30T05:31:11.062Z",
+      "sources": [
+        "github-repository"
+      ],
+      "classification": {
+        "category": "semantic-retrieval",
+        "confidence": "documented",
+        "reasons": [
+          "Maintainer-authorized review of the linked upstream README, license and version metadata.",
+          "Classification is independent of local installation and activation."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": null
+    }
+  ]
+}

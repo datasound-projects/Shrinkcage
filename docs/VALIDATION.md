@@ -1,4 +1,4 @@
-# Validation record · 1.2.0
+# Validation record · 1.3.0
 
 Release checks cover the existing monitor and the session optimization control plane. Production adapters never substitute fixture measurements. The [historical 1.1 record](history/VALIDATION_1_1.md) is preserved.
 
@@ -7,6 +7,7 @@ Release checks cover the existing monitor and the session optimization control p
 ```sh
 npm ci
 npm run check
+npm run registry:validate
 npm test
 npm run coverage
 npm run package
@@ -22,12 +23,14 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 103 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Unit/integration | 121 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
 | Managed mechanics | Real isolated fake Codex/Claude subprocesses, four agent × billing paths, parallel same-project sessions, native hooks/MCP, failures, interruption/owner crash, cleanup and external-service survival |
 | Future SDK plugin | Random previously unknown ID, real initialize/tools/list, typed configuration, compact_output receipt, independent baseline, disabling/removal; concurrent update pins the original session version |
 | SDK security | Malicious manifests/URLs/options, incompatible contexts, malformed JSON-RPC, changed source, failed upgrade, rollback, refusal to delete unknown files, private HOME and stripped provider keys |
-| Clean package | Actual .tgz install with production dependencies; CLI version/dispatch, doctor/tools/profiles/setup/plans, Codex/Claude runs, SDK register/check/run/remove, accounting, built frontend/API and reuse/shutdown |
+| Registry | Eighteen unit/integration/security cases: schemas, provenance/license distinctions, public-only discovery, aliases/forks, bounded incremental batches, ETags/rate limits, maintained approval artifacts, immutable update integrity, offline cache, revocation, stale approvals and independently launched stacks |
+| Registry browser A–F | Real backend/SQLite; RTK and Serena in separate stacks, rejected unknown submission, future SDK tool with data-driven UI, changed version incompatibility, offline catalog, filters/details/modal keyboard/responsive layouts |
+| Clean package | Actual .tgz install with production dependencies; CLI version/dispatch, doctor/tools/profiles/setup/plans, Codex/Claude runs, SDK register/check/run/remove, accounting, packaged curated registry CLI/API, built frontend/API and reuse/shutdown |
 | Browser | Actual backend/SQLite, onboarding, recommendations, manifest import/proposal, future-plugin settings/checks, preview/copy approvals, profiles, session stacks, tool log, cache/subscription estimates, comparisons, recovery, keyboard and 320–1440 px light/dark layouts |
 | Public source | Whitespace and credential/private-path pattern scan plus staged/archive review; scans do not prove absence |
 
@@ -51,3 +54,9 @@ Read-only native checks on the development host found Codex 0.165.0, RTK 1.1.0, 
 - Provider limits, invoice charges, inference latency, optimizer overhead and causal quality improvements stay N/A without genuine sources/qualified experiments. Mixed, sampled or stale usage cannot become a complete cost estimate.
 
 See [compatibility](COMPATIBILITY.md), [SDK](PLUGINS.md), [accounting](ACCOUNTING.md), [architecture](CONTROL_PLANE.md) and [security](../SECURITY.md).
+
+## Registry research scope
+
+The initial 30 October 2026 review queried canonical public GitHub metadata/READMEs/licenses/releases/CI/advisories and official npm/PyPI/crates provenance. Ten scoped catalog reviews are retained in registry/reviews/initial-review.json; Token Savior remains under review for unreproducible/withdrawn benchmark evidence. Versioned source/package observations are separate. Read-only live discovery is tested without running upstream candidate code. No complete dependency vulnerability audit, independent security certification or model-backed efficiency benchmark was performed. Returned advisory records provide partial coverage only.
+
+The required CI includes registry validation and all three browser suites. The scheduled metadata workflow is review-only and cannot approve entries or install updates. Exact CI evidence is attached to the published commit/PR; local checks alone are not cross-platform validation.

@@ -1,4 +1,4 @@
-# Session optimization control plane · 1.2
+# Session optimization control plane · 1.3
 
 Shrinkcage composes, validates and observes optimization stacks around owned CLI processes. React, the Node server, SQLite, the existing collectors and the terminal CLI remain in the original project.
 
@@ -77,3 +77,9 @@ Managed metadata defaults to 90 days, maximum 2,000 records. Profiles: 100; proj
 `tool setup rtk --project . --dry-run` and separately approved `tool undo rtk` remain available. The original lock, durable journal, private backup, inode/parent checks, compare-before-write, atomic rename and merge-aware rollback are preserved. Only recorded `.codex/hooks.json` and `.codex/shrinkcage-rtk.mjs` changes are owned. Unrelated hooks, global config, AGENTS.md and external binaries are preserved. An unsafe rollback reports a conflict instead of overwriting another edit.
 
 The [1.1 architecture record](https://github.com/datasound-projects/Shrinkcage/blob/main/docs/history/CONTROL_PLANE_1_1.md) remains available for historical behavior. Current adapter capabilities are in [Optimizers](OPTIMIZERS.md).
+
+## Curated registry architecture
+
+`server/registry` separates public catalog types/schema, fixed-host metadata transport, deterministic discovery, eight-gate admission, scheduling and the local registry service. The versioned `registry/` snapshot is distributed with the app. Optional updates verify an immutable commit, Git blobs, SHA-256, schema and monotonic revision. SQLite schema 4 adds bounded private candidate/document/job/cache storage while retaining the compatibility floor.
+
+The top-level Registry UI reads schema-driven metadata; the Local Library retains native discovery and seven integration gates. Public approval is scoped independently from local installation/activation. Add-to-Stack delegates to the existing control planner with a transient profile, rechecks inherited settings, and binds approval to the catalog digest and destination revision. Saves use profile revisions or pending-session compare-and-swap. A later terminal launch revalidates again. Suspended/deprecated adapters block new affected launches without touching running processes. No generic execution or installer route was added. See [registry contracts, admission and retention](REGISTRY.md).

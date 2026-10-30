@@ -17,7 +17,7 @@ User-approved history roots and enabled flags belong only to Shrinkcage. Discove
 
 Listening ports, reachable HTTP, installed CLIs and confirmed adapter activity remain separate indicators. macOS uses lsof; Linux lsof/ss; Windows a fixed read-only Get-NetTCPConnection query. Process details can be unavailable due to permissions or wrappers.
 
-## Managed session adapters (1.2)
+## Managed session adapters (1.3)
 
 | Component | Reviewed local interface | Activation evidence |
 |---|---|---|
@@ -45,3 +45,7 @@ Interface research used official documentation and the installed binaries' versi
 - [codemem](https://github.com/kunickiaj/codemem), [LiteLLM](https://docs.litellm.ai/docs/), [Langfuse](https://langfuse.com/docs).
 
 For a new incompatible version, report the version and sanitized schema/error, never raw transcripts, credentials or private paths. Unsupported data stays unavailable; there is no production fixture fallback.
+
+## Public tools versus local connectors
+
+The [Optimizer Registry](REGISTRY.md) adds reviewed metadata for Context Mode, codemem, LiteLLM, ccusage, Langfuse, LLMLingua and mcp2cli. These entries do not add automatic native connectors or prove installation. Token Savior stays under review. Catalog approval, documentation compatibility, executable discovery, local adapter validation and actual session calls are distinct evidence. Package provenance and non-OSI/enterprise license limits are shown in each detail view. Generic plugin capability remains reviewed stdio MCP; other patterns need adapter implementation and tests.

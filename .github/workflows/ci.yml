@@ -17,6 +17,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
+      - run: npm run registry:validate
       - run: npm test
       - run: npm run coverage
       - run: npm run package
@@ -35,6 +36,7 @@ jobs:
       - run: npm run build
       - run: node scripts/ui-test.mjs
       - run: node --import tsx scripts/control-ui-test.mjs
+      - run: node --import tsx scripts/registry-ui-test.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
