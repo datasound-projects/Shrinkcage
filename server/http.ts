@@ -1,19 +1,25 @@
 import { createServer, type IncomingMessage } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
+import { VERSION } from './version.js';
 import { timingSafeEqual } from 'node:crypto';
 import type { Dashboard } from './types.js';
 import type { WorkspaceRepository } from './workspace.js';
+import type { ControlPlane } from './control/core.js';
+import { controlRead,controlWrite } from './control/api.js';
+import { ControlError } from './control/schema.js';
+import { randomBytes } from 'node:crypto';
 
-function body(req:IncomingMessage):Promise<unknown>{return new Promise((resolve,reject)=>{
+function body(req:IncomingMessage,max=8192):Promise<unknown>{return new Promise((resolve,reject)=>{
   let size=0;let rejected=false;const chunks:Buffer[]=[];
-  req.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>8192){if(!rejected)reject(new Error('Request too large'));rejected=true;return;}if(!rejected)chunks.push(chunk);});
+  req.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>max){if(!rejected)reject(new Error('Request too large'));rejected=true;return;}if(!rejected)chunks.push(chunk);});
   req.on('end',()=>{if(rejected)return;try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));}catch{reject(new Error('Invalid JSON'));}});
   req.on('error',()=>reject(new Error('Request interrupted')));
 });}
 const sameToken=(left:unknown,right:string)=>typeof left==='string'&&/^[a-f0-9]{48}$/.test(left)&&left.length===right.length&&timingSafeEqual(Buffer.from(left),Buffer.from(right));
 
-export function makeServer(collect:(force?:boolean)=>Promise<Dashboard>,staticRoot=resolve('dist'),workspace?:WorkspaceRepository){
+export function makeServer(collect:(force?:boolean)=>Promise<Dashboard>,staticRoot=resolve('dist'),workspace?:WorkspaceRepository,control?:ControlPlane){
+  const controlToken=workspace?.csrfToken??randomBytes(24).toString('hex');
   const mime:Record<string,string>={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.ico':'image/x-icon','.png':'image/png','.webmanifest':'application/manifest+json'};
   return createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Frame-Options','DENY');
@@ -25,6 +31,17 @@ export function makeServer(collect:(force?:boolean)=>Promise<Dashboard>,staticRo
     const json=(status:number,value:unknown)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(req.method==='HEAD'?undefined:JSON.stringify(value));};
     let url:URL,pathname:string;
     try{url=new URL(req.url??'/','http://127.0.0.1');pathname=decodeURIComponent(url.pathname);}catch{json(400,{error:'Invalid request'});return;}
+    if(control&&pathname.startsWith('/api/control/v1/')){
+      try{
+        if(url.search)throw new ControlError('Control routes do not accept query parameters.');
+        if(req.method==='GET'||req.method==='HEAD'){json(200,await controlRead(control,pathname,controlToken));return;}
+        if(req.method!=='POST'){res.setHeader('Allow','GET, HEAD, POST');json(405,{error:'Method not allowed'});return;}
+        if(!req.headers.origin||!origins.includes(req.headers.origin)||!sameToken(req.headers['x-shrinkcage-token'],controlToken))throw new ControlError('Control actions require the local page capability and exact Origin.','approval',403);
+        if(req.headers['content-type']!=='application/json')throw new ControlError('Expected application/json.');
+        json(200,await controlWrite(control,pathname,await body(req,16384)));
+      }catch(e){const size=e instanceof Error&&e.message==='Request too large',invalid=e instanceof Error&&e.message==='Invalid JSON';json(e instanceof ControlError?e.status:size?413:invalid?400:503,{error:e instanceof ControlError?e.message:size?'Request too large':invalid?'Invalid JSON':'Control data is unavailable. Existing monitoring remains independent.'});}
+      return;
+    }
     if(req.method==='POST'&&pathname==='/api/connectors/config'&&workspace){
       if(!req.headers.origin||!origins.includes(req.headers.origin)||!sameToken(req.headers['x-shrinkcage-token']??req.headers['x-shrinkage-token'],workspace.csrfToken)){json(403,{error:'This setting requires approval from the Shrinkcage page.'});return;}
       if(req.headers['content-type']!=='application/json'||url.search){json(400,{error:'Expected a JSON configuration without query parameters.'});return;}
@@ -33,7 +50,7 @@ export function makeServer(collect:(force?:boolean)=>Promise<Dashboard>,staticRo
     }
     if(req.method!=='GET'&&req.method!=='HEAD'){res.setHeader('Allow','GET, HEAD');json(405,{error:'Method not allowed'});return;}
     if(url.search&&pathname!=='/api/sessions'){json(400,{error:'Query parameters are not supported here'});return;}
-    if(pathname==='/api/health'){json(200,{app:'shrinkcage',status:'running',version:'1.0.0'});return;}
+    if(pathname==='/api/health'){json(200,{app:'shrinkcage',status:'running',version:VERSION});return;}
     if(pathname==='/api/metrics'||pathname==='/api/refresh'){
       try{json(200,await collect(pathname==='/api/refresh'));}catch{json(503,{error:'Metrics collection failed. Retry on the next refresh.'});}return;
     }

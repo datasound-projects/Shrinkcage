@@ -1,0 +1,10 @@
+{
+  "include": ["server/control/planner.ts", "server/control/transactions.ts"],
+  "all": true,
+  "reporter": ["text", "json-summary"],
+  "check-coverage": true,
+  "lines": 85,
+  "statements": 85,
+  "branches": 85,
+  "functions": 85
+}

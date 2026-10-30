@@ -1,31 +1,45 @@
-# Connector architecture and compatibility
+# Connector compatibility
 
-Agent discovery is separate from optimization collection. `/api/workspace` reports connector state and facets; `/api/sessions` is a bounded metadata-only list; `/api/sessions/:opaque-id` returns selected usage and tool-name details. `/api/discover` refreshes the index. Only `/api/connectors/config` can write app settings, after Origin/capability/approval validation. There is no agent execution or credential endpoint.
+Agents, model providers and model names are separate dimensions. A saved record does not prove a running process, and an installed executable does not prove authentication. All observed connectors fail independently and remain available alongside the managed control plane.
 
-## Codex CLI
+## Observed sources (read-only)
 
-The installed rollout schema was inspected structurally, including a locally recorded CLI version 0.165.0. Supported records are `session_meta` (ID, cwd, model_provider, CLI version), `turn_context` (model), `event_msg` token-count totals, newer `token_usage_record.thread_token_usage`, and named function/custom tool calls. Prompt text, instructions, arguments and results are discarded. Last cumulative totals take precedence; cumulative checkpoints are never summed.
+| Connector | Source and supported observations | Important limits |
+|---|---|---|
+| Codex CLI | `CODEX_HOME` or `~/.codex`: sessions/archived_sessions JSONL; reported metadata, model/provider, latest cumulative usage, safe tool names | No auth-file reads, prompt/argument/output export, process control or inferred live connection; cumulative checkpoints are not summed |
+| Claude Code | `CLAUDE_CONFIG_DIR` or `~/.claude`: projects JSONL; message usage deduped by message ID, safe tool names | Saved-history support only; no managed Claude launch or plugin activation |
+| Gemini CLI | `~/.gemini/tmp`: recognized session JSON/JSONL, reported metadata/usage and supported rewind/removal records | Version-dependent private file formats; uncertain sampled rewrites withhold totals; no managed Gemini launch |
+| Headroom | fixed `http://127.0.0.1:8787/health`, `/stats`, `/stats-history` | Validated known JSON field aliases; runtime/display-session/lifetime kept distinct; telemetry absent is explained; cost only when supplied |
+| RTK | fixed `gain --all --format json` and `gain --history --format json`; read-only history SQLite fallback | All output token reductions labeled estimates. JSON version/schema omissions remain N/A. No command string from the browser is executed |
+| Serena | `/heartbeat`, `/get_tool_stats`, `/get_tool_names`, `/get_config_overview`; default ports 24282–24291 | Reachability separate from Codex MCP connection; counters observed per instance; log timestamps represent observations, not exact invocation times |
 
-OpenAI also documents read/list methods in [Codex App Server](https://learn.chatgpt.com/docs/app-server). Shrinkcage deliberately reads existing saved files instead of starting a new app-server, resuming a thread, or invoking scan-and-repair behavior. Rollout files are implementation formats, not a stable compatibility promise. Archived and active copies are deduplicated by agent/session/project identity.
+User-approved history roots and enabled flags belong only to Shrinkcage. Discovery bounds directories/files, rejects unsafe roots and symlinks, labels sampled coverage, and returns only allowlisted metadata. See [Privacy](PRIVACY.md).
 
-## Claude Code
+Listening ports, reachable HTTP, installed CLIs and confirmed adapter activity remain separate indicators. macOS uses lsof; Linux lsof/ss; Windows a fixed read-only Get-NetTCPConnection query. Process details can be unavailable due to permissions or wrappers.
 
-The JSONL reader selects sessionId, cwd, version and assistant message metadata. Usage is deduplicated by assistant message ID to avoid counting streaming updates more than once. Tool-use IDs are deduplicated too. Missing categories and provider routing remain unavailable. Message-based totals cover the read records; sampled files are labeled accordingly.
+## Managed Codex adapters (1.1)
 
-References: [Claude Code CLI reference](https://code.claude.com/docs/en/cli-reference), which describes transcript-based resume, and [monitoring](https://code.claude.com/docs/en/monitoring-usage). Shrinkcage does not enable OpenTelemetry or change agent configuration. Local validation detected the executable but no saved Claude sessions; the parser is covered by synthetic schema fixtures, not a claimed live Claude usage test.
+| Component | Reviewed local interface | Activation evidence |
+|---|---|---|
+| Codex | installed **0.165.0**; minimum reviewed interface includes `--config` and `--no-daemon`; 0.x minor compatibility fails closed | Owned launch handle and inherited terminal; receipts required for optimizer activity |
+| RTK | installed **1.1.0**, native `rtk hook codex` with documented PreToolUse/Bash JSON | Actual returned command rewrite, not merely hook-file presence |
+| Serena | installed **2.1.0**, `start-mcp-server --project-from-cwd --context=codex --transport stdio` | Successful MCP initialize + initialized notification, safe successful tool responses |
+| Headroom | installed **0.42.0**, scoped wrapper no-write flags plus `mcp serve --proxy-url ... --transport stdio` | Proxy health is separate; successful retrieval MCP handshake/activity provides managed evidence; savings remain shared |
 
-## Gemini CLI
+Minimum/version-family guards are compatibility boundaries, not a claim that every future patch/platform combination has been manually tested. CLI help/version checks fail closed when a required interface is absent. Known Windows npm Node shims are resolved to fixed sidecar modules without `shell: true`; unusual shell wrappers are unsupported. Nothing downloads tools during discovery.
 
-Both legacy conversation JSON and append-only JSONL are supported. Allowlisted fields include sessionId, projectHash, startTime/lastUpdated, model-message token summaries, and named tool calls. JSONL metadata checkpoints, message-ID replacement, rewind-to removal and explicit removeIds are handled. Content/result-only patches are ignored because that content is never retained. Sampled rewrites that cannot establish a safe usage snapshot withhold counters.
+Conventional external MCP names may be shadowed only in approved process-local config; ambiguous aliases are reported instead of guessed. No global Codex settings, auth or AGENTS.md edits. RTK project setup is separately approved and reversible. See [Control-plane guide](CONTROL_PLANE.md) for permissions, config-layer limits and ownership.
 
-References: [session management](https://geminicli.com/docs/cli/session-management/) and the official [record types](https://github.com/google-gemini/gemini-cli/blob/main/packages/core/src/services/chatRecordingTypes.ts). Project-hash-only records display a hash label rather than guessing a directory. Model/provider are separate; routing is not inferred from the model name. Local Gemini JSONL histories were discovered without an executable on PATH. That verifies history reading, not a live Gemini CLI connection.
+codemem, LiteLLM and Langfuse stay **guided**. A catalog listing or detected executable is not activation. No capture/export/gateway chain is silently enabled. Headroom + LiteLLM route chaining remains blocked without a reviewed compatible adapter.
 
-## Optimization tools
+## Source references
 
-Headroom uses fixed local `/health`, `/stats`, `/stats-history` endpoints. Runtime counters remain distinct from persisted display-session/lifetime values; history uses bucket deltas rather than cumulative checkpoints. This implementation was validated against Headroom 0.42.0 and history schema 6.
+Interface research used official documentation and the installed binaries' version/help output. Privacy-sensitive live configurations were not used as test fixtures.
 
-RTK uses fixed `gain --all --format json` and `gain --history --format json` arguments, with timeouts and bounded output. Its existing SQLite database is opened with Node's readOnly flag when command details are absent from JSON. Arguments/project paths are removed from displayed command families. Details may include records RTK excludes from its own summary; scope notes explain that discrepancy.
+- [Codex configuration](https://learn.chatgpt.com/docs/config-file/config-basic), [advanced configuration](https://learn.chatgpt.com/docs/config-file/config-advanced), [reference](https://learn.chatgpt.com/docs/config-file/config-reference), [hooks](https://learn.chatgpt.com/docs/hooks), [MCP](https://learn.chatgpt.com/docs/extend/mcp).
+- [RTK supported agents](https://github.com/rtk-ai/rtk/blob/develop/docs/guide/getting-started/supported-agents.md).
+- [Serena client documentation](https://github.com/oraios/serena/blob/main/docs/02-usage/030_clients.md).
+- [Headroom proxy documentation](https://docs.headroomlabs.ai/docs/proxy).
+- [codemem](https://github.com/kunickiaj/codemem), [LiteLLM](https://docs.litellm.ai/docs/), [Langfuse](https://langfuse.com/docs).
 
-Serena discovery validates `status: alive` on a small configured port range. Tool statistics take precedence over cached overview counters. A summary is a fallback only when safe; empty authoritative detail maps cannot resurrect old counts. The observation journal preserves valid per-tool increments independently across instances, bounds events to 100, and labels initial snapshots/resets separately.
-
-No optimization counters are attributed to a session without verified correlation. No token savings are invented for Serena. Operational connection status, saved history and actual live integration are separate concepts.
+For a new incompatible version, report the version and sanitized schema/error, never raw transcripts, credentials or private paths. Unsupported data stays unavailable; there is no production fixture fallback.

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Base, CommandRow, Dashboard, Metric, Point, ToolRow, Value } from '../server/types';
@@ -8,6 +8,8 @@ import SerenaActivityLog from './SerenaActivityLog';
 import DetailTabs from './DetailTabs';
 import { sections, useSectionNavigation } from './useSectionNavigation';
 import { ConnectorCenter, SessionExplorer, useWorkspace } from './Workspace';
+const ControlWorkspace=lazy(()=>import('./control/ControlWorkspace'));
+import { VERSION } from '../server/version';
 
 const fmt = (n: Value | undefined, digits = 0) => n == null ? 'N/A' : new Intl.NumberFormat(undefined, { maximumFractionDigits: digits }).format(n);
 const compact = (n: Value) => n === null ? 'N/A' : new Intl.NumberFormat(undefined, { notation: n >= 10000 ? 'compact' : 'standard', maximumFractionDigits: 1 }).format(n);
@@ -155,7 +157,7 @@ function App() {
   const selectedInstance = s?.instances.find(instance => instance.port === instancePort) ?? s?.instances.find(instance => instance.calls !== null) ?? s?.instances[0];
   const activeLabel = sections.find(([id]) => id === active)?.[2] ?? 'Overview';
   return <div className="app-shell">
-    <aside className="sidebar"><a href="#overview" className="brand"><img src="/icon.svg" className="brand-logo" alt=""/><div>Shrinkcage<small>LOCAL AGENT INTELLIGENCE</small></div></a><div className="nav-label">WORKSPACE</div><nav aria-label="Main navigation">{sections.map(([id,icon,label]) => <a key={id} href={`#${id}`} onClick={() => setActive(id)} className={active === id ? 'active' : ''} aria-current={active === id ? 'location' : undefined}><Icon kind={icon}/><span>{label}</span>{['headroom','rtk','serena'].includes(id) && <i className={`nav-connection ${data ? data[id as 'headroom' | 'rtk' | 'serena'].state : ''}`}/>}</a>)}</nav><div className="sidebar-bottom"><div className="local-workspace"><span className="workspace-icon"><Icon kind="terminal" size={15}/></span><div>Local environment<small>localhost:8790</small></div><i/></div><p><span className="privacy-dot"/>Read-only. Always private.</p><div className="sidebar-version">SHRINKCAGE <span>v1.0</span></div></div></aside>
+    <aside className="sidebar"><a href="#overview" className="brand"><img src="/icon.svg" className="brand-logo" alt=""/><div>Shrinkcage<small>LOCAL AGENT OPTIMIZATION</small></div></a><div className="nav-label">WORKSPACE</div><nav aria-label="Main navigation">{sections.map(([id,icon,label]) => <a key={id} href={`#${id}`} onClick={() => setActive(id)} className={(active === id ? 'active' : '') + (['optimizers','sessions','headroom'].includes(id) ? ' nav-group-start' : '')} data-group={id === 'optimizers' ? 'CONTROL PLANE' : id === 'sessions' ? 'MONITORING' : 'SOURCE DETAILS'} aria-current={active === id ? 'location' : undefined}><Icon kind={icon}/><span>{label}</span>{['headroom','rtk','serena'].includes(id) && <i className={`nav-connection ${data ? data[id as 'headroom' | 'rtk' | 'serena'].state : ''}`}/>}</a>)}</nav><div className="sidebar-bottom"><div className="local-workspace"><span className="workspace-icon"><Icon kind="terminal" size={15}/></span><div>Local environment<small>localhost:8790</small></div><i/></div><p><span className="privacy-dot"/>Local control. Explicit approval.</p><div className="sidebar-version">SHRINKCAGE <span>v{VERSION}</span></div></div></aside>
     <div className="main-shell"><header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>{activeLabel}</strong></div><div className="top-actions"><span className={`local-label${error ? ' reconnecting' : ''}`}><i/>{error ? 'Reconnecting' : 'Live updates'}<span>10s</span></span><span className="topbar-divider"/><button className="icon-button" onClick={theme} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} title={dark ? 'Light mode' : 'Dark mode'}><Icon kind={dark ? 'sun' : 'moon'}/></button></div></header>
       <nav className="mobile-navigation" aria-label="Section navigation">{sections.map(([id,icon,label]) => <a key={id} href={`#${id}`} onClick={() => setActive(id)} className={active === id ? 'active' : ''} aria-current={active === id ? 'location' : undefined}><Icon kind={icon} size={15}/>{label}</a>)}</nav>
       <main id="overview"><div className="page-heading"><div><div className="eyebrow">WORKSPACE PULSE</div><h1>Workspace overview</h1><p>Your coding agents, sessions and optimization tools.</p></div><div className="refresh-control"><button className="button" onClick={() => void refresh(true)} disabled={loading}><span className={loading ? 'refreshing' : ''}><Icon kind="refresh" size={15}/></span>{loading ? 'Refreshing…' : 'Refresh'}</button><span aria-live="polite">{data ? `Last read ${stamp(data.updatedAt)}` : 'Connecting to local sources…'}</span></div></div>
@@ -167,6 +169,7 @@ function App() {
       </div>
       <div className="integrity-note"><Icon kind="info" size={14}/><span>Reported savings, output estimates, and tool activity stay separate. Savings can overlap.</span><span className="auto-refresh"><span className="privacy-dot"/>Only local data</span></div>
       {data && <div className="workspace-row"><Analytics data={data}/><div className="panel activity-panel"><SerenaActivityLog entries={(s!.activityLog ?? []).slice(0, 5)} preview onExplore={() => setSerenaView('activity')}/></div></div>}
+      <Suspense fallback={<section className="panel"><p>Loading optimizer controls…</p></section>}><ControlWorkspace/></Suspense>
       <SessionExplorer state={workspaceState}/>
       <ConnectorCenter state={workspaceState}/>
       {data ? <>

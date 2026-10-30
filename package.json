@@ -1,6 +1,6 @@
 {
   "name": "shrinkcage-monitor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -10,11 +10,13 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build && tsc -p tsconfig.server.json",
     "start": "node dist-server/server/index.js",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
     "check": "tsc --noEmit",
     "launch": "node scripts/start.mjs",
     "package": "npm run build && node scripts/licenses.mjs && node scripts/package.mjs",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node --import tsx scripts/smoke.mjs",
+    "coverage": "c8 node --import tsx --test tests/control-planner.test.ts tests/control-transactions.test.ts",
+    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.0",
@@ -22,6 +24,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^4.4.0",
+    "c8": "12.0.0",
     "playwright": "1.64.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -31,7 +34,7 @@
     "typescript": "^5.9.0",
     "vite": "^6.4.0"
   },
-  "description": "Private local monitoring for coding agents, sessions and optimization tools",
+  "description": "Local-first control plane for optimizing AI coding-agent CLI sessions.",
   "license": "MIT",
   "bin": {
     "shrinkcage": "bin/shrinkcage.mjs"
@@ -51,7 +54,12 @@
     "docs/VALIDATION.md",
     "public/icon.svg",
     "docs/images/overview.png",
-    "docs/images/sessions.png"
+    "docs/images/sessions.png",
+    "docs/BASELINE.md",
+    "docs/CONTROL_PLANE.md",
+    "docs/TEST_MATRIX.md",
+    "docs/images/control-plane.png",
+    "docs/images/managed.png"
   ],
   "repository": {
     "type": "git",
@@ -60,5 +68,8 @@
   "homepage": "https://github.com/datasound-projects/Shrinkcage#readme",
   "bugs": {
     "url": "https://github.com/datasound-projects/Shrinkcage/issues"
+  },
+  "dependencies": {
+    "smol-toml": "1.9.1"
   }
 }
