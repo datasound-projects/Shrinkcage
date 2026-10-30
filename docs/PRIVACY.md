@@ -27,7 +27,7 @@ The explicit RTK setup transaction **does write project hook files**. Its privat
 - Optional `MONITOR_SNAPSHOTS=1` persists numeric Headroom/RTK counters and at most 8,640 Serena numeric observations per retained series in `snapshots/snapshots.json`, overwritten at most once per minute. No transcript or activity journal is persisted there. Disable snapshots and remove that directory to erase them.
 - The legacy Serena UI log is bounded to 100 in-memory observations. Browser local storage contains theme/UI preferences, not conversation contents.
 
-App-data locations are documented in the README; legacy Shrinkage paths/settings still work. Restrictive POSIX directory/file modes are used. Windows relies on the user's inherited filesystem ACLs: do not put app data in a shared directory. SQLite itself and the OS remain part of the trust boundary. Back up app data before repairing corruption or downgrading; newer database schema versions fail closed.
+App-data locations are listed in the [setup guide](SETUP.md); legacy Shrinkage paths/settings still work. Restrictive POSIX directory/file modes are used. Windows relies on the user's inherited filesystem ACLs: do not put app data in a shared directory. SQLite itself and the OS remain part of the trust boundary. Back up app data before repairing corruption or downgrading; newer database schema versions fail closed.
 
 ## Local access
 
