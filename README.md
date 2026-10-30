@@ -45,7 +45,7 @@ Replace the path with your project folder, such as `C:\Projects\my-app` on Windo
 
 The **Balanced** profile selects RTK, Serena and Headroom when compatible. The plan lists any tool it cannot include. Headroom needs an existing running proxy, and RTK needs a configured hook trusted by Codex. Serena starts for the selected session. See the [tool setup guide](docs/CONTROL_PLANE.md) for prerequisites or to require every selected tool.
 
-Prefer the dashboard? Open **Profiles**, select a project already registered through the CLI, review the plan and copy its launch command. [Source-checkout and installed-CLI commands](docs/SETUP.md#install-the-built-cli) explain which command prefix to use.
+After your first launch, use **Profiles** to review and copy future launch commands. With a ZIP install, replace the copied command’s first word, `shrinkcage`, with `node bin/shrinkcage.mjs`, and run it from the Shrinkcage folder.
 
 ## Supported tools
 
