@@ -1,6 +1,55 @@
 {
   "schemaVersion": 1,
-  "lastSuccessfulAt": null,
-  "queryCursor": 0,
-  "repositories": []
+  "lastSuccessfulAt": "2026-10-30T06:57:55.022Z",
+  "queryCursor": 1,
+  "repositories": [
+    {
+      "id": 1129940957,
+      "repository": "headroomlabs-ai/headroom",
+      "version": "v0.42.0",
+      "checkedAt": "2026-10-30T06:57:42.917Z",
+      "pushedAt": "2026-10-30T01:33:37Z",
+      "archived": false
+    },
+    {
+      "id": 1139971460,
+      "repository": "rtk-ai/rtk",
+      "version": "v1.1.0",
+      "checkedAt": "2026-10-30T06:57:43.352Z",
+      "pushedAt": "2026-10-30T00:38:36Z",
+      "archived": false
+    },
+    {
+      "id": 953683578,
+      "repository": "oraios/serena",
+      "version": "v2.1.0",
+      "checkedAt": "2026-10-30T06:57:43.573Z",
+      "pushedAt": "2026-10-28T10:45:55Z",
+      "archived": false
+    },
+    {
+      "id": 1164477708,
+      "repository": "mksglu/context-mode",
+      "version": "v1.0.169",
+      "checkedAt": "2026-10-30T06:57:43.790Z",
+      "pushedAt": "2026-10-30T06:23:06Z",
+      "archived": false
+    },
+    {
+      "id": 1133829259,
+      "repository": "kunickiaj/codemem",
+      "version": "v0.47.3",
+      "checkedAt": "2026-10-30T06:57:44.057Z",
+      "pushedAt": "2026-10-29T04:16:40Z",
+      "archived": false
+    },
+    {
+      "id": 671269505,
+      "repository": "BerriAI/litellm",
+      "version": "v1.106.6",
+      "checkedAt": "2026-10-30T06:57:44.344Z",
+      "pushedAt": "2026-10-30T06:57:35Z",
+      "archived": false
+    }
+  ]
 }
