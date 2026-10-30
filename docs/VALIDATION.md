@@ -23,7 +23,7 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 121 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Unit/integration | 123 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
 | Managed mechanics | Real isolated fake Codex/Claude subprocesses, four agent × billing paths, parallel same-project sessions, native hooks/MCP, failures, interruption/owner crash, cleanup and external-service survival |
 | Future SDK plugin | Random previously unknown ID, real initialize/tools/list, typed configuration, compact_output receipt, independent baseline, disabling/removal; concurrent update pins the original session version |
@@ -62,3 +62,5 @@ The initial 30 October 2026 review queried canonical public GitHub metadata/READ
 The required CI includes registry validation and all three browser suites. The scheduled metadata workflow is review-only and cannot approve entries or install updates. Exact CI evidence is attached to the published commit/PR; local checks alone are not cross-platform validation.
 
 Windows CI exposed automatic CRLF conversion of the digest-covered catalog. Registry JSON now explicitly uses LF through `.gitattributes`; integrity verification remains byte-exact. A forced `core.autocrlf=true` checkout is checked locally, then the full OS/runtime matrix verifies the correction.
+
+The first real scheduled discovery inspected eight upstreams, retained nine unapproved candidates and passed catalog validation with no metadata errors. GitHub Actions PR creation is disabled by repository policy. The workflow now reports that specific condition as an explicit manual-review warning with a saved branch/artifact; unexpected publication failures still fail. Two isolated publication tests cover fixed argv, policy handling, unsafe branch rejection and transport failure. Repository permissions are unchanged.

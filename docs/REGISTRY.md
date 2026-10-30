@@ -49,7 +49,7 @@ node bin/shrinkcage.mjs registry discover --source github --query output
 node bin/shrinkcage.mjs registry update
 ```
 
-The weekly [discovery workflow](../.github/workflows/registry-discovery.yml) uses GitHub's scoped workflow token and prepares a **review-only** PR. It changes the queue and discovery cursor, never the canonical catalog. An API denial produces a failed report/artifact; PR creation denied by repository policy leaves a review branch and an explicit job failure. Nothing is automatically merged or promoted. Changed upstream versions are queued, not installed or applied to profiles. Bounded batches retain uninspected version changes for the next run.
+The weekly [discovery workflow](../.github/workflows/registry-discovery.yml) uses GitHub's scoped workflow token and prepares a **review-only** PR where repository policy permits it. It changes the queue and discovery cursor, never the canonical catalog. This repository currently disables PR creation by Actions: discovery saves its branch/artifact and emits an explicit warning and manual-review link instead. It does not weaken repository permissions. Unexpected publication/network failures still fail the job. Nothing is automatically merged or promoted. Changed upstream versions are queued, not installed or applied to profiles. Bounded batches retain uninspected version changes for the next run.
 
 ## Maintainer admission
 
