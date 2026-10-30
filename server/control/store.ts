@@ -48,6 +48,12 @@ export class ControlStore {
       CREATE TABLE IF NOT EXISTS optimizer_candidates(id TEXT PRIMARY KEY, value TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS optimizer_validation(id TEXT PRIMARY KEY, value TEXT NOT NULL);
       INSERT INTO settings(id,value) VALUES('schema','{"version":3}') ON CONFLICT(id) DO UPDATE SET value=excluded.value;`));
+    if(!this.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='registry_cache'").get())this.transaction(()=>this.db.exec(`
+      CREATE TABLE IF NOT EXISTS registry_cache(id TEXT PRIMARY KEY,value TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS registry_candidates(id TEXT PRIMARY KEY,value TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS registry_documents(url TEXT PRIMARY KEY,value TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS registry_jobs(id TEXT PRIMARY KEY,value TEXT NOT NULL);
+      INSERT INTO settings(id,value) VALUES('schema','{"version":4}') ON CONFLICT(id) DO UPDATE SET value=excluded.value;`));
     }catch(e){try{this.db.close();}catch{/* preserve the initialization failure */}throw e;}
   }
   close(){this.db.close();}
@@ -96,13 +102,14 @@ export class ControlStore {
     if(['preflight','starting','running','degraded','stopping'].includes(session.status)&&Date.now()-Date.parse(session.heartbeatAt)>30000)return {...session,status:'abandoned',diagnostics:[...session.diagnostics,'Owner heartbeat expired. No persisted PID will be signalled.']};
     return session;
   }
-  setSessionPreference(id:string,value:unknown):SessionPreference {
+  setSessionPreference(id:string,value:unknown,expectedPending?:string):SessionPreference {return this.transaction(()=>{
+    if(expectedPending!==undefined&&fingerprint(this.session(id)?.pending??null)!==expectedPending)throw new ControlError('Next-launch settings changed during review.','conflict',409);
     if(!this.session(id))throw new ControlError('Managed session not found.','missing',404);
     const options=parseLaunchOptions(value,this.schemaContext());if(!options.tools||options.billing!==undefined||options.model!==undefined)throw new ControlError('Choose an explicit next-launch tool stack.');
     if(Object.keys(options.toolConfig??{}).some(tool=>!options.tools!.includes(tool as never)))throw new ControlError('Configuration supplied for an unselected tool.');
     const pending:SessionPreference={tools:options.tools,toolConfig:options.toolConfig??{},state:'requires-restart',updatedAt:new Date().toISOString()};
     this.db.prepare('INSERT INTO session_preferences(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run(id,JSON.stringify(pending));this.audit('session.next-launch',id);return pending;
-  }
+  });}
   clearSessionPreference(id:string){this.db.prepare('DELETE FROM session_preferences WHERE id=?').run(id);}
   accounting():AccountingSettings {const row=this.db.prepare('SELECT value FROM settings WHERE id=?').get('accounting') as {value:string}|undefined;return row?parseAccounting(this.decode(row.value)):structuredClone(EMPTY_ACCOUNTING);}
   saveAccounting(value:unknown):AccountingSettings {const settings=parseAccounting(value);this.db.prepare('INSERT INTO settings(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run('accounting',JSON.stringify(settings));this.audit('accounting.updated','accounting');return settings;}
@@ -147,6 +154,15 @@ export class ControlStore {
   putValidation(value:ValidationReport){const key=value.id+':'+value.contextFingerprint;this.db.prepare('INSERT INTO optimizer_validation(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run(key,JSON.stringify(value));this.db.exec('DELETE FROM optimizer_validation WHERE rowid NOT IN (SELECT rowid FROM optimizer_validation ORDER BY rowid DESC LIMIT 1000)');}
   retainValidation(value:ValidationReport){const row=this.db.prepare('SELECT value FROM optimizer_validation WHERE id=?').get(value.id+':'+value.contextFingerprint) as {value:string}|undefined;if(row)return this.decode<ValidationReport>(row.value);this.putValidation(value);return value;}
   validationHistory():ValidationReport[]{return (this.db.prepare('SELECT value FROM optimizer_validation ORDER BY rowid DESC LIMIT 100').all() as {value:string}[]).map(r=>this.decode<ValidationReport>(r.value));}
+  registryCache():unknown {const row=this.db.prepare('SELECT value FROM registry_cache WHERE id=?').get('canonical') as {value:string}|undefined;if(!row)return null;if(row.value.length>3*1024*1024)throw new ControlError('Registry cache exceeds its budget.');try{return JSON.parse(row.value);}catch{throw new ControlError('Registry cache is malformed.');}}
+  saveRegistryCache(value:unknown){const text=JSON.stringify(value);if(text.length>3*1024*1024)throw new ControlError('Registry cache exceeds its budget.');this.db.prepare('INSERT INTO registry_cache(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run('canonical',text);this.audit('registry.updated','canonical');}
+  registryCandidates():import('../registry/types.js').Candidate[]{return (this.db.prepare('SELECT value FROM registry_candidates ORDER BY rowid DESC LIMIT 200').all() as {value:string}[]).map(r=>this.decode(r.value));}
+  saveRegistryCandidate(candidate:import('../registry/types.js').Candidate){if(JSON.stringify(candidate).length>32768)throw new ControlError('Candidate exceeds its metadata budget.');this.db.prepare('INSERT INTO registry_candidates(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run(candidate.id,JSON.stringify(candidate));this.db.exec('DELETE FROM registry_candidates WHERE rowid NOT IN (SELECT rowid FROM registry_candidates ORDER BY rowid DESC LIMIT 200)');}
+  removeRegistryCandidate(id:string){this.db.prepare('DELETE FROM registry_candidates WHERE id=?').run(id);}
+  registryDocument(url:string):import('../registry/network.js').CachedDocument|null {const row=this.db.prepare('SELECT value FROM registry_documents WHERE url=?').get(url) as {value:string}|undefined;return row?this.decode(row.value):null;}
+  saveRegistryDocument(url:string,value:import('../registry/network.js').CachedDocument){if(JSON.stringify(value).length>262144)return;this.db.prepare('INSERT INTO registry_documents(url,value) VALUES(?,?) ON CONFLICT(url) DO UPDATE SET value=excluded.value').run(url,JSON.stringify(value));this.db.exec('DELETE FROM registry_documents WHERE rowid NOT IN (SELECT rowid FROM registry_documents ORDER BY rowid DESC LIMIT 40)');}
+  registryJobs():import('../registry/types.js').DiscoveryJob[]{return (this.db.prepare('SELECT value FROM registry_jobs ORDER BY rowid DESC LIMIT 5').all() as {value:string}[]).map(r=>this.decode(r.value));}
+  saveRegistryJob(value:import('../registry/types.js').DiscoveryJob){this.db.prepare('INSERT INTO registry_jobs(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run(value.id,JSON.stringify(value));this.db.exec('DELETE FROM registry_jobs WHERE rowid NOT IN (SELECT rowid FROM registry_jobs ORDER BY rowid DESC LIMIT 20)');}
   onboarding():{completed:boolean;updatedAt:string|null}{const row=this.db.prepare('SELECT value FROM settings WHERE id=?').get('onboarding') as {value:string}|undefined;return row?this.decode(row.value):{completed:false,updatedAt:null};}
   completeOnboarding(){this.db.prepare('INSERT INTO settings(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run('onboarding',JSON.stringify({completed:true,updatedAt:new Date().toISOString()}));}
 }

@@ -1,6 +1,6 @@
-# Release test matrix · 1.2
+# Release test matrix · 1.3
 
-The 103-test suite retains the original monitor/control-plane coverage and adds billing-aware managed sessions and the optimizer SDK. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
+The 121-test suite retains the original monitor/control-plane coverage and adds billing-aware managed sessions and the optimizer SDK. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
 
 | Area | Evidence |
 |---|---|
@@ -16,6 +16,9 @@ The 103-test suite retains the original monitor/control-plane coverage and adds 
 | Version/billing/platform context, changed bindings and seven gates | SDK context tests, retained plan reports and Validation center browser checks |
 | Onboarding, recommendations, candidate import/proposal, typed settings and explicit launch review | control-ui-test.mjs through the real backend/SQLite |
 | Installation and archive entry points | smoke.mjs installs the real .tgz, then exercises both agents, SDK lifecycle, accounting and frontend/API |
+| Registry schema/admission | registry.test.ts: strict structured metadata, all eight gates, held/rejected submissions, scoped maintainer review/fingerprint, license/provenance, malicious fields/URLs |
+| Discovery and updates | Public-only metadata, auth host isolation, ETag/offline dates, rate limits, package mismatch, alias/fork dedup, incremental batch progress, SHA/blob integrity, revocation and invalid cache |
+| Registry scenarios A–F | registry-ui-test.mjs: RTK/Serena isolated launches, unknown rejected candidate, future plugin, changed version, offline cache, search/filter/details, keyboard and 320–1440 px light/dark |
 | Cross-platform release | Required CI: macOS/Windows/Linux × Node 22.14/24; Linux Chromium browser job |
 | Optional upstream interfaces | Manual approved workflow; official package version/help only; no automatic promotion or model requests |
 

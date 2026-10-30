@@ -1,0 +1,4 @@
+# The catalog integrity manifest covers exact bytes on every platform.
+# Keep reviewed registry JSON in canonical LF form even with core.autocrlf=true.
+/registry/*.json text eol=lf
+/registry/reviews/*.json text eol=lf

@@ -1,0 +1,2869 @@
+{
+  "schemaVersion": 1,
+  "taxonomyVersion": 1,
+  "version": "1.0.0",
+  "revision": 1,
+  "publishedAt": "2026-10-30T05:40:19.853Z",
+  "repository": "datasound-projects/Shrinkcage",
+  "entries": [
+    {
+      "id": "headroom",
+      "name": "Headroom",
+      "summary": "Compress context and tool data through a local library, MCP interface or API proxy.",
+      "category": "context-compression",
+      "tags": [
+        "proxy",
+        "context",
+        "cache-aware"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "headroomlabs-ai/headroom",
+        "repositoryId": 1129940957,
+        "url": "https://github.com/headroomlabs-ai/headroom",
+        "documentation": "https://docs.headroomlabs.ai/docs",
+        "licenseUrl": "https://github.com/headroomlabs-ai/headroom/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/headroomlabs-ai/headroom/blob/main/README.md",
+        "readmeSha": "85a37b3fa579c2b38186d35cad025bd104e6ce97",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "Apache-2.0",
+        "family": "open-source",
+        "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+      },
+      "upstream": {
+        "version": "v0.42.0",
+        "releaseUrl": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.42.0",
+        "releasedAt": "2026-10-26T23:03:53Z",
+        "pushedAt": "2026-10-30T01:33:37Z",
+        "checkedAt": "2026-10-30T05:30:57.527Z",
+        "archived": false,
+        "issues": 479,
+        "ci": "https://github.com/headroomlabs-ai/headroom/actions/runs/40999638867",
+        "history": [
+          {
+            "version": "v0.42.0",
+            "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.42.0",
+            "publishedAt": "2026-10-26T23:03:53Z"
+          },
+          {
+            "version": "v0.41.0",
+            "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.41.0",
+            "publishedAt": "2026-10-14T22:46:09Z"
+          },
+          {
+            "version": "v0.40.0",
+            "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.40.0",
+            "publishedAt": "2026-10-06T03:06:48Z"
+          },
+          {
+            "version": "v0.39.1",
+            "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.39.1",
+            "publishedAt": "2026-09-26T20:31:39Z"
+          },
+          {
+            "version": "v0.39.0",
+            "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.39.0",
+            "publishedAt": "2026-09-25T19:29:55Z"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "registry": "pypi",
+          "name": "headroom-ai",
+          "version": "0.42.0",
+          "url": "https://pypi.org/project/headroom-ai/",
+          "repositoryMatches": true,
+          "integrity": "531f25f0a1bed35130301c3219fc94391a72f1b550c4ad456af6ed2345d1ef05",
+          "checkedAt": "2026-10-30T05:31:35.287Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "adapter-tested",
+            "notes": "Reviewed native interface and isolated Shrinkcage fixtures; authenticated model-backed tasks were not run."
+          },
+          {
+            "id": "claude",
+            "support": "documented",
+            "notes": "Upstream documents Claude wrapping. The Shrinkcage managed adapter is separately restricted to Codex API sessions."
+          }
+        ],
+        "platforms": [
+          "darwin",
+          "linux",
+          "win32"
+        ],
+        "architectures": [
+          "x64",
+          "arm64"
+        ],
+        "billing": {
+          "subscription": "unknown",
+          "api": "native-preserved"
+        },
+        "mechanisms": [
+          "proxy",
+          "mcp",
+          "wrapper"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "process",
+        "requirements": [
+          "A separately installed Headroom CLI and an existing healthy local proxy.",
+          "Shrinkcage managed routing currently supports Codex API sessions only."
+        ],
+        "limitations": [
+          "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": "headroom",
+        "capabilities": [
+          "catalog",
+          "guided-install",
+          "managed-config",
+          "session-activation",
+          "runtime-telemetry"
+        ],
+        "minVersion": "0.42.0",
+        "maxMajor": 0,
+        "executables": [
+          "headroom"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Reads model traffic and tool data",
+          "Network to the configured model endpoint"
+        ],
+        "network": "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+        "warnings": [
+          "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 1,
+          "checkedAt": "2026-10-30T05:30:59.125Z",
+          "url": "https://github.com/headroomlabs-ai/headroom/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/headroomlabs-ai/headroom",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:30:57.527Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/headroomlabs-ai/headroom/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:30:58.357Z"
+          },
+          {
+            "label": "Existing adapter CI and native-interface scope",
+            "url": "https://github.com/datasound-projects/Shrinkcage/actions/runs/41006749466",
+            "kind": "test",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/headroomlabs-ai/headroom/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.42.0",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:30:57.527Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://pypi.org/project/headroom-ai/",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:35.287Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://docs.headroomlabs.ai/docs",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/headroomlabs-ai/headroom",
+              "https://github.com/headroomlabs-ai/headroom/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://docs.headroomlabs.ai/docs"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/headroomlabs-ai/headroom"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/headroomlabs-ai/headroom"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "isolated-test",
+            "summary": "Existing Shrinkcage adapter conformance is tested separately. This is not an authenticated test of the latest upstream release.",
+            "references": [
+              "https://docs.headroomlabs.ai/docs"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://docs.headroomlabs.ai/docs"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://docs.headroomlabs.ai/docs"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/headroomlabs-ai/headroom"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "managed-adapter",
+        "reviewedVersion": "v0.42.0",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "rtk",
+      "name": "RTK",
+      "summary": "Shorten noisy terminal output before it reaches a coding agent.",
+      "category": "output-optimization",
+      "tags": [
+        "terminal",
+        "output-estimates",
+        "native-hooks"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "rtk-ai/rtk",
+        "repositoryId": 1139971460,
+        "url": "https://github.com/rtk-ai/rtk",
+        "documentation": "https://www.rtk-ai.app/",
+        "licenseUrl": "https://github.com/rtk-ai/rtk/blob/develop/LICENSE",
+        "readmeUrl": "https://github.com/rtk-ai/rtk/blob/develop/README.md",
+        "readmeSha": "6c7f7de477856221d34f27053d882e969c896616",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "Apache-2.0",
+        "family": "open-source",
+        "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+      },
+      "upstream": {
+        "version": "v1.1.0",
+        "releaseUrl": "https://github.com/rtk-ai/rtk/releases/tag/v1.1.0",
+        "releasedAt": "2026-10-25T18:00:11Z",
+        "pushedAt": "2026-10-30T00:38:36Z",
+        "checkedAt": "2026-10-30T05:31:00.964Z",
+        "archived": false,
+        "issues": 1633,
+        "ci": "https://github.com/rtk-ai/rtk/actions/runs/41001183226",
+        "history": [
+          {
+            "version": "dev-1.1.1-rc.586",
+            "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.1.1-rc.586",
+            "publishedAt": "2026-10-30T00:38:37Z"
+          },
+          {
+            "version": "dev-1.1.1-rc.584",
+            "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.1.1-rc.584",
+            "publishedAt": "2026-10-29T00:10:48Z"
+          },
+          {
+            "version": "dev-1.1.1-rc.582",
+            "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.1.1-rc.582",
+            "publishedAt": "2026-10-28T23:21:51Z"
+          },
+          {
+            "version": "v1.1.0",
+            "url": "https://github.com/rtk-ai/rtk/releases/tag/v1.1.0",
+            "publishedAt": "2026-10-25T18:00:11Z"
+          },
+          {
+            "version": "dev-1.1.0-rc.574",
+            "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.1.0-rc.574",
+            "publishedAt": "2026-10-25T13:12:38Z"
+          }
+        ]
+      },
+      "packages": [],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "adapter-tested",
+            "notes": "Reviewed native interface and isolated Shrinkcage fixtures; authenticated model-backed tasks were not run."
+          },
+          {
+            "id": "claude",
+            "support": "adapter-tested",
+            "notes": "Supported modern Claude process interfaces are exercised with isolated fixtures."
+          }
+        ],
+        "platforms": [
+          "darwin",
+          "linux",
+          "win32"
+        ],
+        "architectures": [
+          "x64",
+          "arm64"
+        ],
+        "billing": {
+          "subscription": "native-preserved",
+          "api": "native-preserved"
+        },
+        "mechanisms": [
+          "hook",
+          "cli-wrapper"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "process",
+        "requirements": [
+          "Install the official RTK executable separately.",
+          "An inherited external hook cannot be independently disabled by a process overlay."
+        ],
+        "limitations": [
+          "Output token reductions are estimates. The crates.io package named rtk belongs to a different repository; it is excluded from installation provenance.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": "rtk",
+        "capabilities": [
+          "catalog",
+          "guided-install",
+          "managed-config",
+          "session-activation",
+          "runtime-telemetry"
+        ],
+        "minVersion": "1.1.0",
+        "maxMajor": 1,
+        "executables": [
+          "rtk"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Reads terminal command output",
+          "Native PreToolUse command rewriting"
+        ],
+        "network": "Shrinking output is local; installation or updates may use upstream network services.",
+        "warnings": [
+          "Output token reductions are estimates. The crates.io package named rtk belongs to a different repository; it is excluded from installation provenance.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed.",
+          "The unrelated crates.io rtk package was rejected by repository-provenance matching. No crates package is recommended."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 3,
+          "checkedAt": "2026-10-30T05:31:02.735Z",
+          "url": "https://github.com/rtk-ai/rtk/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/rtk-ai/rtk",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:00.964Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/rtk-ai/rtk/blob/develop/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:01.669Z"
+          },
+          {
+            "label": "Existing adapter CI and native-interface scope",
+            "url": "https://github.com/datasound-projects/Shrinkcage/actions/runs/41006749466",
+            "kind": "test",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/rtk-ai/rtk/blob/develop/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/rtk-ai/rtk/releases/tag/v1.1.0",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:00.964Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://www.rtk-ai.app/",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "Output token reductions are estimates. The crates.io package named rtk belongs to a different repository; it is excluded from installation provenance.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/rtk-ai/rtk",
+              "https://github.com/rtk-ai/rtk/blob/develop/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://www.rtk-ai.app/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/rtk-ai/rtk"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/rtk-ai/rtk"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "isolated-test",
+            "summary": "Existing Shrinkcage adapter conformance is tested separately. This is not an authenticated test of the latest upstream release.",
+            "references": [
+              "https://www.rtk-ai.app/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://www.rtk-ai.app/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://www.rtk-ai.app/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/rtk-ai/rtk"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "managed-adapter",
+        "reviewedVersion": "v1.1.0",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "serena",
+      "name": "Serena",
+      "summary": "Find and edit relevant code symbols instead of repeatedly reading whole files.",
+      "category": "semantic-retrieval",
+      "tags": [
+        "code-symbols",
+        "retrieval",
+        "mcp"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "oraios/serena",
+        "repositoryId": 953683578,
+        "url": "https://github.com/oraios/serena",
+        "documentation": "https://oraios.github.io/serena",
+        "licenseUrl": "https://github.com/oraios/serena/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/oraios/serena/blob/main/README.md",
+        "readmeSha": "5965015ca4ea4b3192d1d7c147a8bc325a40feaa",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "GPL-3.0-or-later; MIT components",
+        "family": "open-source",
+        "notes": "The Serena application is GPL-3.0-or-later; SolidLSP is MIT. The upstream overview explains combined distributions."
+      },
+      "upstream": {
+        "version": "v2.1.0",
+        "releaseUrl": "https://github.com/oraios/serena/releases/tag/v2.1.0",
+        "releasedAt": "2026-10-19T17:30:43Z",
+        "pushedAt": "2026-10-28T10:45:55Z",
+        "checkedAt": "2026-10-30T05:31:04.653Z",
+        "archived": false,
+        "issues": 131,
+        "ci": "https://github.com/oraios/serena/actions/runs/40931865498",
+        "history": [
+          {
+            "version": "v2.1.0",
+            "url": "https://github.com/oraios/serena/releases/tag/v2.1.0",
+            "publishedAt": "2026-10-19T17:30:43Z"
+          },
+          {
+            "version": "v2.0.0",
+            "url": "https://github.com/oraios/serena/releases/tag/v2.0.0",
+            "publishedAt": "2026-10-13T12:25:45Z"
+          },
+          {
+            "version": "v1.7.0",
+            "url": "https://github.com/oraios/serena/releases/tag/v1.7.0",
+            "publishedAt": "2026-08-09T18:38:06Z"
+          },
+          {
+            "version": "v1.6.1",
+            "url": "https://github.com/oraios/serena/releases/tag/v1.6.1",
+            "publishedAt": "2026-07-21T15:40:54Z"
+          },
+          {
+            "version": "v1.6.0",
+            "url": "https://github.com/oraios/serena/releases/tag/v1.6.0",
+            "publishedAt": "2026-07-16T11:58:20Z"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "registry": "pypi",
+          "name": "serena-agent",
+          "version": "2.1.0",
+          "url": "https://pypi.org/project/serena-agent/",
+          "repositoryMatches": true,
+          "integrity": "cc6ae542c39b4de5d98cdf35a4ceb0b551f316c5f22e9d0f0b0c5f35d6b95d87",
+          "checkedAt": "2026-10-30T05:31:36.201Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "adapter-tested",
+            "notes": "Reviewed native interface and isolated Shrinkcage fixtures; authenticated model-backed tasks were not run."
+          },
+          {
+            "id": "claude",
+            "support": "adapter-tested",
+            "notes": "Supported modern Claude process interfaces are exercised with isolated fixtures."
+          }
+        ],
+        "platforms": [
+          "darwin",
+          "linux",
+          "win32"
+        ],
+        "architectures": [
+          "x64",
+          "arm64"
+        ],
+        "billing": {
+          "subscription": "native-preserved",
+          "api": "native-preserved"
+        },
+        "mechanisms": [
+          "mcp"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "process",
+        "requirements": [
+          "Separate Serena installation; language-specific tooling may be required.",
+          "Use the native context for the selected coding CLI."
+        ],
+        "limitations": [
+          "Indexing may prepare project metadata or language-server dependencies. Tool activity is not a token-savings measurement.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": "serena",
+        "capabilities": [
+          "catalog",
+          "guided-install",
+          "managed-config",
+          "session-activation",
+          "runtime-telemetry"
+        ],
+        "minVersion": "2.1.0",
+        "maxMajor": 2,
+        "executables": [
+          "serena"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Project read and edit tools",
+          "Project indexing and language-server processes"
+        ],
+        "network": "Indexing may prepare project metadata or language-server dependencies. Tool activity is not a token-savings measurement.",
+        "warnings": [
+          "Indexing may prepare project metadata or language-server dependencies. Tool activity is not a token-savings measurement.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 3,
+          "checkedAt": "2026-10-30T05:31:06.289Z",
+          "url": "https://github.com/oraios/serena/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/oraios/serena",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:04.653Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/oraios/serena/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:05.399Z"
+          },
+          {
+            "label": "Existing adapter CI and native-interface scope",
+            "url": "https://github.com/datasound-projects/Shrinkcage/actions/runs/41006749466",
+            "kind": "test",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/oraios/serena/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/oraios/serena/releases/tag/v2.1.0",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:04.653Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://pypi.org/project/serena-agent/",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:36.201Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://oraios.github.io/serena",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "Indexing may prepare project metadata or language-server dependencies. Tool activity is not a token-savings measurement.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/oraios/serena",
+              "https://github.com/oraios/serena/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://oraios.github.io/serena"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/oraios/serena"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/oraios/serena"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "isolated-test",
+            "summary": "Existing Shrinkcage adapter conformance is tested separately. This is not an authenticated test of the latest upstream release.",
+            "references": [
+              "https://oraios.github.io/serena"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://oraios.github.io/serena"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://oraios.github.io/serena"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/oraios/serena"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "managed-adapter",
+        "reviewedVersion": "v2.1.0",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "context-mode",
+      "name": "Context Mode",
+      "summary": "Keep bulky tool data outside the main context and retrieve selected information through MCP.",
+      "category": "mcp-discovery",
+      "tags": [
+        "tool-output",
+        "context-reuse",
+        "hooks"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "mksglu/context-mode",
+        "repositoryId": 1164477708,
+        "url": "https://github.com/mksglu/context-mode",
+        "documentation": "https://contextmode.ai/",
+        "licenseUrl": "https://github.com/mksglu/context-mode/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/mksglu/context-mode/blob/main/README.md",
+        "readmeSha": "b796169524473691594af24995d21ca94027f7c7",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "Elastic-2.0",
+        "family": "source-available",
+        "notes": "Source-available license with restrictions. This is not labeled OSI open source; review the upstream license."
+      },
+      "upstream": {
+        "version": "v1.0.169",
+        "releaseUrl": "https://github.com/mksglu/context-mode/releases/tag/v1.0.169",
+        "releasedAt": "2026-06-29T18:18:53Z",
+        "pushedAt": "2026-10-30T05:11:28Z",
+        "checkedAt": "2026-10-30T05:31:07.797Z",
+        "archived": false,
+        "issues": 354,
+        "ci": "https://github.com/mksglu/context-mode/actions/runs/41005339895",
+        "history": [
+          {
+            "version": "v2.0.0-next.16",
+            "url": "https://github.com/mksglu/context-mode/releases/tag/v2.0.0-next.16",
+            "publishedAt": "2026-10-30T03:05:07Z"
+          },
+          {
+            "version": "v2.0.0-next.15",
+            "url": "https://github.com/mksglu/context-mode/releases/tag/v2.0.0-next.15",
+            "publishedAt": "2026-10-30T00:19:04Z"
+          },
+          {
+            "version": "v2.0.0-next.14",
+            "url": "https://github.com/mksglu/context-mode/releases/tag/v2.0.0-next.14",
+            "publishedAt": "2026-10-29T20:26:52Z"
+          },
+          {
+            "version": "v2.0.0-next.13",
+            "url": "https://github.com/mksglu/context-mode/releases/tag/v2.0.0-next.13",
+            "publishedAt": "2026-10-29T18:24:58Z"
+          },
+          {
+            "version": "v2.0.0-next.12",
+            "url": "https://github.com/mksglu/context-mode/releases/tag/v2.0.0-next.12",
+            "publishedAt": "2026-10-29T16:11:30Z"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "registry": "npm",
+          "name": "context-mode",
+          "version": "1.0.169",
+          "url": "https://www.npmjs.com/package/context-mode",
+          "repositoryMatches": true,
+          "integrity": "sha512-94JIaFuLjF9SO2BsGTrbGtyT44K95+9OC8BdbaL/UT76xOkanJLfUR5CzmNw+GELXZQqH4nBrKg9wjBnSFkVnQ==",
+          "checkedAt": "2026-10-30T05:31:36.615Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [
+          "darwin",
+          "linux",
+          "win32"
+        ],
+        "architectures": [],
+        "billing": {
+          "subscription": "unknown",
+          "api": "unknown"
+        },
+        "mechanisms": [
+          "mcp",
+          "hook"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "Follow the upstream client-specific MCP and hook documentation.",
+          "Shrinking output depends on the actual routing and hook mode."
+        ],
+        "limitations": [
+          "Source-available under Elastic License 2.0. Shrinkcage has not reviewed a fully isolated session adapter for its hook and routing setup.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": [
+          "context-mode"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Command execution in its own runtime",
+          "Project and persistent context access",
+          "Agent hook or routing configuration"
+        ],
+        "network": "Source-available under Elastic License 2.0. Shrinkcage has not reviewed a fully isolated session adapter for its hook and routing setup.",
+        "warnings": [
+          "Source-available under Elastic License 2.0. Shrinkcage has not reviewed a fully isolated session adapter for its hook and routing setup.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 0,
+          "checkedAt": "2026-10-30T05:31:09.636Z",
+          "url": "https://github.com/mksglu/context-mode/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/mksglu/context-mode",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:07.797Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/mksglu/context-mode/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:08.950Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/mksglu/context-mode/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/mksglu/context-mode/releases/tag/v1.0.169",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:07.797Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://www.npmjs.com/package/context-mode",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:36.615Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://contextmode.ai/",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "Source-available under Elastic License 2.0. Shrinkcage has not reviewed a fully isolated session adapter for its hook and routing setup.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/mksglu/context-mode",
+              "https://github.com/mksglu/context-mode/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://contextmode.ai/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/mksglu/context-mode"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/mksglu/context-mode"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://contextmode.ai/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://contextmode.ai/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://contextmode.ai/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/mksglu/context-mode"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "v1.0.169",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "codemem",
+      "name": "codemem",
+      "summary": "Capture and retrieve project memory across coding-agent sessions.",
+      "category": "persistent-memory",
+      "tags": [
+        "memory",
+        "retrieval",
+        "context-reuse"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "kunickiaj/codemem",
+        "repositoryId": 1133829259,
+        "url": "https://github.com/kunickiaj/codemem",
+        "documentation": "https://codemem.sh/",
+        "licenseUrl": "https://github.com/kunickiaj/codemem/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/kunickiaj/codemem/blob/main/README.md",
+        "readmeSha": "5f77ab2f12294ce050b5dfcf19cae2b431b80cda",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "MIT",
+        "family": "open-source",
+        "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+      },
+      "upstream": {
+        "version": "v0.47.3",
+        "releaseUrl": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.3",
+        "releasedAt": "2026-10-29T00:07:21Z",
+        "pushedAt": "2026-10-29T04:16:40Z",
+        "checkedAt": "2026-10-30T05:31:15.126Z",
+        "archived": false,
+        "issues": 8,
+        "ci": "https://github.com/kunickiaj/codemem/actions/runs/41004905272",
+        "history": [
+          {
+            "version": "v0.47.3",
+            "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.3",
+            "publishedAt": "2026-10-29T00:07:21Z"
+          },
+          {
+            "version": "v0.47.2",
+            "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.2",
+            "publishedAt": "2026-10-28T14:48:00Z"
+          },
+          {
+            "version": "v0.47.1",
+            "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.1",
+            "publishedAt": "2026-10-28T01:35:48Z"
+          },
+          {
+            "version": "v0.47.0",
+            "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.0",
+            "publishedAt": "2026-10-27T21:13:44Z"
+          },
+          {
+            "version": "v0.47.0-beta.4",
+            "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.0-beta.4",
+            "publishedAt": "2026-10-26T02:13:37Z"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "registry": "npm",
+          "name": "codemem",
+          "version": "0.47.3",
+          "url": "https://www.npmjs.com/package/codemem",
+          "repositoryMatches": true,
+          "integrity": "sha512-AgNpqKk1bWqAKpsm4Hsupa+L0T6jayfvwsmCRTLEqXsERC2urpoh+IEVmRcq8l8G983/2TTV+eebnjHqZtW52A==",
+          "checkedAt": "2026-10-30T05:31:37.141Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [
+          "darwin",
+          "linux",
+          "win32"
+        ],
+        "architectures": [
+          "x64",
+          "arm64"
+        ],
+        "billing": {
+          "subscription": "unknown",
+          "api": "unknown"
+        },
+        "mechanisms": [
+          "mcp",
+          "hook",
+          "local-memory"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "Follow the upstream agent-specific setup.",
+          "Optional semantic runtimes and CPU architecture support vary; Intel macOS can fall back to keyword retrieval."
+        ],
+        "limitations": [
+          "Local storage does not guarantee local processing. Memory creation can send context to a model and incur charges or consume a subscription quota.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": [
+          "codemem"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Captures coding activity",
+          "Persistent project memory",
+          "May send captured context to a configured model"
+        ],
+        "network": "Local storage does not guarantee local processing. Memory creation can send context to a model and incur charges or consume a subscription quota.",
+        "warnings": [
+          "Local storage does not guarantee local processing. Memory creation can send context to a model and incur charges or consume a subscription quota.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 0,
+          "checkedAt": "2026-10-30T05:31:16.691Z",
+          "url": "https://github.com/kunickiaj/codemem/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/kunickiaj/codemem",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:15.126Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/kunickiaj/codemem/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:15.988Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/kunickiaj/codemem/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.47.3",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:15.126Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://www.npmjs.com/package/codemem",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:37.141Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://codemem.sh/",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "Local storage does not guarantee local processing. Memory creation can send context to a model and incur charges or consume a subscription quota.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/kunickiaj/codemem",
+              "https://github.com/kunickiaj/codemem/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://codemem.sh/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/kunickiaj/codemem"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/kunickiaj/codemem"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://codemem.sh/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://codemem.sh/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://codemem.sh/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/kunickiaj/codemem"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "v0.47.3",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "litellm",
+      "name": "LiteLLM",
+      "summary": "Route API requests and apply provider-aware budgets, caching and model policies.",
+      "category": "model-routing",
+      "tags": [
+        "api-gateway",
+        "budgets",
+        "routing"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "BerriAI/litellm",
+        "repositoryId": 671269505,
+        "url": "https://github.com/BerriAI/litellm",
+        "documentation": "https://docs.litellm.ai/docs/",
+        "licenseUrl": "https://github.com/BerriAI/litellm/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/BerriAI/litellm/blob/main/README.md",
+        "readmeSha": "3f1f21f903e99b88ce9c7925caddda173b042aef",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "MIT core; separate enterprise terms",
+        "family": "mixed",
+        "notes": "Core and enterprise directories have different terms. Review the authoritative license; no upstream executable is redistributed here."
+      },
+      "upstream": {
+        "version": "v1.106.6",
+        "releaseUrl": "https://github.com/BerriAI/litellm/releases/tag/v1.106.6",
+        "releasedAt": "2026-10-28T23:03:09Z",
+        "pushedAt": "2026-10-30T05:28:03Z",
+        "checkedAt": "2026-10-30T05:31:18.376Z",
+        "archived": false,
+        "issues": 5571,
+        "ci": "https://github.com/BerriAI/litellm/actions/runs/41008640592",
+        "history": [
+          {
+            "version": "v1.109.0-dev.2",
+            "url": "https://github.com/BerriAI/litellm/releases/tag/v1.109.0-dev.2",
+            "publishedAt": "2026-10-30T03:53:18Z"
+          },
+          {
+            "version": "v1.109.0-dev.1",
+            "url": "https://github.com/BerriAI/litellm/releases/tag/v1.109.0-dev.1",
+            "publishedAt": "2026-10-28T03:03:06Z"
+          },
+          {
+            "version": "v1.108.0-rc.1",
+            "url": "https://github.com/BerriAI/litellm/releases/tag/v1.108.0-rc.1",
+            "publishedAt": "2026-10-29T03:33:35Z"
+          },
+          {
+            "version": "v1.106.6",
+            "url": "https://github.com/BerriAI/litellm/releases/tag/v1.106.6",
+            "publishedAt": "2026-10-28T23:03:09Z"
+          },
+          {
+            "version": "v1.105.7",
+            "url": "https://github.com/BerriAI/litellm/releases/tag/v1.105.7",
+            "publishedAt": "2026-10-28T22:55:25Z"
+          }
+        ]
+      },
+      "packages": [],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [],
+        "architectures": [],
+        "billing": {
+          "subscription": "unsupported",
+          "api": "documented"
+        },
+        "mechanisms": [
+          "api-gateway",
+          "proxy"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "A separately configured API gateway and supported provider authentication.",
+          "Native subscription traffic is not automatically compatible with an API gateway."
+        ],
+        "limitations": [
+          "MIT core and separately licensed enterprise directories. Gateway routing and logging require explicit credential and privacy review.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": [
+          "litellm"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Provider API credentials",
+          "Model request and response traffic",
+          "Outbound provider network access"
+        ],
+        "network": "MIT core and separately licensed enterprise directories. Gateway routing and logging require explicit credential and privacy review.",
+        "warnings": [
+          "MIT core and separately licensed enterprise directories. Gateway routing and logging require explicit credential and privacy review.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 18,
+          "checkedAt": "2026-10-30T05:31:20.265Z",
+          "url": "https://github.com/BerriAI/litellm/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/BerriAI/litellm",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:18.376Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/BerriAI/litellm/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:19.319Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/BerriAI/litellm/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/BerriAI/litellm/releases/tag/v1.106.6",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:18.376Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://docs.litellm.ai/docs/",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "MIT core and separately licensed enterprise directories. Gateway routing and logging require explicit credential and privacy review.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/BerriAI/litellm",
+              "https://github.com/BerriAI/litellm/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://docs.litellm.ai/docs/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/BerriAI/litellm"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/BerriAI/litellm"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://docs.litellm.ai/docs/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://docs.litellm.ai/docs/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://docs.litellm.ai/docs/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/BerriAI/litellm"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "v1.106.6",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "ccusage",
+      "name": "ccusage",
+      "summary": "Read local coding-agent usage records and produce token and cost reports.",
+      "category": "usage-analytics",
+      "tags": [
+        "usage",
+        "local-reports",
+        "cost-estimates"
+      ],
+      "role": "supporting",
+      "source": {
+        "repository": "ccusage/ccusage",
+        "repositoryId": 992755069,
+        "url": "https://github.com/ccusage/ccusage",
+        "documentation": "https://ccusage.com/",
+        "licenseUrl": "https://github.com/ccusage/ccusage/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/ccusage/ccusage/blob/main/README.md",
+        "readmeSha": "cd98e230d5876eb69766d046ef05af4dc51f32cd",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "MIT",
+        "family": "open-source",
+        "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+      },
+      "upstream": {
+        "version": "v20.0.45",
+        "releaseUrl": "https://github.com/ccusage/ccusage/releases/tag/v20.0.45",
+        "releasedAt": "2026-10-26T20:25:17Z",
+        "pushedAt": "2026-10-30T03:26:55Z",
+        "checkedAt": "2026-10-30T05:31:21.982Z",
+        "archived": false,
+        "issues": 7,
+        "ci": "https://github.com/ccusage/ccusage/actions/runs/40997431989",
+        "history": [
+          {
+            "version": "v20.0.45",
+            "url": "https://github.com/ccusage/ccusage/releases/tag/v20.0.45",
+            "publishedAt": "2026-10-26T20:25:17Z"
+          },
+          {
+            "version": "v20.0.44",
+            "url": "https://github.com/ccusage/ccusage/releases/tag/v20.0.44",
+            "publishedAt": "2026-10-24T21:04:07Z"
+          },
+          {
+            "version": "v20.0.43",
+            "url": "https://github.com/ccusage/ccusage/releases/tag/v20.0.43",
+            "publishedAt": "2026-10-24T16:39:22Z"
+          },
+          {
+            "version": "v20.0.42",
+            "url": "https://github.com/ccusage/ccusage/releases/tag/v20.0.42",
+            "publishedAt": "2026-10-23T14:38:23Z"
+          },
+          {
+            "version": "v20.0.41",
+            "url": "https://github.com/ccusage/ccusage/releases/tag/v20.0.41",
+            "publishedAt": "2026-10-22T21:35:08Z"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "registry": "npm",
+          "name": "ccusage",
+          "version": "20.0.45",
+          "url": "https://www.npmjs.com/package/ccusage",
+          "repositoryMatches": true,
+          "integrity": "sha512-qvq5PpJww50+ja+D0YpITkuYstUJlXQ6tBJYHb/h9eu/QJe8tIutn4MpRzuTb873JwkBrQcTJ/MatGEb6xcWgw==",
+          "checkedAt": "2026-10-30T05:31:37.698Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [
+          "win32"
+        ],
+        "architectures": [],
+        "billing": {
+          "subscription": "not-applicable",
+          "api": "not-applicable"
+        },
+        "mechanisms": [
+          "external-observer"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "Use the documented CLI for the relevant agent log format.",
+          "Reported monetary values may be price estimates rather than an invoice or subscription savings."
+        ],
+        "limitations": [
+          "Analytics alone does not reduce tokens. No ccusage runtime collector is enabled by Shrinkcage.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": [
+          "ccusage"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Reads local agent usage records"
+        ],
+        "network": "Analytics alone does not reduce tokens. No ccusage runtime collector is enabled by Shrinkcage.",
+        "warnings": [
+          "Analytics alone does not reduce tokens. No ccusage runtime collector is enabled by Shrinkcage.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 0,
+          "checkedAt": "2026-10-30T05:31:23.380Z",
+          "url": "https://github.com/ccusage/ccusage/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/ccusage/ccusage",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:21.982Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/ccusage/ccusage/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:22.711Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/ccusage/ccusage/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/ccusage/ccusage/releases/tag/v20.0.45",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:21.982Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://www.npmjs.com/package/ccusage",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:37.698Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "not-measured",
+            "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+            "url": "https://ccusage.com/",
+            "methodology": "No task benchmark was executed.",
+            "limitations": [
+              "Do not infer savings from installation, popularity or an upstream description."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/ccusage/ccusage",
+              "https://github.com/ccusage/ccusage/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Supporting measurement or evaluation relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://ccusage.com/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/ccusage/ccusage"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/ccusage/ccusage"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://ccusage.com/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://ccusage.com/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "not-applicable",
+            "method": "upstream-documentation",
+            "summary": "This supporting tool measures or evaluates usage; direct token savings are not claimed.",
+            "references": [
+              "https://ccusage.com/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/ccusage/ccusage"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "v20.0.45",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "langfuse",
+      "name": "Langfuse",
+      "summary": "Inspect LLM traces and evaluate quality, reliability and resource use.",
+      "category": "observability",
+      "tags": [
+        "evaluation",
+        "traces",
+        "observability"
+      ],
+      "role": "supporting",
+      "source": {
+        "repository": "langfuse/langfuse",
+        "repositoryId": 642497346,
+        "url": "https://github.com/langfuse/langfuse",
+        "documentation": "https://langfuse.com/",
+        "licenseUrl": "https://github.com/langfuse/langfuse/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/langfuse/langfuse/blob/main/README.md",
+        "readmeSha": "3c4ad5773b846b6b1c16355640ebd87ff031f92e",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "MIT core; separate enterprise terms",
+        "family": "mixed",
+        "notes": "Core and enterprise directories have different terms. Review the authoritative license; no upstream executable is redistributed here."
+      },
+      "upstream": {
+        "version": "v4.72.0",
+        "releaseUrl": "https://github.com/langfuse/langfuse/releases/tag/v4.72.0",
+        "releasedAt": "2026-10-29T16:14:48Z",
+        "pushedAt": "2026-10-29T22:55:45Z",
+        "checkedAt": "2026-10-30T05:31:25.674Z",
+        "archived": false,
+        "issues": 1096,
+        "ci": "https://github.com/langfuse/langfuse/actions/runs/41007480774",
+        "history": [
+          {
+            "version": "v4.72.0",
+            "url": "https://github.com/langfuse/langfuse/releases/tag/v4.72.0",
+            "publishedAt": "2026-10-29T16:14:48Z"
+          },
+          {
+            "version": "v4.71.0",
+            "url": "https://github.com/langfuse/langfuse/releases/tag/v4.71.0",
+            "publishedAt": "2026-10-27T15:03:06Z"
+          },
+          {
+            "version": "v3.225.15",
+            "url": "https://github.com/langfuse/langfuse/releases/tag/v3.225.15",
+            "publishedAt": "2026-10-27T14:40:56Z"
+          },
+          {
+            "version": "v4.70.1",
+            "url": "https://github.com/langfuse/langfuse/releases/tag/v4.70.1",
+            "publishedAt": "2026-10-26T11:01:26Z"
+          },
+          {
+            "version": "v3.225.14",
+            "url": "https://github.com/langfuse/langfuse/releases/tag/v3.225.14",
+            "publishedAt": "2026-10-26T12:04:35Z"
+          }
+        ]
+      },
+      "packages": [],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "unknown",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "unknown",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [
+          "linux"
+        ],
+        "architectures": [],
+        "billing": {
+          "subscription": "not-applicable",
+          "api": "not-applicable"
+        },
+        "mechanisms": [
+          "telemetry-observer"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "A separately configured self-hosted or hosted service and explicit instrumentation.",
+          "Shrinkcage does not enable a remote exporter."
+        ],
+        "limitations": [
+          "MIT core and separately licensed enterprise directories. Do not export private coding content without explicit review.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": []
+      },
+      "security": {
+        "permissions": [
+          "May capture prompts, responses and traces",
+          "Network to the configured observability service"
+        ],
+        "network": "MIT core and separately licensed enterprise directories. Do not export private coding content without explicit review.",
+        "warnings": [
+          "MIT core and separately licensed enterprise directories. Do not export private coding content without explicit review.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 4,
+          "checkedAt": "2026-10-30T05:31:27.395Z",
+          "url": "https://github.com/langfuse/langfuse/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/langfuse/langfuse",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:25.674Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/langfuse/langfuse/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:26.537Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/langfuse/langfuse/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/langfuse/langfuse/releases/tag/v4.72.0",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:25.674Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "not-measured",
+            "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+            "url": "https://langfuse.com/",
+            "methodology": "No task benchmark was executed.",
+            "limitations": [
+              "Do not infer savings from installation, popularity or an upstream description."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/langfuse/langfuse",
+              "https://github.com/langfuse/langfuse/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Supporting measurement or evaluation relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://langfuse.com/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/langfuse/langfuse"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/langfuse/langfuse"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://langfuse.com/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://langfuse.com/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "not-applicable",
+            "method": "upstream-documentation",
+            "summary": "This supporting tool measures or evaluates usage; direct token savings are not claimed.",
+            "references": [
+              "https://langfuse.com/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/langfuse/langfuse"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "v4.72.0",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "llmlingua",
+      "name": "LLMLingua",
+      "summary": "A research library for compressing prompts and context before model inference.",
+      "category": "context-compression",
+      "tags": [
+        "prompt-compression",
+        "research-library",
+        "local-model"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "microsoft/LLMLingua",
+        "repositoryId": 663368311,
+        "url": "https://github.com/microsoft/LLMLingua",
+        "documentation": "https://llmlingua.com/",
+        "licenseUrl": "https://github.com/microsoft/LLMLingua/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/microsoft/LLMLingua/blob/main/README.md",
+        "readmeSha": "1ca17bc04f61ed8cad86d566a924d7e8f36e030a",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "MIT",
+        "family": "open-source",
+        "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+      },
+      "upstream": {
+        "version": "v0.2.2",
+        "releaseUrl": "https://github.com/microsoft/LLMLingua/releases/tag/v0.2.2",
+        "releasedAt": "2024-04-09T08:19:16Z",
+        "pushedAt": "2026-09-10T23:37:23Z",
+        "checkedAt": "2026-10-30T05:31:28.963Z",
+        "archived": false,
+        "issues": 125,
+        "ci": "https://github.com/microsoft/LLMLingua/actions/runs/40362198011",
+        "history": [
+          {
+            "version": "v0.2.2",
+            "url": "https://github.com/microsoft/LLMLingua/releases/tag/v0.2.2",
+            "publishedAt": "2024-04-09T08:19:16Z"
+          },
+          {
+            "version": "v0.2.1",
+            "url": "https://github.com/microsoft/LLMLingua/releases/tag/v0.2.1",
+            "publishedAt": "2024-03-20T03:41:42Z"
+          },
+          {
+            "version": "v0.2.0",
+            "url": "https://github.com/microsoft/LLMLingua/releases/tag/v0.2.0",
+            "publishedAt": "2024-03-13T04:07:27Z"
+          },
+          {
+            "version": "v0.1.6",
+            "url": "https://github.com/microsoft/LLMLingua/releases/tag/v0.1.6",
+            "publishedAt": "2024-02-19T08:47:34Z"
+          },
+          {
+            "version": "v0.1.5",
+            "url": "https://github.com/microsoft/LLMLingua/releases/tag/v0.1.5",
+            "publishedAt": "2023-12-21T08:59:54Z"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "registry": "pypi",
+          "name": "llmlingua",
+          "version": "0.2.2",
+          "url": "https://pypi.org/project/llmlingua/",
+          "repositoryMatches": true,
+          "integrity": "da55137efe0db78063b3395396efe8a0dcfe4ae5a09aea0d503c34b7bf1d800c",
+          "checkedAt": "2026-10-30T05:31:37.825Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "unknown",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "unknown",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [],
+        "architectures": [],
+        "billing": {
+          "subscription": "unknown",
+          "api": "unknown"
+        },
+        "mechanisms": [
+          "context-compressor"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "Python library integration and compression-model resources.",
+          "No native Codex or Claude session adapter has been independently tested."
+        ],
+        "limitations": [
+          "GitHub release recency and current repository activity differ. Research results do not establish coding-task quality or savings for this environment.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": []
+      },
+      "security": {
+        "permissions": [
+          "Processes supplied context",
+          "May download model artifacts"
+        ],
+        "network": "GitHub release recency and current repository activity differ. Research results do not establish coding-task quality or savings for this environment.",
+        "warnings": [
+          "GitHub release recency and current repository activity differ. Research results do not establish coding-task quality or savings for this environment.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 0,
+          "checkedAt": "2026-10-30T05:31:30.480Z",
+          "url": "https://github.com/microsoft/LLMLingua/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/microsoft/LLMLingua",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:28.963Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/microsoft/LLMLingua/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:29.797Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/microsoft/LLMLingua/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Latest GitHub release observed",
+            "url": "https://github.com/microsoft/LLMLingua/releases/tag/v0.2.2",
+            "kind": "release",
+            "observedAt": "2026-10-30T05:31:28.963Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://pypi.org/project/llmlingua/",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:37.825Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://llmlingua.com/",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "GitHub release recency and current repository activity differ. Research results do not establish coding-task quality or savings for this environment.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/microsoft/LLMLingua",
+              "https://github.com/microsoft/LLMLingua/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://llmlingua.com/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/microsoft/LLMLingua"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/microsoft/LLMLingua"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://llmlingua.com/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://llmlingua.com/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://llmlingua.com/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/microsoft/LLMLingua"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "v0.2.2",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    },
+    {
+      "id": "mcp2cli",
+      "name": "mcp2cli",
+      "summary": "Discover remote tool schemas on demand through a CLI rather than loading every schema into an agent context.",
+      "category": "mcp-discovery",
+      "tags": [
+        "progressive-discovery",
+        "tool-schemas",
+        "cli"
+      ],
+      "role": "direct",
+      "source": {
+        "repository": "knowsuchagency/mcp2cli",
+        "repositoryId": 1176469774,
+        "url": "https://github.com/knowsuchagency/mcp2cli",
+        "documentation": "https://pypi.org/project/mcp2cli/",
+        "licenseUrl": "https://github.com/knowsuchagency/mcp2cli/blob/main/LICENSE",
+        "readmeUrl": "https://github.com/knowsuchagency/mcp2cli/blob/main/README.md",
+        "readmeSha": "40401dac0b12f4a456ac845a306ddf21dec8ca89",
+        "forkOf": null
+      },
+      "license": {
+        "expression": "MIT",
+        "family": "open-source",
+        "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+      },
+      "upstream": {
+        "version": null,
+        "releaseUrl": null,
+        "releasedAt": null,
+        "pushedAt": "2026-10-28T19:03:53Z",
+        "checkedAt": "2026-10-30T05:31:32.183Z",
+        "archived": false,
+        "issues": 0,
+        "ci": "https://github.com/knowsuchagency/mcp2cli/actions/runs/40750888284",
+        "history": []
+      },
+      "packages": [
+        {
+          "registry": "pypi",
+          "name": "mcp2cli",
+          "version": "3.8.0",
+          "url": "https://pypi.org/project/mcp2cli/",
+          "repositoryMatches": true,
+          "integrity": "de087ca239d06b3104a1b7199a1c1326b5073602ef85b27456335a9099634988",
+          "checkedAt": "2026-10-30T05:31:38.042Z"
+        }
+      ],
+      "compatibility": {
+        "agents": [
+          {
+            "id": "codex",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          },
+          {
+            "id": "claude",
+            "support": "documented",
+            "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+          }
+        ],
+        "platforms": [],
+        "architectures": [],
+        "billing": {
+          "subscription": "unknown",
+          "api": "unknown"
+        },
+        "mechanisms": [
+          "cli-wrapper",
+          "mcp"
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "isolation": "guided",
+        "requirements": [
+          "A separately reviewed connection to the intended MCP or API server.",
+          "Shrinkcage does not execute its dynamic server commands or import credentials."
+        ],
+        "limitations": [
+          "The CLI accepts powerful connection and subprocess settings. Its interface has no reviewed Shrinkcage activation template; follow guidance only.",
+          "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+        ]
+      },
+      "integration": {
+        "adapterId": null,
+        "capabilities": [
+          "catalog",
+          "guided-install"
+        ],
+        "minVersion": null,
+        "maxMajor": null,
+        "executables": [
+          "mcp2cli"
+        ]
+      },
+      "security": {
+        "permissions": [
+          "Remote API or MCP access",
+          "Optional local MCP subprocesses",
+          "Optional connection settings and credentials"
+        ],
+        "network": "The CLI accepts powerful connection and subprocess settings. Its interface has no reviewed Shrinkcage activation template; follow guidance only.",
+        "warnings": [
+          "The CLI accepts powerful connection and subprocess settings. Its interface has no reviewed Shrinkcage activation template; follow guidance only.",
+          "No upstream executable or install script was run during registry research.",
+          "Dependency audit and independent task benchmark were not performed."
+        ],
+        "advisories": {
+          "state": "checked",
+          "count": 0,
+          "checkedAt": "2026-10-30T05:31:33.619Z",
+          "url": "https://github.com/knowsuchagency/mcp2cli/security/advisories"
+        },
+        "dependencyAudit": "not-performed"
+      },
+      "evidence": {
+        "references": [
+          {
+            "label": "Canonical repository metadata",
+            "url": "https://github.com/knowsuchagency/mcp2cli",
+            "kind": "repository",
+            "observedAt": "2026-10-30T05:31:32.183Z"
+          },
+          {
+            "label": "Upstream README",
+            "url": "https://github.com/knowsuchagency/mcp2cli/blob/main/README.md",
+            "kind": "documentation",
+            "observedAt": "2026-10-30T05:31:32.960Z"
+          },
+          {
+            "label": "Authoritative upstream license",
+            "url": "https://github.com/knowsuchagency/mcp2cli/blob/main/LICENSE",
+            "kind": "license",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Maintainer-authorized static registry review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/initial-review.json",
+            "kind": "review",
+            "observedAt": "2026-10-30T05:40:19.853Z"
+          },
+          {
+            "label": "Public package metadata; repository matched",
+            "url": "https://pypi.org/project/mcp2cli/",
+            "kind": "package",
+            "observedAt": "2026-10-30T05:31:38.042Z"
+          }
+        ],
+        "benchmarks": [
+          {
+            "kind": "upstream-reported",
+            "summary": "Upstream describes resource-efficiency benefits. Shrinkcage has not independently reproduced a task benchmark for this release.",
+            "url": "https://pypi.org/project/mcp2cli/",
+            "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
+            "limitations": [
+              "The CLI accepts powerful connection and subprocess settings. Its interface has no reviewed Shrinkcage activation template; follow guidance only.",
+              "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
+            ]
+          }
+        ],
+        "gates": [
+          {
+            "id": 1,
+            "name": "Identity & provenance",
+            "status": "passed",
+            "method": "static-metadata",
+            "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+            "references": [
+              "https://github.com/knowsuchagency/mcp2cli",
+              "https://github.com/knowsuchagency/mcp2cli/blob/main/LICENSE"
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Optimization relevance",
+            "status": "passed",
+            "method": "upstream-documentation",
+            "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+            "references": [
+              "https://pypi.org/project/mcp2cli/"
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Maintenance & reliability",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+            "references": [
+              "https://github.com/knowsuchagency/mcp2cli"
+            ]
+          },
+          {
+            "id": 4,
+            "name": "Security & supply chain",
+            "status": "partial",
+            "method": "static-metadata",
+            "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+            "references": [
+              "https://github.com/knowsuchagency/mcp2cli"
+            ]
+          },
+          {
+            "id": 5,
+            "name": "Functional validation",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+            "references": [
+              "https://pypi.org/project/mcp2cli/"
+            ]
+          },
+          {
+            "id": 6,
+            "name": "Compatibility",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+            "references": [
+              "https://pypi.org/project/mcp2cli/"
+            ]
+          },
+          {
+            "id": 7,
+            "name": "Optimization evidence",
+            "status": "partial",
+            "method": "upstream-documentation",
+            "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+            "references": [
+              "https://pypi.org/project/mcp2cli/"
+            ]
+          },
+          {
+            "id": 8,
+            "name": "Maintainer publication",
+            "status": "passed",
+            "method": "maintainer-review",
+            "summary": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+            "references": [
+              "https://github.com/knowsuchagency/mcp2cli"
+            ]
+          }
+        ]
+      },
+      "trust": {
+        "state": "approved",
+        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewer": "datasound-projects (Codex-assisted)",
+        "scope": "metadata-guided",
+        "reviewedVersion": "pypi:3.8.0",
+        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "limitations": [
+          "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
+          "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."
+        ]
+      }
+    }
+  ]
+}

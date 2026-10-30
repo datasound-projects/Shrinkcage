@@ -1,3 +1,4 @@
+import { RegistryService,type RegistryOptions } from '../registry/service.js';
 import { detectPlugin } from './sdk/detection.js';
 import { publicPlugin } from './sdk/service.js';
 import { builtinValidation, pluginCatalog, validatePluginContext, gate, report } from './sdk/validation.js';
@@ -8,7 +9,7 @@ import { VERSION } from '../version.js';
 import { accountSession, inspectBilling, recommendations } from './accounting.js';
 import { CATALOG } from './catalog.js';
 import { ControlStore } from './store.js';
-import { ControlError, parseBenchmark, parseManifest, parseLaunchOptions } from './schema.js';
+import { ControlError, fingerprint, parseBenchmark, parseManifest, parseLaunchOptions } from './schema.js';
 import { projectDirectory } from './paths.js';
 import { detectAgent, detectTool } from './probe.js';
 import { inspectConfiguration, inspectClaudeConfiguration } from './config.js';
@@ -16,14 +17,16 @@ import { composePlan } from './planner.js';
 import { applySetup, previewSetup, previewUndo, undoSetup } from './transactions.js';
 import type { BuiltinToolId, LaunchOptions, AgentDetection, Benchmark, ControlState, Detection, OptimizationPlan, ProjectRef, SavedProfile, ToolId } from './types.js';
 
-export interface CoreOptions { dataDir?:string; env?:NodeJS.ProcessEnv; home?:string }
+export interface CoreOptions { dataDir?:string; env?:NodeJS.ProcessEnv; home?:string; registry?:RegistryOptions }
 export class ControlPlane {
+  private registryService?:RegistryService;
+  get registry(){return this.registryService??=new RegistryService(this,this.options.registry);}
   private database?:ControlStore;private cache?:{at:number;agents:AgentDetection[];detections:Detection[]};private flight?:Promise<void>;
   readonly env:NodeJS.ProcessEnv;readonly dataDir:string;
   constructor(readonly options:CoreOptions={}){this.env=options.env??process.env;this.dataDir=options.dataDir??appDataDir(process.platform,options.home,this.env);}
   get store(){return this.database??=new ControlStore(this.dataDir);}
   get canonicalDataDir(){return dirname(this.store.dir);}
-  close(){this.database?.close();this.database=undefined;}
+  close(){this.registryService?.close();this.database?.close();this.database=undefined;}
   invalidateDiscovery(){this.cache=undefined;}
   guidedEntries(){const valid:import('./types.js').OptimizerManifest[]=[],rejected:string[]=[];const reserved=new Set([...CATALOG.map(m=>m.id),...this.store.plugins().map(p=>p.manifest.id)]);for(const value of this.store.extensions()){try{const m=parseManifest(value);if(reserved.has(m.id))throw Error();valid.push(m);}catch{const key=(value as {id?:unknown})?.id;rejected.push(typeof key==='string'&&/^[a-z][a-z0-9-]{0,47}$/.test(key)?key:'invalid-entry');}}return {valid,rejected};}
   catalog(){return [...CATALOG,...this.store.plugins().map(p=>pluginCatalog(p.manifest)),...this.guidedEntries().valid];}
@@ -57,7 +60,7 @@ export class ControlPlane {
     this.store.registerProject(result.ref,result.path);return result;
   }
   profile(id:string):SavedProfile {const value=this.store.profiles().find(p=>p.profile.id===id);if(!value)throw new ControlError('Unknown profile.');return value;}
-  async plan(agent:string,profileId:string,projectInput:{path?:string;id?:string},rawOptions:LaunchOptions={}):Promise<{plan:OptimizationPlan;projectPath:string}>{
+  async plan(agent:string,profileId:string,projectInput:{path?:string;id?:string},rawOptions:LaunchOptions={},draft?:SavedProfile):Promise<{plan:OptimizationPlan;projectPath:string}>{
     if(!['codex','claude','gemini'].includes(agent))throw new ControlError('Unknown agent.');
     const options=parseLaunchOptions(rawOptions,this.store.schemaContext());const project=await this.project(projectInput);await this.discover(true);const config=await (agent==='claude'?inspectClaudeConfiguration:inspectConfiguration)(project.path,this.env,this.options.home);
     const root=agent==='claude'?this.env.CLAUDE_CONFIG_DIR:this.env.CODEX_HOME;if(root&&!isAbsolute(root))config.errors.push('Use an absolute CLI configuration directory; relative config roots cannot preserve session auth and permissions reliably.');
@@ -66,12 +69,13 @@ export class ControlPlane {
     if(config.ownedRtk&&(!owned||owned.status!=='applied'||owned.files.some(f=>config.digests['project/'+f.path.split('/').at(-1)]!==f.afterHash)))config.errors.push('The reserved project RTK shim is unowned or changed since setup.');
     const detected=this.cache!.agents.find(a=>a.id===agent)!;
     const billing=await inspectBilling(detected,this.env,options.billing);
-    const saved=structuredClone(this.profile(profileId));if(saved.builtin)saved.profile.agent=agent as typeof saved.profile.agent;
+    const saved=structuredClone(draft??this.profile(profileId));if(saved.builtin)saved.profile.agent=agent as typeof saved.profile.agent;
     if(options.tools){if(profileId==='baseline'&&options.tools.length)throw new ControlError('Baseline cannot enable managed tools.');saved.profile.tools=options.tools.map((id,i)=>({id,required:true,priority:Math.max(0,100-i*10),config:saved.profile.tools.find(t=>t.id===id)?.config}));}
     const toolConfig=Object.fromEntries(saved.profile.tools.map(t=>[t.id,{...t.config,...options.toolConfig?.[t.id]}]));
     if(agent==='claude'&&Object.values(toolConfig).some(c=>c.timeoutSeconds!==undefined))config.errors.push('Per-server timeout overrides are currently supported only for Codex; Claude uses its native timeout policy.');
     if(Object.keys(options.toolConfig??{}).some(id=>!saved.profile.tools.some(t=>t.id===id)))throw new ControlError('Configuration was supplied for an unselected tool.');
     const plan=composePlan({profile:saved,project:project.ref,agent:detected,detections:this.cache!.detections,config,catalog:this.catalog(),platform:process.platform,billing,model:options.model,toolConfig});
+    try{const registry=await this.registry.catalog();for(const tool of plan.tools){const entry=registry.catalog.entries.find(e=>e.integration.adapterId===tool);if(entry&&entry.trust.state!=='approved')plan.errors.push('Registry '+entry.trust.state+': '+entry.name+' is blocked for new managed launches. Existing sessions remain unchanged.');if(entry&&registry.integrityError)plan.errors.push('Registry cache integrity recovery is required for '+entry.name+'.');}plan.warnings.push(...registry.warnings);const previous=plan.fingerprint;plan.fingerprint=fingerprint({plan:previous,registry:registry.sha256,integrityError:registry.integrityError});plan.launchCommand=plan.launchCommand.replace(previous,plan.fingerprint);}catch{plan.warnings.push('Registry snapshot unavailable; native adapter, source and session safety checks still apply.');}plan.ready=plan.errors.length===0;
     if(options.billing)plan.launchCommand+=' --billing '+options.billing;
     if(options.model)plan.launchCommand+=' --model '+options.model;
     if(options.tools)plan.launchCommand+=' --tools '+(options.tools.join(',')||'none');

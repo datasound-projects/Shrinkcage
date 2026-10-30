@@ -17,7 +17,7 @@ Alternative launchers: `./start.sh` on macOS/Linux, `start.cmd` or `.\start.ps1`
 Build a versioned archive and SHA-256 checksum with `npm run package`, or download a published archive when available. Install the actual artifact locally:
 
 ```sh
-npm install -g ./release/shrinkcage-monitor-1.2.0.tgz
+npm install -g ./release/shrinkcage-monitor-1.3.0.tgz
 shrinkcage
 ```
 
@@ -113,3 +113,7 @@ Keep app data private. Configure approved history locations through **Connectors
 Quick setup detects native CLIs and billing evidence, approves one local project folder, recommends a compatible stack, and previews exact changes. Run the copied command from the downloaded Shrinkcage folder in a second terminal. Global installations may use `shrinkcage` instead of `node bin/shrinkcage.mjs`. No manual agent JSON editing is required. Native trust and authentication remain in the CLI.
 
 Add Optimizer accepts safe candidates and SDK manifests. Approved foreground stdio plugins use typed settings and isolated protocol validation. Unknown interfaces remain Integration required. Updates/removal return review fingerprints; external software is preserved. See [plugins](PLUGINS.md) and [compatibility](COMPATIBILITY.md).
+
+## Find an optimization tool
+
+Open **Optimizer Registry** to browse the shipped offline catalog. **View Details** explains evidence, license and dependencies. **Add to Stack** is available only for a reviewed runtime adapter: select one custom profile or managed session, configure, validate, approve saving and use the terminal command. Existing sessions are not restarted. **Local Library** retains native discovery and the SDK tools. See [Registry guide](REGISTRY.md) for suggestions, manual metadata refresh and limitations.

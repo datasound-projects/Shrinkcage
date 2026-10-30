@@ -1,3 +1,4 @@
+import RegistryWorkspace from './RegistryWorkspace';
 import { useCallback,useEffect,useRef,useState } from 'react';
 import type { BillingMode,Benchmark,ControlState,ManagedSession,OptimizationPlan,Profile,SavedProfile,SetupPreview,ToolId } from '../../server/control/types';
 import './control.css';
@@ -127,4 +128,4 @@ function LocalSettings({control}:{control:Control}){
     <details><summary>System diagnostics & shared services</summary>{data.diagnostics.map(d=><p key={d}>{d}</p>)}<p>Version {data.version} · {data.platform}. External services and current development sessions are never stopped by configuration controls.</p><a href="#health">Ports, native dashboards & health →</a></details>
   </>}</section>;
 }
-export default function ControlWorkspace(){const control=useControl();return <div className="control-workspace"><ControlSummary data={control.data}/><SetupWizard {...control}/><ManagedSessions control={control}/><Catalog control={control}/><ValidationCenter {...control}/><ProfileBuilder control={control}/><CostUsage data={control.data}/><Comparisons control={control}/><LocalSettings control={control}/></div>;}
+export default function ControlWorkspace(){const control=useControl();return <div className="control-workspace"><ControlSummary data={control.data}/><SetupWizard {...control}/><ManagedSessions control={control}/><RegistryWorkspace {...control}/><Catalog control={control}/><ValidationCenter {...control}/><ProfileBuilder control={control}/><CostUsage data={control.data}/><Comparisons control={control}/><LocalSettings control={control}/></div>;}

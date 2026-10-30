@@ -1,5 +1,5 @@
 import {readdir,readFile} from 'node:fs/promises';
-const roots=['server','sdk','src','bin','scripts','tests','public','docs','.github'];
+const roots=['server','sdk','registry','src','bin','scripts','tests','public','docs','.github'];
 const files=['README.md','package.json','package-lock.json','start.sh','start.ps1','start.cmd','LICENSE','SECURITY.md','CONTRIBUTING.md','CHANGELOG.md','THIRD_PARTY_NOTICES.md','.env.example','.c8rc.json','index.html','vite.config.ts'];
 async function walk(dir){for(const e of await readdir(dir,{withFileTypes:true}).catch(()=>[])){const p=dir+'/'+e.name;if(e.isDirectory())await walk(p);else if(!p.endsWith('.png'))files.push(p);}}
 for(const root of roots)await walk(root);

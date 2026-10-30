@@ -1,0 +1,41 @@
+name: Suggest an optimizer
+description: Propose a public tool for review. A submission is not approval.
+title: "Optimizer suggestion: "
+body:
+  - type: input
+    id: repository
+    attributes:
+      label: Canonical public GitHub repository
+      placeholder: https://github.com/owner/project
+    validations:
+      required: true
+  - type: input
+    id: documentation
+    attributes:
+      label: Official documentation
+  - type: textarea
+    id: mechanism
+    attributes:
+      label: What does it optimize, and how?
+      description: Explain a concrete mechanism or supporting analytics/evaluation role.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Version, license, interfaces and evidence
+      description: Link public sources. Distinguish upstream claims from tests you ran. Include client/platform/billing limits, permissions and dependencies.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Optional generated review proposal
+      description: Attach sanitized candidate JSON/test instructions. Never include credentials, private paths, prompts, sessions or project contents.
+  - type: checkboxes
+    id: review
+    attributes:
+      label: Review expectations
+      options:
+        - label: I understand this enters a review queue and cannot directly modify the approved registry.
+          required: true

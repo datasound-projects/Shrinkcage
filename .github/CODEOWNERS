@@ -1,0 +1,4 @@
+# Catalog/source changes require an explicit, scoped maintainer review.
+/registry/ @datasound-projects
+/server/registry/ @datasound-projects
+/server/control/sdk/ @datasound-projects

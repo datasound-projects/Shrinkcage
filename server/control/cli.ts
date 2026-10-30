@@ -1,3 +1,4 @@
+import { registryCli } from '../registry/cli.js';
 import { readFile } from 'node:fs/promises';
 import { createInterface } from 'node:readline/promises';
 import { VERSION } from '../version.js';
@@ -34,6 +35,7 @@ shrinkcage accounting show|import <json-file>
 shrinkcage sessions prune [--days 90]
 shrinkcage extension inspect|import <json-file>
 shrinkcage extension remove <id>
+shrinkcage registry list|show ID|discover|update
 shrinkcage optimizer register|update --manifest FILE.json --executable PATH [--script FILE.mjs] [--owned-copy] [--approve FINGERPRINT]
 shrinkcage optimizer add-example [--id NAME] [--approve FINGERPRINT]
 shrinkcage optimizer inspect|check|rollback|remove ID [--approve FINGERPRINT]
@@ -84,6 +86,7 @@ export async function main(args=process.argv.slice(2)):Promise<number>{
   try{
     const {positionals:p,flags:f,rest}=parseArguments(args);const command=p[0];
     if(command!=='run'&&rest.length)throw new ControlError('Agent argument passthrough is supported only by run.');
+    if(command==='registry')return registryCli(plane,p,f);
     if(command==='optimizer')return await pluginCli(plane,p,f);
     if(command==='doctor'||command==='tools'){
       allowed(f,['json']);if(p.length!==1)throw new ControlError('Unexpected positional arguments.');const state=await plane.state();
