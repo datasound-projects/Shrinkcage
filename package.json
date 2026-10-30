@@ -34,7 +34,7 @@
     "typescript": "^5.9.0",
     "vite": "^6.4.0"
   },
-  "description": "Local-first control plane for optimizing AI coding-agent CLI sessions.",
+  "description": "Track AI coding sessions and token savings locally.",
   "license": "MIT",
   "bin": {
     "shrinkcage": "bin/shrinkcage.mjs"
@@ -59,7 +59,8 @@
     "docs/CONTROL_PLANE.md",
     "docs/TEST_MATRIX.md",
     "docs/images/control-plane.png",
-    "docs/images/managed.png"
+    "docs/images/managed.png",
+    "docs/SETUP.md"
   ],
   "repository": {
     "type": "git",
