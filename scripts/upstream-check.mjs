@@ -1,6 +1,7 @@
 // Manual CI only: fixed official CLIs, version/help probes. No login, task or model request.
 import {mkdir,writeFile,mkdtemp,realpath,readFile,lstat,rm} from 'node:fs/promises';
-import {join,delimiter,isAbsolute} from 'node:path';
+import {join,dirname,delimiter,isAbsolute} from 'node:path';
+import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
 import {pluginEnvironment} from '../server/control/sdk/binding.ts';
 import {detectAgent} from '../server/control/probe.ts';
@@ -10,7 +11,7 @@ try{const env=await pluginEnvironment(join(root,'home'),process.env);env.CODEX_H
   // official installed native dependency directly; never execute its installer.
   const npmRoot=process.env.SHRINKCAGE_UPSTREAM_NPM_ROOT;
   if(npmRoot){if(!isAbsolute(npmRoot))throw Error('Use an absolute upstream npm root.');const wrapper=JSON.parse(await readFile(join(npmRoot,'@anthropic-ai','claude-code','package.json'),'utf8')),name='@anthropic-ai/claude-code-'+process.platform+'-'+process.arch;
-    if(wrapper.optionalDependencies?.[name]){const dir=join(npmRoot,...name.split('/')),meta=JSON.parse(await readFile(join(dir,'package.json'),'utf8')),file=join(dir,process.platform==='win32'?'claude.exe':'claude'),info=await lstat(file);if(wrapper.name!=='@anthropic-ai/claude-code'||meta.name!==name||meta.version!==wrapper.version||wrapper.optionalDependencies[name]!==meta.version||!info.isFile()||info.isSymbolicLink())throw Error('Official native package identity did not match.');env.PATH=dir+delimiter+(env.PATH??env.Path??'');delete env.Path;nativeSource=name+'@'+meta.version;}
+    if(wrapper.optionalDependencies?.[name]){const metadata=createRequire(join(npmRoot,'@anthropic-ai','claude-code','package.json')).resolve(name+'/package.json'),dir=dirname(metadata),meta=JSON.parse(await readFile(metadata,'utf8')),file=join(dir,process.platform==='win32'?'claude.exe':'claude'),info=await lstat(file);if(wrapper.name!=='@anthropic-ai/claude-code'||meta.name!==name||meta.version!==wrapper.version||wrapper.optionalDependencies[name]!==meta.version||!info.isFile()||info.isSymbolicLink())throw Error('Official native package identity did not match.');env.PATH=dir+delimiter+(env.PATH??env.Path??'');delete env.Path;nativeSource=name+'@'+meta.version;}
   }
   agents=await Promise.all(['codex','claude'].map(id=>detectAgent(env,id)));
 }finally{await rm(root,{recursive:true,force:true});}
