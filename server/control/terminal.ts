@@ -44,7 +44,7 @@ export class TerminalLauncher {
   }
   private async script(value:TerminalLaunch,projectPath:string){
     const root=join(this.plane.store.dir,'launchers');await mkdir(root,{recursive:true,mode:0o700});if((await lstat(root)).isSymbolicLink()||await realpath(root)!==root)throw new ControlError('The launch directory must not be a symlink.');
-    const dir=join(root,value.id);await mkdir(dir,{mode:0o700});await chmod(dir,0o700);
+    const dir=join(root,value.id);await mkdir(dir,{mode:0o700});if(await realpath(dir)!==dir||(await lstat(dir)).isSymbolicLink())throw new ControlError('The owned launch directory changed. Review and start again.');await chmod(dir,0o700);
     // The compiled package and the source tests have different parent depths.
     const entry=fileURLToPath(new URL(import.meta.url.includes('/dist-server/')?'../../../bin/shrinkcage.mjs':'../../bin/shrinkcage.mjs',import.meta.url));
     const args=[process.execPath,entry,'sessions','start-ticket',value.id];
@@ -71,6 +71,6 @@ export async function runTerminalTicket(plane:ControlPlane,id:string,options:{in
   }catch(e){plane.store.updateTerminalLaunch(id,{state:'failed',error:e instanceof ControlError?e.message:'The managed launch failed. Review session diagnostics; private output was not retained.'});throw e;}
   finally{if(plane.store.terminalLaunch(id)?.state==='started')plane.store.updateTerminalLaunch(id,{state:'exited'});
     // Herdr's persistent server still needs its configured default-shell file.
-    if(ticket.target==='terminal'){const dir=join(plane.store.dir,'launchers',id),file=join(dir,process.platform==='win32'?'start.ps1':'start.command');try{const bytes=await readBounded(file,32768);if(bytes&&digest(bytes.toString('utf8'))===ticket.scriptHash){await unlink(file);await rmdir(dir);}}catch{/* changed or still-open resources are preserved */}}
+    if(ticket.target==='terminal'){const root=join(plane.store.dir,'launchers'),dir=join(root,id),file=join(dir,process.platform==='win32'?'start.ps1':'start.command');try{const owned=await realpath(root)===root&&await realpath(dir)===dir&&!(await lstat(root)).isSymbolicLink()&&!(await lstat(dir)).isSymbolicLink();if(owned){const bytes=await readBounded(file,32768);if(bytes&&digest(bytes.toString('utf8'))===ticket.scriptHash&&await realpath(dir)===dir){await unlink(file);await rmdir(dir);}}}catch{/* changed or still-open resources are preserved */}}
   }
 }

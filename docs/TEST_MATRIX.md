@@ -1,6 +1,6 @@
 # Release test matrix · 1.5
 
-The 141-test suite retains the original monitor/control-plane coverage and adds cumulative-scope accounting, compatibility recovery and isolated optimization-stack coverage for both agents. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
+The 142-test suite retains the original monitor/control-plane coverage and adds cumulative-scope accounting, compatibility recovery and isolated optimization-stack coverage for both agents. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
 
 | Area | Evidence |
 |---|---|
