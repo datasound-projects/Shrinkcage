@@ -1,6 +1,6 @@
-# Release test matrix · 1.4
+# Release test matrix · 1.5
 
-The 133-test suite retains the original monitor/control-plane coverage and adds cumulative-scope accounting, compatibility recovery and isolated optimization-stack coverage for both agents. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
+The 141-test suite retains the original monitor/control-plane coverage and adds cumulative-scope accounting, compatibility recovery and isolated optimization-stack coverage for both agents. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
 
 | Area | Evidence |
 |---|---|
@@ -27,3 +27,5 @@ The 133-test suite retains the original monitor/control-plane coverage and adds 
 | Optional upstream interfaces | Manual approved workflow; official package version/help only; no automatic promotion or model requests |
 
 Critical planner/transaction coverage remains at least 85% branches. Native model-backed quality, invoice costs, quota savings and arbitrary new mechanism support are not implied by passing fixture tests. See [compatibility](COMPATIBILITY.md) and [SDK boundaries](PLUGINS.md).
+
+Terminal launch coverage is in `terminal-launch.test.ts` and `terminal-ui-test.mjs`: single-use approvals, desktop admission, all billing paths, HTTP security, isolated stacks, and saved-stack launch. Actual macOS Terminal/Herdr and real Codex startup checks are separately qualified in VALIDATION.md.

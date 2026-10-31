@@ -7,6 +7,7 @@ import { ControlPlane } from './core.js';
 import { ControlError, id as validId, parseManifest, parseProfile, parseLaunchOptions } from './schema.js';
 import { readBounded } from './paths.js';
 import { runManaged } from './runner.js';
+import { runTerminalTicket } from './terminal.js';
 import { accountSession } from './accounting.js';
 import type { LaunchOptions,OptimizationPlan,Profile,ToolId } from './types.js';
 import { TOOL_IDS } from './types.js';
@@ -42,7 +43,7 @@ shrinkcage optimizer inspect|check|rollback|remove ID [--approve FINGERPRINT]
 
 An approved project can also be selected with --project-id <id>.
 Installations are guided; setup only changes the two previewed project RTK files.
-No browser execution endpoint, global agent-config writes, account changes or transcript export.
+Reviewed browser launches use one-time native-terminal approvals. No arbitrary browser commands, global agent-config writes, account changes or transcript export.
 Managed runs preserve the terminal, agent policies and exit status. Codex and supported Claude Code versions are available for managed runs. Native billing authentication is unchanged.
 `;
 export function parseArguments(args:string[]){
@@ -124,6 +125,7 @@ export async function main(args=process.argv.slice(2)):Promise<number>{
       if(!result.plan.ready){printPlan(result.plan);return 2;}const approved=await approval(result.plan,value(f,'approve'));return await runManaged(plane,{agent:p[1],profile,project:project(f),approved,args:rest,options:launchOptions(f,plane.store.schemaContext())});
     }
     if(command==='sessions'){
+      if(p[1]==='start-ticket'){allowed(f,[]);if(p.length!==3)throw new ControlError('Choose one terminal launch approval.');return await runTerminalTicket(plane,p[2]);}
       allowed(f,['json','days','tools','tool-config','tool-config-b64','offset','limit']);if(p.length===1){const sessions=plane.store.sessions(number(value(f,'offset'),0),number(value(f,'limit'),200));if(f.json)json(sessions);else for(const s of sessions)console.log(`${s.id} · ${s.status} · ${s.profile} · ${s.project.label}`);return 0;}
       if(p[1]==='prune'&&p.length===2){plane.store.prune(number(value(f,'days'),90));json({pruned:true});return 0;}
       if(p.length===3&&['show','export'].includes(p[1])){const session=plane.store.session(p[2]);if(!session)throw new ControlError('Session not found.');json({...session,accounting:accountSession(session,plane.store.accounting())});return 0;}

@@ -9,6 +9,7 @@ import { parsePluginManifest, pluginConfiguration } from './sdk/manifest.js';
 import type { OptimizerCandidate, RegisteredPlugin, ValidationReport } from './sdk/types.js';
 import { EMPTY_ACCOUNTING, parseAccounting } from './accounting.js';
 import { DEFAULT_PROFILES } from './profiles.js';
+import type { LaunchPreview,TerminalLaunch } from './terminal-types.js';
 import type { AccountingSettings, Benchmark, ManagedSession, ProjectRef, SavedProfile, SessionPreference, SetupReceipt } from './types.js';
 
 export class ControlStore {
@@ -54,9 +55,17 @@ export class ControlStore {
       CREATE TABLE IF NOT EXISTS registry_documents(url TEXT PRIMARY KEY,value TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS registry_jobs(id TEXT PRIMARY KEY,value TEXT NOT NULL);
       INSERT INTO settings(id,value) VALUES('schema','{"version":4}') ON CONFLICT(id) DO UPDATE SET value=excluded.value;`));
+    this.db.exec('CREATE TABLE IF NOT EXISTS terminal_previews(id TEXT PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS terminal_launches(id TEXT PRIMARY KEY, value TEXT NOT NULL);');
     }catch(e){try{this.db.close();}catch{/* preserve the initialization failure */}throw e;}
   }
   close(){this.db.close();}
+  saveTerminalPreview(value:LaunchPreview){this.db.prepare('INSERT INTO terminal_previews(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run(value.fingerprint,JSON.stringify(value));this.db.exec('DELETE FROM terminal_previews WHERE rowid NOT IN (SELECT rowid FROM terminal_previews ORDER BY rowid DESC LIMIT 100)');}
+  terminalPreview(id:string):LaunchPreview|null{const row=this.db.prepare('SELECT value FROM terminal_previews WHERE id=?').get(id);return row?this.decode(row.value):null;}
+  terminalLaunch(id:string):TerminalLaunch|null{const row=this.db.prepare('SELECT value FROM terminal_launches WHERE id=?').get(id);return row?this.decode(row.value):null;}
+  terminalLaunches():TerminalLaunch[]{return this.db.prepare('SELECT value FROM terminal_launches ORDER BY rowid DESC LIMIT 100').all().map(row=>this.decode<TerminalLaunch>(row.value));}
+  reserveTerminalLaunch(value:TerminalLaunch):boolean{const added=Number(this.db.prepare('INSERT OR IGNORE INTO terminal_launches(id,value) VALUES(?,?)').run(value.id,JSON.stringify(value)).changes)>0;this.db.prepare("DELETE FROM terminal_launches WHERE rowid NOT IN (SELECT rowid FROM terminal_launches ORDER BY rowid DESC LIMIT 100) AND (json_extract(value,'$.state') IN ('failed','exited') OR (json_extract(value,'$.sessionId') IS NULL AND json_extract(value,'$.expiresAt') < ?))").run(Date.now());return added;}
+  updateTerminalLaunch(id:string,patch:Partial<Pick<TerminalLaunch,'state'|'sessionId'|'error'|'scriptHash'>>){return this.transaction(()=>{const value=this.terminalLaunch(id);if(!value)throw new ControlError('Terminal launch not found.');const next={...value,...patch};this.db.prepare('UPDATE terminal_launches SET value=? WHERE id=?').run(JSON.stringify(next),id);return next;});}
+  claimTerminalLaunch(id:string):TerminalLaunch{return this.transaction(()=>{const value=this.terminalLaunch(id);if(!value||!['opening','waiting'].includes(value.state)||value.expiresAt<=Date.now())throw new ControlError('This launch approval expired or was already used. Review and start a new session.','approval',409);value.state='claimed';this.db.prepare('UPDATE terminal_launches SET value=? WHERE id=?').run(JSON.stringify(value),id);return value;});}
   lockProof(projectId:string){return this.db.prepare('SELECT token,pid FROM locks WHERE project_id=?').get(projectId) as {token:string;pid:number}|undefined;}
   reserveLock(projectId:string,token:string){return Number(this.db.prepare('INSERT OR IGNORE INTO locks(project_id,token,pid) VALUES(?,?,?)').run(projectId,token,process.pid).changes)>0;}
   reclaimLock(projectId:string,oldToken:string,token:string){return Number(this.db.prepare('UPDATE locks SET token=?,pid=? WHERE project_id=? AND token=?').run(token,process.pid,projectId,oldToken).changes)>0;}

@@ -1,6 +1,6 @@
 {
   "name": "shrinkcage-monitor",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -16,7 +16,7 @@
     "package": "npm run build && node scripts/licenses.mjs && node scripts/package.mjs",
     "smoke": "node --import tsx scripts/smoke.mjs",
     "coverage": "c8 node --import tsx --test tests/control-planner.test.ts tests/control-transactions.test.ts",
-    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs && node --import tsx scripts/registry-ui-test.mjs",
+    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs && node --import tsx scripts/registry-ui-test.mjs && node --import tsx scripts/terminal-ui-test.mjs",
     "registry:validate": "node --import tsx scripts/registry-validate.mjs",
     "registry:discover": "node --import tsx scripts/registry-discover.mjs",
     "registry:review": "node --import tsx scripts/registry-review.mjs"
@@ -72,7 +72,9 @@
     "docs/images/quick-setup.png",
     "registry/",
     "docs/REGISTRY.md",
-    "docs/images/registry.png"
+    "docs/images/registry.png",
+    "docs/TERMINALS.md",
+    "docs/images/start-session.png"
   ],
   "repository": {
     "type": "git",

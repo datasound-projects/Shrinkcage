@@ -1,4 +1,5 @@
 import { RegistryService,type RegistryOptions } from '../registry/service.js';
+import { TerminalLauncher,type TerminalOptions } from './terminal.js';
 import { detectPlugin } from './sdk/detection.js';
 import { publicPlugin } from './sdk/service.js';
 import { builtinValidation, pluginCatalog, validatePluginContext, gate, report } from './sdk/validation.js';
@@ -17,8 +18,10 @@ import { composePlan } from './planner.js';
 import { applySetup, previewSetup, previewUndo, undoSetup } from './transactions.js';
 import type { BuiltinToolId, LaunchOptions, AgentDetection, Benchmark, ControlState, Detection, OptimizationPlan, ProjectRef, SavedProfile, ToolId } from './types.js';
 
-export interface CoreOptions { dataDir?:string; env?:NodeJS.ProcessEnv; home?:string; registry?:RegistryOptions }
+export interface CoreOptions { dataDir?:string; env?:NodeJS.ProcessEnv; home?:string; registry?:RegistryOptions; terminal?:TerminalOptions }
 export class ControlPlane {
+  private terminalService?:TerminalLauncher;
+  get terminals(){return this.terminalService??=new TerminalLauncher(this,this.options.terminal);}
   private registryService?:RegistryService;
   get registry(){return this.registryService??=new RegistryService(this,this.options.registry);}
   private database?:ControlStore;private cache?:{at:number;agents:AgentDetection[];detections:Detection[]};private flight?:Promise<void>;
@@ -45,7 +48,7 @@ export class ControlPlane {
   }
   async state(token=''):Promise<ControlState>{
     await this.discover();const store=this.store;const guided=this.guidedEntries();const accounting=store.accounting();const sessions=store.sessions().map(s=>({...s,accounting:accountSession(s,accounting)}));
-    return {schemaVersion:1,version:VERSION,platform:process.platform,updatedAt:new Date().toISOString(),catalog:this.catalog(),detections:this.cache!.detections,agents:this.cache!.agents,profiles:store.profiles(),projects:store.projects(),sessions:sessions.slice(0,50),benchmarks:store.comparisons(),receipts:store.receipts().map(({id,tool,projectId,status,createdAt,version})=>({id,tool,projectId,status,createdAt,version})),diagnostics:[...guided.rejected.map(id=>'Guided entry '+id+' conflicts with a registered/reserved identity or no longer validates. Metadata is preserved; use extension remove ID to remove only that entry.'),'Managed execution is available only from the terminal. Browser actions compose plans and change Shrinkcage metadata.','A managed launch process is distinct from a confirmed optimizer connection.','Installations are guided: no package manager, remote script or agent-global setup runs automatically.','The dashboard shows the latest 50 managed records. CLI metadata queries are bounded to the latest 200.'],csrfToken:token,accounting,plugins:store.plugins().map(publicPlugin),candidates:store.candidates(),onboarding:store.onboarding(),validations:await this.validationReports('codex','unknown'),validationHistory:store.validationHistory(),managedCount:store.sessionCount(),activeManagedCount:store.activeCount(),recommendations:recommendations(sessions,accounting)};
+    return {schemaVersion:1,version:VERSION,platform:process.platform,updatedAt:new Date().toISOString(),catalog:this.catalog(),detections:this.cache!.detections,agents:this.cache!.agents,profiles:store.profiles(),projects:store.projects(),sessions:sessions.slice(0,50),benchmarks:store.comparisons(),receipts:store.receipts().map(({id,tool,projectId,status,createdAt,version})=>({id,tool,projectId,status,createdAt,version})),diagnostics:[...guided.rejected.map(id=>'Guided entry '+id+' conflicts with a registered/reserved identity or no longer validates. Metadata is preserved; use extension remove ID to remove only that entry.'),'Reviewed browser launches open a native terminal using a one-time plan approval. Arbitrary commands and process termination are not exposed.','A managed launch process is distinct from a confirmed optimizer connection.','Installations are guided: no package manager, remote script or agent-global setup runs automatically.','The dashboard shows the latest 50 managed records. CLI metadata queries are bounded to the latest 200.'],csrfToken:token,accounting,plugins:store.plugins().map(publicPlugin),candidates:store.candidates(),onboarding:store.onboarding(),validations:await this.validationReports('codex','unknown'),validationHistory:store.validationHistory(),managedCount:store.sessionCount(),activeManagedCount:store.activeCount(),recommendations:recommendations(sessions,accounting)};
   }
   async validationReports(agent:'codex'|'claude',billing:import('./types.js').BillingMode){
     await this.discover();const agentInfo=this.cache!.agents.find(a=>a.id===agent);const sessions=this.store.sessions(),active=sessions.filter(s=>['running','degraded','starting'].includes(s.status));

@@ -42,7 +42,7 @@ export async function updateEvidence(session:ManagedSession,context:Omit<Adapter
   for(const tool of session.plannedTools){const a=adapter(tool,context.plane,context.plugins?.[tool]);const c={...context,events,session};const evidence=await a.verify(c);const index=session.evidence.findIndex(e=>e.tool===tool);if(index<0)session.evidence.push(evidence);else session.evidence[index]=evidence;observed.push(...await a.observe(c));}
   session.metrics=[...shared,...observed];
 }
-export async function runManaged(plane:ControlPlane,input:{agent:string;profile:string;project:{path?:string;id?:string};approved:string;args:string[];options?:LaunchOptions},options:{snapshot?:()=>Promise<MetricObservation[]>;quiet?:boolean}={}):Promise<number>{
+export async function runManaged(plane:ControlPlane,input:{agent:string;profile:string;project:{path?:string;id?:string};approved:string;args:string[];options?:LaunchOptions},options:{snapshot?:()=>Promise<MetricObservation[]>;quiet?:boolean;onCreated?:(session:ManagedSession)=>void}={}):Promise<number>{
   const {plan,projectPath}=await plane.plan(input.agent,input.profile,input.project,input.options);
   if(!plan.ready)throw new ControlError('Plan is blocked: '+plan.errors.join(' '));
   if(plan.fingerprint!==input.approved)throw new ControlError('Run approval is stale. Preview and approve the current plan fingerprint.','approval',409);
@@ -55,7 +55,7 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
   const runtime=await prepareRuntime(plane.canonicalDataDir,id,token,plan.tools,plan.binaryFingerprints,pluginSnapshots);let created=false;const applied:AppliedResources[]=[];let heartbeat:ReturnType<typeof setInterval>|undefined,beating=false;const started=Date.now();let lastSignal:NodeJS.Signals|null=null;
   let supervisor:ChildProcess|undefined;const context={plane,plan,approved:input.approved,session,plugins:pluginSnapshots};let interrupt:(()=>void)|undefined,terminate:(()=>void)|undefined;
   try{
-    plane.store.createSession(session,token,Object.fromEntries(Object.entries(pluginSnapshots).map(([id,p])=>[id,p.binding.fingerprint])));created=true;
+    plane.store.createSession(session,token,Object.fromEntries(Object.entries(pluginSnapshots).map(([id,p])=>[id,p.binding.fingerprint])));created=true;options.onCreated?.(session);
     for(const tool of plan.tools)applied.push(await adapter(tool,plane,pluginSnapshots[tool]).apply({...context,events:[]}));
     let appliedOverrides=applied.flatMap(a=>a.overrides);
     if(plan.agent==='claude'){const servers:Record<string,unknown>={},other:string[]=[];for(let i=0;i<appliedOverrides.length;i++){if(appliedOverrides[i]==='--mcp-config')Object.assign(servers,JSON.parse(appliedOverrides[++i]).mcpServers);else other.push(appliedOverrides[i]);}appliedOverrides=[...other,'--strict-mcp-config','--mcp-config',JSON.stringify({mcpServers:servers})];}

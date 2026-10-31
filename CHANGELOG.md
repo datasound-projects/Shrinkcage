@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 — start reviewed sessions in your terminal
+
+- Add Start session in Sessions, setup, saved profiles and pending stack previews, with Terminal/Herdr selection and actual launcher confirmation.
+- Bind native launch requests to reviewed, expiring, single-use plans; preserve idempotency, fresh configuration validation, native authentication, approvals and process ownership. Accept no browser command strings or arbitrary executable arguments.
+- Support macOS Terminal, detected Linux desktop terminals and Windows PowerShell. Add isolated Herdr 0.9.5+ private-config sessions on macOS/Linux; keep unsupported states explicit.
+- Add eight backend tests and a fourth browser suite covering billing paths, stack isolation, security and recovery. Make browser regressions use ephemeral ports without stopping a running dashboard.
+- Document real macOS Terminal/Herdr launch checks and native Codex startup, separately from fake-CLI activation and paid task-quality/savings validation.
+
 ## 1.4.0 — focused silver workspace and accounting fixes
 
 - Replace the seventeen-link scrolling dashboard with five destinations and focused contextual screens. Retain deep links, draft state and every existing control.

@@ -37,6 +37,7 @@ jobs:
       - run: node scripts/ui-test.mjs
       - run: node --import tsx scripts/control-ui-test.mjs
       - run: node --import tsx scripts/registry-ui-test.mjs
+      - run: node --import tsx scripts/terminal-ui-test.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
