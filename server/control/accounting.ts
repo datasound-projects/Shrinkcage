@@ -1,3 +1,4 @@
+import {uniqueUsageRecords} from './usage-summary.js';
 import { ControlError, object } from './schema.js';
 import { executable, runBounded } from './probe.js';
 import type { AccountingSettings, AgentDetection, BillingEvidence, BillingMode, ManagedSession, PriceRate, Recommendation, SessionAccounting, SessionUsage } from './types.js';
@@ -90,9 +91,9 @@ export function recommendations(sessions:ManagedSession[],settings:AccountingSet
   const result:Recommendation[]=[];
   if(sessions.some(s=>(s.billing?.mode??'unknown')==='unknown'))result.push({id:'billing',title:'Label session billing',detail:'Unknown billing cannot be treated as API spending or subscription usage.',severity:'info'});
   if(sessions.some(s=>s.usage?.model&&!settings.prices.some(p=>p.model===s.usage?.model)))result.push({id:'prices',title:'Add exact-model prices',detail:'Configure reviewed input, output and cache rates to see qualified cost estimates.',severity:'info'});
-  const month=new Date().toISOString().slice(0,7),known=sessions.filter(s=>s.startedAt.startsWith(month)&&s.accounting?.apiEstimatedUsd!==null&&s.accounting?.apiEstimatedUsd!==undefined);
+  const month=new Date().toISOString().slice(0,7),known=uniqueUsageRecords(sessions).filter(s=>s.startedAt.startsWith(month)&&s.accounting?.apiEstimatedUsd!==null&&s.accounting?.apiEstimatedUsd!==undefined);
   const spend=known.reduce((n,s)=>n+(s.accounting?.apiEstimatedUsd??0),0);
-  if(known.length&&settings.monthlyApiBudgetUsd!==null&&spend>=settings.monthlyApiBudgetUsd)result.push({id:'budget',title:'Estimated API budget reached',detail:'Known estimates among the latest 200 managed records reached the configured monthly budget. Missing and older sessions are excluded; no running CLI is interrupted.',severity:'attention'});
+  if(known.length&&settings.monthlyApiBudgetUsd!==null&&spend>=settings.monthlyApiBudgetUsd)result.push({id:'budget',title:'Estimated API budget reached',detail:'Known estimates from distinct native usage scopes among the latest 200 managed records reached the configured monthly budget. Missing and older sessions are excluded; no running CLI is interrupted.',severity:'attention'});
   for(const s of sessions.slice(0,50)){
     if(s.inheritedConfiguration?s.inheritedConfiguration.length>0:s.diagnostics.some(d=>/external.*hook|inherited/i.test(d)))result.push({id:'inheritance-'+s.id,title:'Review inherited optimization',detail:'External hooks or routing may affect this session independently of its selected stack.',sessionId:s.id,severity:'attention'});
     if((s.usage?.retries??0)>2)result.push({id:'retries-'+s.id,title:'Review repeated requests',detail:'Observed retries can outweigh token reductions. Check quality and reliability before choosing a stronger profile.',sessionId:s.id,severity:'attention'});

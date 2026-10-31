@@ -17,7 +17,7 @@ Alternative launchers: `./start.sh` on macOS/Linux, `start.cmd` or `.\start.ps1`
 Build a versioned archive and SHA-256 checksum with `npm run package`, or download a published archive when available. Install the actual artifact locally:
 
 ```sh
-npm install -g ./release/shrinkcage-monitor-1.3.0.tgz
+npm install -g ./release/shrinkcage-monitor-1.4.0.tgz
 shrinkcage
 ```
 
@@ -117,3 +117,9 @@ Add Optimizer accepts safe candidates and SDK manifests. Approved foreground std
 ## Find an optimization tool
 
 Open **Optimizer Registry** to browse the shipped offline catalog. **View Details** explains evidence, license and dependencies. **Add to Stack** is available only for a reviewed runtime adapter: select one custom profile or managed session, configure, validate, approve saving and use the terminal command. Existing sessions are not restarted. **Local Library** retains native discovery and the SDK tools. See [Registry guide](REGISTRY.md) for suggestions, manual metadata refresh and limitations.
+
+## Focused workspace
+
+Use **New session** to begin. The sidebar has Overview, Sessions, Optimizers, Cost & usage and Settings. Context tabs reveal profiles, saved history, validation, shared charts and source diagnostics. Existing hash links still work; changing views preserves unsaved drafts until the page is reloaded. Detailed session accounting is collapsed under Usage, costs & data quality. Refresh updates session controls, agent discovery and shared metrics. An offline metrics source does not block navigation.
+
+Unsupported installed agents remain visible with guidance, but launch previews and tool selection are disabled until discovery confirms a supported interface. Update/login through the native CLI; Shrinkcage does not install or reauthenticate it.

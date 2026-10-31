@@ -4,10 +4,11 @@
 
 **Local-first token and cost optimization for AI coding sessions.**
 
-Choose an optimization stack for each Codex or Claude Code session. Check what actually ran, understand its usage, and compare results without guessing at savings.
+Choose a stack for each Codex or Claude Code session. See what actually ran, understand usage and compare results without guessing at savings.
 
 [![Build and tests](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml/badge.svg)](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml)
-[Download ZIP](https://github.com/datasound-projects/Shrinkcage/archive/refs/heads/main.zip) · [Setup help](docs/SETUP.md) · [Compatibility](docs/CONNECTORS.md) · [Report a problem](https://github.com/datasound-projects/Shrinkcage/issues)
+
+[Download ZIP](https://github.com/datasound-projects/Shrinkcage/archive/refs/heads/main.zip) · [Setup help](docs/SETUP.md) · [Supported tools](docs/COMPATIBILITY.md) · [Report a problem](https://github.com/datasound-projects/Shrinkcage/issues)
 
 ## Download, install and open
 
@@ -19,15 +20,27 @@ Choose an optimization stack for each Codex or Claude Code session. Check what a
    node scripts/start.mjs
    ```
 
-This installs the app's dependencies, builds it and opens **[localhost:8790](http://localhost:8790)**. Keep the terminal open; press **Ctrl+C** to stop. On macOS/Linux, `./start.sh` also works. Windows users can use `start.cmd` or `.\start.ps1`.
+This installs dependencies, builds the app and opens **[localhost:8790](http://localhost:8790)**. Keep the terminal open; press **Ctrl+C** to stop. macOS/Linux users can run `./start.sh`; Windows users can use `start.cmd` or `.\start.ps1`.
 
-No Docker, cloud service or Shrinkcage account is needed. Optional tools can be absent. Your coding CLI keeps its own login, sandbox and approval rules.
+No Docker, cloud service or Shrinkcage account is needed. Install and sign in to your coding CLI separately. Optional tools can be absent.
 
-Open **Quick setup**: detect your CLIs, choose billing and a project, pick a recommended stack, and review its exact changes. Copy the launch command into a second terminal in the Shrinkcage folder. No JSON editing is needed. The Validation center separates installation, compatibility and actual session activity. [Preview the setup wizard](docs/images/quick-setup.png).
+![Shrinkcage silver workspace — illustrative test data](docs/images/overview.png)
 
-## Launch an optimized session
+## Start your first session
 
-Install and sign in to your coding CLI separately. Then, in a **second terminal in the Shrinkcage folder**, run:
+Click **New session**. Select Codex or Claude Code, choose billing and a project, then pick compatible tools. Review the plan and copy its command into a second terminal. No manual JSON editing is needed.
+
+- **Overview:** recent sessions and separate optimizer contributions.
+- **Sessions:** independent stacks, actual activation, tool activity and saved history.
+- **Optimizers:** a reviewed registry, local installations and validation details.
+- **Cost & usage:** reported tokens, qualified price estimates and controlled comparisons.
+- **Settings:** local discovery, billing, prices, privacy and diagnostics.
+
+One screen is shown at a time. Context tabs hold secondary tools; drafts survive navigation. Choose silver or graphite appearance. Existing deep links still work, even when a metrics source is offline.
+
+## Launch from your terminal
+
+From the Shrinkcage folder:
 
 ```sh
 # Codex with a ChatGPT subscription
@@ -37,50 +50,37 @@ node bin/shrinkcage.mjs run codex --billing subscription --profile balanced --pr
 node bin/shrinkcage.mjs run claude --billing api --profile lean --project "/path/to/project"
 ```
 
-Replace the path with your project folder, for example `C:\Projects\my-app` on Windows. Read the plan and enter its first eight fingerprint characters when prompted. The CLI opens in that terminal. **A billing label does not change your authentication.** Codex API billing and Claude subscriptions are also supported.
+Replace the path with your project folder, for example `C:\Projects\my-app` on Windows. Review the plan and enter its first eight fingerprint characters when prompted. The CLI opens in that terminal. **A billing label does not change your login.** Codex API billing and Claude subscriptions are also supported.
 
-Each launch gets its own ID, tools and configuration, including simultaneous sessions in the same project. New RTK hooks and MCP overrides expire with that session. Existing external hooks can limit isolation; the plan tells you when a tool cannot be independently disabled.
+Each launch has its own ID, tools and configuration, including concurrent sessions in the same project. Stack edits prepare the next launch; they do not reconfigure a running agent. Existing external hooks can limit isolation, and the plan explains that limitation. Native sandbox, trust and approval rules remain in place.
 
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.3.0.tgz`. Source/ZIP users can keep using `node bin/shrinkcage.mjs`. [Full setup and CLI reference →](docs/SETUP.md)
+For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.4.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
 
-## What you can do
-
-- **Sessions:** inspect active and past launches, native usage, tool evidence and independent next-launch stacks.
-- **Optimizer Registry:** browse reviewed public tools, filter by purpose and compatibility, inspect evidence and add a supported tool to one session or profile.
-- **Local Library:** discover installed tools, inspect compatibility and follow safe installation guidance.
-- **Add tools:** inspect GitHub/local candidates or import manifests; approved stdio MCP plugins work through the versioned SDK without changing the session runner.
-- **Validation:** see seven gates, actionable failures, version changes and explicit update/rollback previews.
-- **Profiles:** build reusable stacks, preview omissions and review an exact terminal command.
-- **Cost & Usage:** separate API estimates from subscription API-equivalent value; configure exact-model prices, cache rates and budget alerts.
-- **Experiments:** compare baseline and optimized sessions with quality checks and visible confounders.
-
-![Optimizer Registry — illustrative test workspace](docs/images/registry.png)
-
-The registry ships offline. Public review, local installation and observed session use are separate states. Ten tools have scoped catalog reviews; other discoveries stay in a review queue. Headroom, RTK, Serena and approved SDK MCP plugins can use managed session adapters. Other catalog tools provide guidance. No tool installs or updates itself. [Browse, add to a stack, or suggest a tool →](docs/REGISTRY.md)
-
-## What works today
+## What works
 
 | Integration | Support |
 |---|---|
-| Codex CLI | Managed sessions with subscription/API billing awareness; native metadata and usage |
-| Claude Code | Managed sessions with subscription/API billing awareness on supported modern versions |
-| RTK | Session-scoped native output-rewrite hooks; shared token-reduction estimates |
-| Serena | Session-owned MCP with observed tool names and calls; shared dashboard monitoring |
+| Codex CLI | Managed sessions, native usage and subscription/API billing awareness |
+| Modern Claude Code | Managed sessions, native usage and subscription/API billing awareness; version 2.1+ and required interfaces are checked |
+| RTK | Session-scoped output-rewrite hooks; shared output-token estimates |
+| Serena | Session-owned MCP with observed calls; shared dashboard monitoring |
 | Headroom | Codex API routing through an existing verified proxy; shared compression metrics |
-| SDK v2 MCP plugins | Approved local stdio servers; typed session settings, protocol tests, observed calls and owned removal |
+| SDK v2 MCP plugins | Approved local stdio servers, typed settings, protocol checks and owned removal |
 | Gemini CLI | Read-only saved-session discovery and usage |
-| context-mode, LeanCTX, codemem, LiteLLM, Langfuse | Guided catalog entries; no automated activation |
+| Other registry tools | Scoped catalog review and guidance; automatic activation requires a reviewed adapter |
 
-**Installation, configuration and observed use are separate states.** Browser controls prepare launches; agents start in your terminal. Stack edits show **Requires restart**. Native hooks still need the CLI's normal trust review.
+**Installed, configured and observed are different states.** The registry ships offline with ten reviewed entries. Other discoveries stay in a review queue; Token Savior remains under review. Unknown interfaces stay **Integration required**. Nothing downloads and runs repository code or silently updates executables. [Registry guide](docs/REGISTRY.md) · [Plugin SDK](docs/PLUGINS.md)
 
-Try the bundled example with `node bin/shrinkcage.mjs optimizer add-example`, review its fingerprint, then repeat with `--approve FINGERPRINT`. Unknown interfaces stay **Integration required**. Shrinkcage never downloads and runs repository code. Approved local executables retain your OS permissions; a private validation workspace is not an OS sandbox. [Plugin guide →](docs/PLUGINS.md)
+## Read the numbers correctly
 
-**Numbers stay honest:** missing values show N/A; Headroom and RTK savings are never added. Subscription token reductions do not automatically mean money saved. Costs use explicitly configured prices and remain estimates unless a source reports a charge. Native usage, limits and billing coverage vary by CLI version. [Accounting details →](docs/ACCOUNTING.md)
+Headroom and RTK savings can overlap and are never added together. Serena activity is not converted into fictional savings. Missing measurements stay N/A.
 
-## Help, privacy and contributing
+Configure exact-model prices in Settings to see estimates. API spending and subscription API-equivalent value remain separate; fewer subscription tokens do not automatically mean money saved. Summaries and budget alerts count a repeated native usage scope once. Conflicting billing declarations withhold monetary attribution, and stale/overlapping usage cannot qualify a before/after experiment. [Accounting details →](docs/ACCOUNTING.md)
 
-Shrinkcage stores allowlisted metadata, not prompts, code or tool arguments/results. Authentication stays with the native CLI. It never reads OAuth credential files, silently installs agents or rewrites global agent settings. Monitoring remains available when a connector fails.
+## Privacy, testing and help
 
-[Setup & troubleshooting](docs/SETUP.md) · [Architecture](docs/CONTROL_PLANE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Optimizer Registry](docs/REGISTRY.md) · [Optimizer SDK](docs/PLUGINS.md) · [Privacy](docs/PRIVACY.md) · [Security](SECURITY.md) · [Validation](docs/VALIDATION.md) · [Contributing](CONTRIBUTING.md)
+Shrinkcage stores allowlisted metadata, not prompts, source code, tool arguments/results or OAuth credentials. Authentication stays with the native CLI. Approved local programs retain OS permissions; a private validation workspace is not an OS sandbox.
 
-Screenshots use clearly labeled test data. CI exercises macOS, Windows and Linux with isolated fake CLIs; authenticated model-backed combinations are not universally verified. [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).
+Tests cover supported agent/billing/tool combinations, real isolated subprocess launches, accounting, cleanup, failure recovery and browser workflows. CI runs macOS, Windows and Linux with Node 22/24. Native interface and MCP checks are distinct from authenticated model-backed quality/savings tests; universal compatibility or perfect optimization is not claimed. Screenshots use labeled test data. [Executed checks and limits →](docs/VALIDATION.md)
+
+[Setup & troubleshooting](docs/SETUP.md) · [Architecture](docs/CONTROL_PLANE.md) · [Privacy](docs/PRIVACY.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)

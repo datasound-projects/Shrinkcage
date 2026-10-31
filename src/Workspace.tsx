@@ -16,7 +16,7 @@ export function useWorkspace(){
     catch{if(mounted.current)setError('Could not refresh agent metadata. The next discovery will retry.');}
     finally{clearTimeout(timeout);flight.current=false;if(mounted.current)setLoading(false);}
   },[]);
-  useEffect(()=>{mounted.current=true;void refresh();const timer=setInterval(()=>{if(!document.hidden)void refresh();},15000);const visible=()=>{if(!document.hidden)void refresh();};document.addEventListener('visibilitychange',visible);return()=>{mounted.current=false;clearInterval(timer);abort.current?.abort();document.removeEventListener('visibilitychange',visible);};},[refresh]);
+  useEffect(()=>{mounted.current=true;void refresh();const timer=setInterval(()=>{if(!document.hidden)void refresh();},15000);const visible=()=>{if(!document.hidden)void refresh();};const manual=()=>{void refresh(true);};window.addEventListener('shrinkcage:refresh',manual);document.addEventListener('visibilitychange',visible);return()=>{mounted.current=false;clearInterval(timer);abort.current?.abort();document.removeEventListener('visibilitychange',visible);window.removeEventListener('shrinkcage:refresh',manual);};},[refresh]);
   return {workspace,error,loading,refresh};
 }
 

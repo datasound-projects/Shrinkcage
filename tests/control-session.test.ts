@@ -138,10 +138,10 @@ test('native transcript links reject wrong projects, identities, secrets and sym
 });
 test('experiments expose descriptive differences and reject unrelated causal claims',()=>{
   const input={schemaVersion:1 as const,baselineSession:'a'.repeat(36),optimizedSession:'b'.repeat(36),taskLabel:'Fixture',sameTask:true,sameGitState:true,sameModel:true,sameEffort:true,sameCaching:true,quality:'passed' as const};
-  const baseline=session(),optimized=session({id:'b'.repeat(36),profile:'lean',usage:usage({inputTokens:800}),elapsedMs:900,evidence:[{tool:'rtk',status:'usage_observed',source:'owned fixture',observedAt:'2026-10-30',scope:'process',confidence:'verified',agentVersion:'0.165.0',toolVersion:'1.1.0',limitations:[]}]});
+  const baseline=session(),optimized=session({id:'b'.repeat(36),profile:'lean',usage:usage({nativeSessionId:'optimized-native-fixture',inputTokens:800}),elapsedMs:900,evidence:[{tool:'rtk',status:'usage_observed',source:'owned fixture',observedAt:'2026-10-30',scope:'process',confidence:'verified',agentVersion:'0.165.0',toolVersion:'1.1.0',limitations:[]}]});
   const result=compareSessions(input,baseline,optimized,settings);assert.equal(result.eligible,true);assert.equal(result.usageDifference?.inputTokens,-200);assert.equal(result.elapsedDifferenceMs,-100);assert.match(result.conclusion,/not proof/);
   assert.equal(compareSessions({...input,sameCaching:false},baseline,optimized,settings).eligible,false);
-  assert.equal(compareSessions(input,baseline,{...optimized,usage:usage({model:'unrelated'})},settings).eligible,false);
+  assert.equal(compareSessions(input,baseline,{...optimized,usage:usage({nativeSessionId:'optimized-native-fixture',model:'unrelated'})},settings).eligible,false);
   assert.equal(compareSessions({...input,quality:'failed'},baseline,optimized,settings).eligible,false);
 });
 test('additive v1 migration preserves legacy launchers, session bytes and bounded history paging',async()=>{

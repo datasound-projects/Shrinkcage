@@ -1,4 +1,4 @@
-# Session optimization control plane · 1.3
+# Session optimization control plane · 1.4
 
 Shrinkcage composes, validates and observes optimization stacks around owned CLI processes. React, the Node server, SQLite, the existing collectors and the terminal CLI remain in the original project.
 
@@ -83,3 +83,9 @@ The [1.1 architecture record](https://github.com/datasound-projects/Shrinkcage/b
 `server/registry` separates public catalog types/schema, fixed-host metadata transport, deterministic discovery, eight-gate admission, scheduling and the local registry service. The versioned `registry/` snapshot is distributed with the app. Optional updates verify an immutable commit, Git blobs, SHA-256, schema and monotonic revision. SQLite schema 4 adds bounded private candidate/document/job/cache storage while retaining the compatibility floor.
 
 The top-level Registry UI reads schema-driven metadata; the Local Library retains native discovery and seven integration gates. Public approval is scoped independently from local installation/activation. Add-to-Stack delegates to the existing control planner with a transient profile, rechecks inherited settings, and binds approval to the catalog digest and destination revision. Saves use profile revisions or pending-session compare-and-swap. A later terminal launch revalidates again. Suspended/deprecated adapters block new affected launches without touching running processes. No generic execution or installer route was added. See [registry contracts, admission and retention](REGISTRY.md).
+
+## Focused frontend
+
+Five primary destinations map existing hash IDs to contextual screens. Screen.tsx lazily mounts visited screens and retains drafts while hiding inactive controls. Native dialogs close on departure; metrics readiness no longer gates routing. The shared control hook stays mounted and top-level Refresh rechecks control discovery and read-only connectors alongside shared telemetry. Registry and all previous controls remain available through their existing deep links.
+
+The pure usage-summary helper is shared by UI totals and backend budget recommendations. It deduplicates cumulative native identities, selects fresh observations and withholds conflicting billing attribution. Experiment eligibility additionally rejects stale, overlapping and mixed-model evidence. These changes do not rewrite stored session history or change launch/process permissions.
