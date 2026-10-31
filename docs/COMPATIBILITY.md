@@ -14,6 +14,8 @@
 
 macOS, Windows and Linux implementations use platform-aware paths, discovery and subprocess arguments. CI runs isolated unit/integration/package/smoke tests on all three systems with Node 22.14 and 24, plus a Linux browser job. Consult [validation results](VALIDATION.md) for the specific verified commit and native checks; passing fixture CI is not universal upstream compatibility.
 
+Reviewed Codex version families are 0.165 and 0.166; unreviewed minor and prerelease versions fail closed. Claude Code requires the modern 2.1 interfaces; native version/help checks passed locally with 2.1.316. Windows supports the official native npm sidecar as well as the legacy Node launcher, without invoking a command shell.
+
 New native tool versions are probed before launch. New plugin source identities require a fresh explicit approval; running sessions keep pinned snapshots. Agent versions and declared billing modes are included in validation context and exact plan fingerprints. Tools may remain unavailable while the rest of the application works.
 
 Subscription, API, unknown and hybrid billing remain separate accounting dimensions. No API key is required for native subscription sessions. Token/cost data is withheld where telemetry attribution, model identity, cache semantics or reviewed pricing is incomplete. See [accounting](ACCOUNTING.md) and [plugin development](PLUGINS.md).

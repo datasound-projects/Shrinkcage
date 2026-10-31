@@ -1,6 +1,6 @@
 # Release test matrix · 1.4
 
-The 132-test suite retains the original monitor/control-plane coverage and adds billing-aware managed sessions and the optimizer SDK. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
+The 133-test suite retains the original monitor/control-plane coverage and adds cumulative-scope accounting, compatibility recovery and isolated optimization-stack coverage for both agents. Fixtures never become live dashboard values. Detailed executed results and limits are in [VALIDATION.md](VALIDATION.md); the [1.1 matrix](history/TEST_MATRIX_1_1.md) remains historical evidence.
 
 | Area | Evidence |
 |---|---|
@@ -17,6 +17,7 @@ The 132-test suite retains the original monitor/control-plane coverage and adds 
 | Onboarding, recommendations, candidate import/proposal, typed settings and explicit launch review | control-ui-test.mjs through the real backend/SQLite |
 | Installation and archive entry points | smoke.mjs installs the real .tgz, then exercises both agents, SDK lifecycle, accounting and frontend/API |
 | Exhaustive managed stack combinations | control-stack-matrix.test.ts; 192 pure plans, twenty real isolated CLI launches across Codex/Claude × API/subscription and every supported built-in stack |
+| Current agent interfaces | agent-compatibility.test.ts: reviewed Codex families and rejected future/prerelease versions; fixed native Windows Claude launcher and unsafe placeholder/symlink cases |
 | Cumulative accounting and experiment safety | usage-summary.test.ts; freshest-source selection, identity separation, stale/conflicting evidence, no double budget charge and unavailable overlapping differences |
 | Focused silver workspace | All seventeen screens on desktop/mobile, drafts retained across navigation, metrics-offline deep links, dialog cleanup, unsupported-agent recovery and panel contrast |
 | Registry schema/admission | registry.test.ts: strict structured metadata, all eight gates, held/rejected submissions, scoped maintainer review/fingerprint, license/provenance, malicious fields/URLs |

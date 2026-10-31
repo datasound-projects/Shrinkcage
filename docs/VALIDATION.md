@@ -23,7 +23,7 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 132 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Unit/integration | 133 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
 | Exhaustive stack matrix | 192 agent/billing/platform/tool-subset combinations; twenty supported Codex/Claude API/subscription stacks through real isolated subprocesses, receipt counts, exact cache accounting, permissions and owned cleanup |
 | Usage-scope regression | Seven tests for freshest cumulative records, cross-agent identity, stale data, conflicting billing, budget deduplication, cache pricing and qualified experiment rejection |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
@@ -74,3 +74,7 @@ The silver redesign exposes five primary destinations and one focused view at a 
 Read-only installed interfaces: Codex 0.165.0, Claude Code 0.2.29, RTK 1.1.0, Serena 2.1.0 and Headroom CLI 0.42.0. Native RTK hook JSON successfully rewrote synthetic git-status input for both agents without executing that command. Actual Serena and Headroom MCP processes passed initialize/tools/list in a temporary canonical private HOME; no models, existing project contents or proxy records were requested. Serena reported server version 2.1.0; Headroom's MCP component reported 1.30.0, separately from CLI package 0.42.0. Owned probe processes were closed and temporary files removed.
 
 Installed Claude 0.2.29 remains unsupported for modern managed launches. The UI blocks its launch preview and recovers after compatible discovery; automated subprocess tests use modern isolated fake CLIs. No native authenticated/model-backed task-quality, cost-minimization or paid savings benchmark was run. Passing mechanical and protocol tests does not establish task quality or universal compatibility.
+
+Current official npm packages were also installed into an owned temporary prefix with installation scripts disabled: Codex 0.166.0 and Claude Code 2.1.316. Both passed the actual detector in a private HOME. Modern Claude's native optional dependency was checked directly because ignore-scripts intentionally leaves its launcher as a placeholder; no downloaded installer or model request ran. Codex support now explicitly includes reviewed 0.165 and 0.166 families, retaining rejection of unreviewed 0.167/prerelease versions. A regression test covers the native Windows Claude npm launcher, installer-stub rejection and symlink refusal. Cross-platform upstream-interface CI remains separately reported.
+
+Native agent version/help checks are now sequential within each agent, with an eight-second cold-version bound and four-second help bound. This reduces concurrent native process pressure and avoids false cold-start incompatibility without relaxing version/feature requirements.

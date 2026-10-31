@@ -21,7 +21,7 @@ Listening ports, reachable HTTP, installed CLIs and confirmed adapter activity r
 
 | Component | Reviewed local interface | Activation evidence |
 |---|---|---|
-| Codex | installed **0.165.0**; minimum reviewed interface includes `--config` and `--no-daemon`; 0.x minor compatibility fails closed | Owned launch handle and inherited terminal; receipts required for optimizer activity |
+| Codex | reviewed **0.165.x and 0.166.x**; minimum reviewed interface includes `--config` and `--no-daemon`; unreviewed 0.x minor compatibility fails closed | Owned launch handle and inherited terminal; receipts required for optimizer activity |
 | Claude | 2.x, minimum 2.1.0 plus verified `--settings`, `--session-id`, `--mcp-config`, `--strict-mcp-config`; older builds are unsupported | Native subscription/API authentication retained; exact auth-status help must exist before a status query |
 | RTK | installed **1.1.0**, native `rtk hook codex` / `rtk hook claude` with documented PreToolUse/Bash JSON | Actual returned command rewrite, not merely hook-file presence |
 | Serena | installed **2.1.0**, `start-mcp-server --project-from-cwd --context=codex|claude-code --transport stdio` | Successful MCP initialize + initialized notification, safe successful tool responses |
@@ -49,3 +49,5 @@ For a new incompatible version, report the version and sanitized schema/error, n
 ## Public tools versus local connectors
 
 The [Optimizer Registry](REGISTRY.md) adds reviewed metadata for Context Mode, codemem, LiteLLM, ccusage, Langfuse, LLMLingua and mcp2cli. These entries do not add automatic native connectors or prove installation. Token Savior stays under review. Catalog approval, documentation compatibility, executable discovery, local adapter validation and actual session calls are distinct evidence. Package provenance and non-OSI/enterprise license limits are shown in each detail view. Generic plugin capability remains reviewed stdio MCP; other patterns need adapter implementation and tests.
+
+The 31 October 2026 interface audit exercised official Codex 0.166.0 and Claude Code 2.1.316 in a private temporary installation. Modern Claude npm distributions use a native executable. Windows discovery supports its fixed official package sidecar directly without a shell; legacy Node shims remain supported. Installer placeholders are not treated as working native binaries. The optional upstream workflow probes the matching official native dependency without executing install scripts. These checks verify version/help interfaces, not authenticated model-backed tasks.
