@@ -1,15 +1,15 @@
 // Synthetic responses exist only in this automated browser test, never in production collectors.
 import {chromium} from 'playwright';
-import {spawn} from 'node:child_process';
+import {makeServer} from '../dist-server/server/http.js';
 import {mkdtemp,mkdir,writeFile,rm,copyFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
 import {normalizeHeadroom,normalizeRtk,normalizeSerena} from '../dist-server/server/adapters.js';
 import {CATALOG} from '../dist-server/server/control/catalog.js';
 import {DEFAULT_PROFILES} from '../dist-server/server/control/profiles.js';
-const base=process.env.SHRINKCAGE_TEST_URL||'http://localhost:8790';
-let child,temp,browser;
+let base=process.env.SHRINKCAGE_TEST_URL||'http://localhost:8790';
+let child,temp,browser,assetServer;
 const now=new Date().toISOString(),earlier=new Date(Date.now()-3600000).toISOString();
 const sampleSession=(agent,i,provider,model)=>({id:String(i).repeat(24),shortId:`sample0${i}`,agent,provider,model,project:{id:`project-${i}`,label:['Atlas','Studio','Orchard'][i-1]},startedAt:earlier,updatedAt:now,lastActivityAt:now,status:'recorded',archived:false,tokens:{input:10000*i,output:1500*i,cached:4000*i,cacheWrite:null,reasoning:null,total:11500*i},coverage:'complete-file',usageBasis:'Recorded fixture usage',observedToolCalls:3,version:'example',tools:[{name:'read_file',count:2,lastUsedAt:now},{name:'find_symbol',count:1,lastUsedAt:earlier}],activity:[],tokenHistory:[],notes:['Synthetic metadata for automated UI verification. No prompts or tool contents are included.']});
 const sessions=[sampleSession('codex',1,'openai','model-alpha'),sampleSession('claude',2,null,'model-beta'),sampleSession('gemini',3,'google','model-gamma')];
@@ -23,10 +23,7 @@ const metrics={updatedAt:now,headroom,rtk,serena,services:[{name:'Shrinkcage',po
 const controlState={activeManagedCount:0,managedCount:0,schemaVersion:1,version:'1.1.0',platform:'test',updatedAt:now,csrfToken:'0'.repeat(48),catalog:CATALOG,profiles:DEFAULT_PROFILES,projects:[{id:'a'.repeat(24),label:'Atlas'}],sessions:[],benchmarks:[],receipts:[],diagnostics:['Illustrative automated-test metadata only.'],agents:[],detections:CATALOG.map(t=>({id:t.id,installed:t.mode==='managed',version:t.minVersion,compatible:t.mode==='managed',configured:null,serviceHealthy:t.id==='headroom'?true:null,agentConnected:null,effective:null,usageObserved:null,status:t.mode==='managed'?'installed':'missing',checkedAt:now,binaryFingerprint:null,evidence:[],diagnostics:[]}))};
 try{
   if(!process.env.SHRINKCAGE_TEST_URL){
-    const existing=await fetch(base+'/api/health',{signal:AbortSignal.timeout(400)}).catch(()=>null);if(existing)throw new Error('Port 8790 is occupied. Stop the owned server or explicitly set SHRINKCAGE_TEST_URL to use its frontend assets.');
-    temp=await mkdtemp(join(tmpdir(),'shrinkcage-ui-'));await writeFile(join(temp,'settings.json'),JSON.stringify(Object.fromEntries(['codex','claude','gemini'].map(a=>[a,{enabled:false,root:null}]))));
-    child=spawn(process.execPath,['dist-server/server/index.js'],{env:{...process.env,SHRINKCAGE_DATA_DIR:temp,OPEN_BROWSER:'0'},stdio:'pipe'});
-    let ready=false;for(let i=0;i<60;i++){await new Promise(r=>setTimeout(r,150));if((await fetch(base+'/api/health').catch(()=>null))?.ok){ready=true;break;}}assert.ok(ready,'Test server should start');
+    assetServer=makeServer(async()=>metrics,resolve('dist'));await new Promise(r=>assetServer.listen(0,'127.0.0.1',r));base='http://127.0.0.1:'+assetServer.address().port;metrics.services[0].dashboard=base;
   }
   browser=await chromium.launch({headless:true,...(process.env.SHRINKCAGE_BROWSER_EXECUTABLE?{executablePath:process.env.SHRINKCAGE_BROWSER_EXECUTABLE}:{})});
   const context=await browser.newContext({viewport:{width:1440,height:1000},colorScheme:'light',reducedMotion:'reduce'});const page=await context.newPage();const errors=[],external=[];let configSaved=false;
@@ -80,4 +77,4 @@ try{
   assert.equal(await logo.locator('.top').evaluate(e=>getComputedStyle(e).animationName),'none');
   assert.equal(await logo.locator('.top').evaluate(e=>getComputedStyle(e).opacity),'1');await logo.close();
   console.log('PASS: branded UI, provider/agent/project session grouping, filters, details, approved connector settings, retained optimization controls, themes, responsive layouts, local-only requests, coin animation and reduced motion. Screenshots use synthetic test data.');
-}finally{await browser?.close();if(child){const done=new Promise(r=>child.once('exit',r));child.kill('SIGTERM');await Promise.race([done,new Promise(r=>setTimeout(r,5000))]);if(child.exitCode===null)child.kill('SIGKILL');}if(temp)await rm(temp,{recursive:true,force:true});}
+}finally{await browser?.close();if(assetServer)await new Promise(r=>{assetServer.close(()=>r());assetServer.closeAllConnections();});if(child){const done=new Promise(r=>child.once('exit',r));child.kill('SIGTERM');await Promise.race([done,new Promise(r=>setTimeout(r,5000))]);if(child.exitCode===null)child.kill('SIGKILL');}if(temp)await rm(temp,{recursive:true,force:true});}

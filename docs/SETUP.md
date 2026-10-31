@@ -123,3 +123,7 @@ Open **Optimizer Registry** to browse the shipped offline catalog. **View Detail
 Use **New session** to begin. The sidebar has Overview, Sessions, Optimizers, Cost & usage and Settings. Context tabs reveal profiles, saved history, validation, shared charts and source diagnostics. Existing hash links still work; changing views preserves unsaved drafts until the page is reloaded. Detailed session accounting is collapsed under Usage, costs & data quality. Refresh updates session controls, agent discovery and shared metrics. An offline metrics source does not block navigation.
 
 Unsupported installed agents remain visible with guidance, but launch previews and tool selection are disabled until discovery confirms a supported interface. Update/login through the native CLI; Shrinkcage does not install or reauthenticate it.
+
+## Start from the dashboard
+
+Open **Sessions → Start session**, select agent, billing, project and tools, then review and approve the plan. Choose **Terminal** or supported **Herdr** and click **Start session**. The launcher opens a new interactive CLI and reports its actual session ID. Saved profiles and pending session-stack previews provide the same action. Native login/trust/approvals still apply. [Terminal compatibility and recovery](TERMINALS.md).

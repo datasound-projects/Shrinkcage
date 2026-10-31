@@ -1,19 +1,18 @@
 // Test-only executables and sources. Control routes use the real server and database.
 import {chromium} from 'playwright';
-import {spawn} from 'node:child_process';
+import {makeServer} from '../server/http.ts';
 import {mkdir,writeFile,copyFile} from 'node:fs/promises';
-import {join} from 'node:path';
+import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
 import {fakeWorkspace,cli} from '../tests/control-fixtures.ts';
 import {ControlPlane} from '../server/control/core.ts';
 import {normalizeHeadroom,normalizeRtk,normalizeSerena} from '../server/adapters.ts';
 const commandArgs=value=>value.replace(/^node bin\/shrinkcage\.mjs /,'shrinkcage ').split(' ').slice(1);
-const base='http://localhost:8790';let f,child,browser;
+let base;let f,child,browser,server,serverControl;
 try{
-  if(await fetch(base+'/api/health',{signal:AbortSignal.timeout(400)}).catch(()=>null))throw Error('Port 8790 is occupied. This isolated suite never stops an unrelated service.');
   f=await fakeWorkspace();await writeFile(join(f.data,'settings.json'),JSON.stringify(Object.fromEntries(['codex','claude','gemini'].map(a=>[a,{enabled:false,root:null}])))).catch(async()=>{await mkdir(f.data,{recursive:true});await writeFile(join(f.data,'settings.json'),JSON.stringify(Object.fromEntries(['codex','claude','gemini'].map(a=>[a,{enabled:false,root:null}]))));});
   const plane=new ControlPlane({dataDir:f.data,env:f.env,home:f.home});const project=await plane.project({path:f.project});plane.close();
-  child=spawn(process.execPath,['dist-server/server/index.js'],{env:f.env,stdio:'pipe',shell:false});let ready=false;for(let i=0;i<80;i++){await new Promise(r=>setTimeout(r,100));if((await fetch(base+'/api/health').catch(()=>null))?.ok){ready=true;break;}}assert.ok(ready,'isolated server should start');
+  serverControl=new ControlPlane({dataDir:f.data,env:f.env,home:f.home});server=makeServer(async()=>({updatedAt:new Date().toISOString()}),resolve('dist'),undefined,serverControl);await new Promise(r=>server.listen(0,'127.0.0.1',r));base='http://127.0.0.1:'+server.address().port;
   browser=await chromium.launch({headless:true,...(process.env.SHRINKCAGE_BROWSER_EXECUTABLE?{executablePath:process.env.SHRINKCAGE_BROWSER_EXECUTABLE}:{})});
   const context=await browser.newContext({viewport:{width:1440,height:1000},locale:'en-US',reducedMotion:'reduce'});const page=await context.newPage();const errors=[],external=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!r.url().startsWith(base)&&!r.url().startsWith('data:'))external.push(r.url());});
   await page.addInitScript(()=>{window.__copied='';Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.__copied=text;}}});});
@@ -111,4 +110,4 @@ try{
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
   if(process.env.SHRINKCAGE_DOC_SCREENSHOTS==='1'){for(const name of ['control-plane','managed','quick-setup'])await copyFile(`artifacts/${name}.png`,`docs/images/${name}.png`);}
   console.log('PASS: guided onboarding, recommendations, candidate manifest/proposal, future SDK plugin configuration and health, real control API, persisted profiles, setup/launch approvals and copy commands, Codex and Claude fake-CLI runs, native usage, cache pricing, subscription equivalent, budget alerts, independent next-launch toggles, managed MCP/RTK evidence, comparisons, hostile import rejection, recovery, keyboard, responsive dark mode. No production fixture path exists.');
-}finally{await browser?.close();if(child){const done=new Promise(r=>child.once('exit',r));child.kill('SIGTERM');await Promise.race([done,new Promise(r=>setTimeout(r,5000))]);if(child.exitCode===null){child.kill('SIGKILL');await done;}}await f?.close();}
+}finally{await browser?.close();if(server)await new Promise(r=>{server.close(()=>r());server.closeAllConnections();});serverControl?.close();if(child){const done=new Promise(r=>child.once('exit',r));child.kill('SIGTERM');await Promise.race([done,new Promise(r=>setTimeout(r,5000))]);if(child.exitCode===null){child.kill('SIGKILL');await done;}}await f?.close();}

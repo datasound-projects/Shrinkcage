@@ -4,7 +4,7 @@ Shrinkcage composes, validates and observes optimization stacks around owned CLI
 
 ## One engine, two interfaces
 
-`server/control/core.ts` coordinates discovery, profiles, projects and planning. The CLI and `/api/control/v1` use the same validated types and state. Browser actions save metadata or return previews; they cannot execute arbitrary commands, launch agents, install packages or stop processes. A narrowly scoped, explicitly approved SDK diagnostic can probe only an unchanged local program registered and approved previously in the terminal.
+`server/control/core.ts` coordinates discovery, profiles, projects and planning. The CLI and `/api/control/v1` use the same validated types and state. Browser actions save metadata, return previews and can open a reviewed native-terminal launch. They cannot execute arbitrary commands, install packages or stop processes. [Terminal launch design](TERMINALS.md) describes the strict fingerprint-only request, five-minute single-use approval, idempotency and fresh CLI validation. A narrowly scoped, explicitly approved SDK diagnostic can probe only an unchanged local program registered and approved previously in the terminal.
 
 Each approved plan binds the application/adapter version, agent, executable identities, profile revision, project identity, billing evidence, model override, selected tools, tool configuration and inspected configuration hashes. The launcher rechecks the plan before spawning. A changed account, file, binary or profile invalidates approval.
 
