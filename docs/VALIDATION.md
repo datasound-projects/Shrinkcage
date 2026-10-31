@@ -1,4 +1,4 @@
-# Validation record · 1.5.0
+# Validation record · 1.5.1
 
 Release checks cover the existing monitor and the session optimization control plane. Production adapters never substitute fixture measurements. The [historical 1.1 record](history/VALIDATION_1_1.md) is preserved.
 
@@ -23,7 +23,7 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 141 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Unit/integration | 142 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
 | Exhaustive stack matrix | 192 agent/billing/platform/tool-subset combinations; twenty supported Codex/Claude API/subscription stacks through real isolated subprocesses, receipt counts, exact cache accounting, permissions and owned cleanup |
 | Usage-scope regression | Seven tests for freshest cumulative records, cross-agent identity, stale data, conflicting billing, budget deduplication, cache pricing and qualified experiment rejection |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
@@ -81,6 +81,6 @@ Native agent version/help checks are now sequential within each agent, with an e
 
 ## 1.5 reviewed terminal launches
 
-Eight new tests cover one-time/idempotent approvals, real managed fake-agent execution, all four agent/billing combinations including a full Headroom/RTK/Serena API stack, expired/stale approvals, wrong targets and arbitrary fields, non-interactive refusal, symlink launch roots, redacted desktop failures, and the real HTTP Origin/capability boundary. The fourth browser suite covers Sessions Start, tool selection, explicit review, missing Herdr, different same-project stacks, and launching a saved pending stack through real API/SQLite/subprocesses. Only its desktop opener is synthetic.
+Nine new tests cover one-time/idempotent approvals, real managed fake-agent execution, all four agent/billing combinations including a full Headroom/RTK/Serena API stack, expired/stale approvals, wrong targets and arbitrary fields, non-interactive refusal, symlink launch roots, redacted desktop failures, and the real HTTP Origin/capability boundary. The fourth browser suite covers Sessions Start, tool selection, explicit review, missing Herdr, different same-project stacks, and launching a saved pending stack through real API/SQLite/subprocesses. Only its desktop opener is synthetic.
 
 On this macOS host, the actual Terminal app and native Herdr 0.9.5 each launched isolated fake Codex sessions with RTK/Serena usage receipts and clean exits. A separate real Codex 0.165.0 subscription session reached running state with selected RTK/Serena configuration and was closed cleanly without sending a task. Those real tools remained configured rather than falsely marked used; native hook/MCP policy and inherited external optimizers were disclosed. No paid task-quality, cost-savings or native Windows/Linux GUI benchmark is claimed. Herdr Windows and automatic restoration remain unsupported.

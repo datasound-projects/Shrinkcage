@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { chmod,mkdir,readFile,symlink,writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { chmod,mkdir,readFile,rename,symlink,writeFile } from 'node:fs/promises';
+import { join,basename,dirname } from 'node:path';
 import { fakeWorkspace } from './control-fixtures.js';
 import { ControlPlane } from '../server/control/core.js';
 import { controlRead,controlWrite } from '../server/control/api.js';
@@ -46,6 +46,8 @@ test('the real HTTP launch route requires exact Origin, page capability and expl
 test('desktop admission failure is redacted, isolated and recoverable without starting an agent',async()=>{const h=await harness();try{const plan=await h.preview();const launcher=new TerminalLauncher(h.plane,{discover:async()=>choices,openScript:async()=>{throw Error('PRIVATE_DESKTOP_DETAILS');}});const failed=await launcher.start({fingerprint:plan.fingerprint,target:'terminal',requestId:randomUUID()});assert.equal(failed.state,'failed');assert.ok(!JSON.stringify(failed).includes('PRIVATE_DESKTOP_DETAILS'));assert.equal(h.plane.store.sessionCount(),0);const recovered=await h.start(plan);assert.equal(recovered.state,'waiting');assert.equal(h.opened.length,1);}finally{await h.close();}});
 
 test('Herdr discovery rejects unreviewed versions and prereleases despite matching config capabilities',{skip:process.platform==='win32'},async()=>{const f=await fakeWorkspace();try{const file=join(f.bin,'herdr');await writeFile(file,"#!/usr/bin/env node\nconst a=process.argv.slice(2);console.log(a[0]==='--version'?'herdr '+process.env.FIXTURE_HERDR_VERSION:a[0]==='--default-config'?'default_shell = \\\"\\\"; shell_mode = \\\"auto\\\"':'--session');");await chmod(file,0o700);for(const version of ['0.9.5','0.9.5-beta','0.10.0']){const choice=(await inspectTerminals({...f.env,FIXTURE_HERDR_VERSION:version})).find(c=>c.id==='herdr')!;assert.equal(choice.version,version);if(version==='0.9.5')assert.ok(!choice.reason.includes('does not expose'));else{assert.equal(choice.available,false);assert.match(choice.reason,/reviewed/);}}}finally{await f.close();}});
+
+test('native launcher cleanup preserves files when an owned parent is replaced by a symlink',async()=>{const h=await harness();try{const plan=await h.preview(),ticket=await h.start(plan),root=join(h.plane.store.dir,'launchers'),outside=join(h.root,'moved-launchers');await rename(root,outside);await symlink(outside,root,process.platform==='win32'?'junction':'dir');assert.equal(await runTerminalTicket(h.plane,ticket.id,{interactive:true}),0);const preserved=join(outside,basename(dirname(h.opened[0])),basename(h.opened[0]));assert.ok((await readFile(preserved,'utf8')).includes(ticket.id));assert.equal(h.plane.store.terminalLaunch(ticket.id)?.state,'exited');}finally{await h.close();}});
 
 test('unreviewed commands, targets, missing approval, stale previews and reused IDs fail before opening',async()=>{const h=await harness();try{
   const plan=await h.preview();const request={fingerprint:plan.fingerprint,target:'terminal',requestId:randomUUID(),approved:true};

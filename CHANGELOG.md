@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1 — preserve moved launcher files
+
+- Recheck canonical launcher directories during creation and native-file cleanup. Preserve resources if an owned parent is replaced by a symlink or junction.
+- Add an actual managed-session regression that moves the launcher directory and proves cleanup preserves the moved file.
+
 ## 1.5.0 — start reviewed sessions in your terminal
 
 - Add Start session in Sessions, setup, saved profiles and pending stack previews, with Terminal/Herdr selection and actual launcher confirmation.
