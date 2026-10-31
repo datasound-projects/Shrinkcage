@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0 — focused silver workspace and accounting fixes
+
+- Replace the seventeen-link scrolling dashboard with five destinations and focused contextual screens. Retain deep links, draft state and every existing control.
+- Add restrained silver/graphite appearances, readable white text, compact cards, category selection, mobile navigation and collapsed session details.
+- Make navigation independent of metrics availability; refresh all data sources from the top-level control. Close dialogs when leaving a screen and block unsupported agents before launch preview.
+- Deduplicate cumulative native usage using the freshest observation for summaries, charts and budget alerts. Withhold conflicting billing attribution. Reject stale, overlapping or mixed-model observations as qualified experiments.
+- Add 192 compatibility combinations and twenty real isolated subprocess stack launches across Codex/Claude and API/subscription paths, plus accounting and focused-screen regression tests.
+- Verify current official Codex 0.166 and Claude 2.1.316 interfaces; add bounded Codex family support and safe native Windows Claude npm launcher discovery. Keep optional upstream checks free of installer execution.
+- Preserve authentication, native approvals, process ownership, local-only binding and all existing optimizer integrations. See docs/VALIDATION.md for actual checks and limitations.
+
 ## 1.3.0 — Curated optimizer registry
 
 - Add the top-level Optimizer Registry: category/search/compatibility filters, details, licenses, scoped public reviews and independent local status.

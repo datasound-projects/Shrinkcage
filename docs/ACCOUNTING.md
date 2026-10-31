@@ -53,3 +53,9 @@ Charts and overview estimates cover complete correlated records among the latest
 Experiments expose optimized-minus-baseline differences and quality review. Model/task/repository/effort/cache equivalence must be assessed explicitly. A successful CLI exit alone does not prove a task passed quality checks. Uncontrolled comparisons cannot establish causality; optimizer overhead and retries stay N/A when not measured. No automatic optimizer policy is learned from unrelated sessions.
 
 Sources: [Codex hooks and transcript stability limits](https://learn.chatgpt.com/docs/hooks), [Codex authentication](https://learn.chatgpt.com/docs/auth), [Claude usage telemetry and cache semantics](https://code.claude.com/docs/en/monitoring-usage), [OpenTelemetry GenAI conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/).
+
+## Repeated native usage scopes
+
+A native transcript can report cumulative usage to more than one managed launch record. Summaries, charts and budget alerts deduplicate by agent plus native session ID, select the freshest observation and retain distinct scopes. Older snapshots do not overwrite newer ones. Missing native identities stay independent; missing or stale values do not become zero.
+
+Individual launch rows remain inspectable and may refer to the same cumulative transcript. Conflicting billing modes on one native scope withhold API/subscription summary attribution instead of inventing a split. Before/after comparisons reject shared native scopes, stale observations and mixed/unresolved models; overlapping or stale usage differences remain unavailable. Fixed fees, genuine reported charges and price estimates retain their existing separate meanings. Monthly budget alerts remain bounded estimates for recorded launch cohorts, not a complete provider invoice.

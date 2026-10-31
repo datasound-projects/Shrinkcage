@@ -1,4 +1,4 @@
-# Validation record · 1.3.0
+# Validation record · 1.4.0
 
 Release checks cover the existing monitor and the session optimization control plane. Production adapters never substitute fixture measurements. The [historical 1.1 record](history/VALIDATION_1_1.md) is preserved.
 
@@ -23,7 +23,9 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 123 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Unit/integration | 133 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Exhaustive stack matrix | 192 agent/billing/platform/tool-subset combinations; twenty supported Codex/Claude API/subscription stacks through real isolated subprocesses, receipt counts, exact cache accounting, permissions and owned cleanup |
+| Usage-scope regression | Seven tests for freshest cumulative records, cross-agent identity, stale data, conflicting billing, budget deduplication, cache pricing and qualified experiment rejection |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
 | Managed mechanics | Real isolated fake Codex/Claude subprocesses, four agent × billing paths, parallel same-project sessions, native hooks/MCP, failures, interruption/owner crash, cleanup and external-service survival |
 | Future SDK plugin | Random previously unknown ID, real initialize/tools/list, typed configuration, compact_output receipt, independent baseline, disabling/removal; concurrent update pins the original session version |
@@ -31,7 +33,7 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 | Registry | Eighteen unit/integration/security cases: schemas, provenance/license distinctions, public-only discovery, aliases/forks, bounded incremental batches, ETags/rate limits, maintained approval artifacts, immutable update integrity, offline cache, revocation, stale approvals and independently launched stacks |
 | Registry browser A–F | Real backend/SQLite; RTK and Serena in separate stacks, rejected unknown submission, future SDK tool with data-driven UI, changed version incompatibility, offline catalog, filters/details/modal keyboard/responsive layouts |
 | Clean package | Actual .tgz install with production dependencies; CLI version/dispatch, doctor/tools/profiles/setup/plans, Codex/Claude runs, SDK register/check/run/remove, accounting, packaged curated registry CLI/API, built frontend/API and reuse/shutdown |
-| Browser | Actual backend/SQLite, onboarding, recommendations, manifest import/proposal, future-plugin settings/checks, preview/copy approvals, profiles, session stacks, tool log, cache/subscription estimates, comparisons, recovery, keyboard and 320–1440 px light/dark layouts |
+| Browser | Actual backend/SQLite, onboarding, recommendations, manifest import/proposal, future-plugin settings/checks, preview/copy approvals, profiles, session stacks, tool log, cache/subscription estimates, comparisons, recovery, keyboard and 320–1440 px silver/graphite layouts |
 | Public source | Whitespace and credential/private-path pattern scan plus staged/archive review; scans do not prove absence |
 
 Seven retained integration gates distinguish discovery, compatibility, security, configuration, integration, runtime effectiveness and quality. Built-ins explicitly label fixture conformance; SDK registration requires a real isolated protocol check. Runtime receipts do not prove quality or savings. Gate 7 remains unavailable without a qualified task-quality comparison.
@@ -64,3 +66,15 @@ The required CI includes registry validation and all three browser suites. The s
 Windows CI exposed automatic CRLF conversion of the digest-covered catalog. Registry JSON now explicitly uses LF through `.gitattributes`; integrity verification remains byte-exact. A forced `core.autocrlf=true` checkout is checked locally, then the full OS/runtime matrix verifies the correction.
 
 The first real scheduled discovery inspected eight upstreams, retained nine unapproved candidates and passed catalog validation with no metadata errors. GitHub Actions PR creation is disabled by repository policy. The workflow now reports that specific condition as an explicit manual-review warning with a saved branch/artifact; unexpected publication failures still fail. Two isolated publication tests cover fixed argv, policy handling, unsafe branch rejection and transport failure. Repository permissions are unchanged.
+
+## 1.4 workspace and native checks · 31 October 2026
+
+The silver redesign exposes five primary destinations and one focused view at a time. Browser coverage visits all seventeen existing screens on desktop/mobile, checks deep links, retained drafts, offline metrics navigation, dialog cleanup, global refresh and readable panel contrast. All previous monitor, registry and control browser flows remain required.
+
+Read-only installed interfaces: Codex 0.165.0, Claude Code 0.2.29, RTK 1.1.0, Serena 2.1.0 and Headroom CLI 0.42.0. Native RTK hook JSON successfully rewrote synthetic git-status input for both agents without executing that command. Actual Serena and Headroom MCP processes passed initialize/tools/list in a temporary canonical private HOME; no models, existing project contents or proxy records were requested. Serena reported server version 2.1.0; Headroom's MCP component reported 1.30.0, separately from CLI package 0.42.0. Owned probe processes were closed and temporary files removed.
+
+Installed Claude 0.2.29 remains unsupported for modern managed launches. The UI blocks its launch preview and recovers after compatible discovery; automated subprocess tests use modern isolated fake CLIs. No native authenticated/model-backed task-quality, cost-minimization or paid savings benchmark was run. Passing mechanical and protocol tests does not establish task quality or universal compatibility.
+
+Current official npm packages were also installed into an owned temporary prefix with installation scripts disabled: Codex 0.166.0 and Claude Code 2.1.316. Both passed the actual detector in a private HOME. Modern Claude's native optional dependency was checked directly because ignore-scripts intentionally leaves its launcher as a placeholder; no downloaded installer or model request ran. Codex support now explicitly includes reviewed 0.165 and 0.166 families, retaining rejection of unreviewed 0.167/prerelease versions. A regression test covers the native Windows Claude npm launcher, installer-stub rejection and symlink refusal. Cross-platform upstream-interface CI remains separately reported.
+
+Native agent version/help checks are now sequential within each agent, with an eight-second cold-version bound and four-second help bound. This reduces concurrent native process pressure and avoids false cold-start incompatibility without relaxing version/feature requirements.

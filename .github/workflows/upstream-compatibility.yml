@@ -42,7 +42,9 @@ jobs:
         env:
           CODEX_VERSION: ${{ inputs.codex_version }}
           CLAUDE_VERSION: ${{ inputs.claude_version }}
-        run: npm install --global --ignore-scripts "@openai/codex@$CODEX_VERSION" "@anthropic-ai/claude-code@$CLAUDE_VERSION"
+        run: |
+          npm install --global --ignore-scripts "@openai/codex@$CODEX_VERSION" "@anthropic-ai/claude-code@$CLAUDE_VERSION"
+          printf 'SHRINKCAGE_UPSTREAM_NPM_ROOT=%s\n' "$(npm root --global)" >> "$GITHUB_ENV"
       - name: Check native version and process-scoped interface contracts
         run: node --import tsx scripts/upstream-check.mjs
       - uses: actions/upload-artifact@v4
