@@ -75,6 +75,7 @@ try{
   await view('profiles');await page.getByRole('button',{name:'New profile',exact:true}).click();
   await page.getByRole('textbox',{name:'Profile ID',exact:true}).fill('ui-profile');await page.getByRole('textbox',{name:'Profile name',exact:true}).fill('UI fixture profile');
   await view('managed');await view('profiles');assert.equal(await page.getByRole('textbox',{name:'Profile name',exact:true}).inputValue(),'UI fixture profile');
+  await page.locator('.sidebar-help').getByRole('link',{name:'How to use',exact:true}).click();await page.getByRole('heading',{name:'Start your first session',exact:true}).waitFor();await page.locator('.help-topics>details').first().locator('summary').click();await page.locator('.help-guide').getByRole('link',{name:'Profiles',exact:true}).click();assert.equal(await page.getByRole('textbox',{name:'Profile name',exact:true}).inputValue(),'UI fixture profile','opening the guide preserves an unsaved profile');
   for(const name of ['RTK','Serena','Headroom'])await page.getByRole('checkbox',{name:`Enable ${name} in profile`,exact:true}).check();
   await page.getByRole('button',{name:'Save profile',exact:true}).click();await page.getByText('Profile saved. It will affect a future approved terminal run.',{exact:true}).waitFor();
   const profiles=await(await fetch(base+'/api/control/v1/profiles')).json();assert.ok(profiles.some(s=>s.profile.id==='ui-profile'));

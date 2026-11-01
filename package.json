@@ -16,7 +16,7 @@
     "package": "npm run build && node scripts/licenses.mjs && node scripts/package.mjs",
     "smoke": "node --import tsx scripts/smoke.mjs",
     "coverage": "c8 node --import tsx --test tests/control-planner.test.ts tests/control-transactions.test.ts",
-    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs && node --import tsx scripts/registry-ui-test.mjs && node --import tsx scripts/terminal-ui-test.mjs",
+    "test:ui": "node scripts/ui-test.mjs && node --import tsx scripts/control-ui-test.mjs && node --import tsx scripts/registry-ui-test.mjs && node --import tsx scripts/terminal-ui-test.mjs && node --import tsx scripts/help-ui-test.mjs",
     "registry:validate": "node --import tsx scripts/registry-validate.mjs",
     "registry:discover": "node --import tsx scripts/registry-discover.mjs",
     "registry:review": "node --import tsx scripts/registry-review.mjs"

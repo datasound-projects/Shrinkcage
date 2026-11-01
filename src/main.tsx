@@ -5,12 +5,14 @@ import type { Base, CommandRow, Dashboard, Metric, Point, ToolRow, Value } from 
 import './style.css';
 import './workspace.css';
 import './silver.css';
+import './help.css';
 import Screen from './Screen';
 import SerenaActivityLog from './SerenaActivityLog';
 import DetailTabs from './DetailTabs';
-import { navigation, sections, useSectionNavigation } from './useSectionNavigation';
+import { navigation, helpNavigation, sections, useSectionNavigation } from './useSectionNavigation';
 import { ConnectorCenter, SessionExplorer, useWorkspace } from './Workspace';
 const ControlWorkspace=lazy(()=>import('./control/ControlWorkspace'));
+const HowToUse=lazy(()=>import('./HowToUse'));
 import { VERSION } from '../server/version';
 
 const fmt = (n: Value | undefined, digits = 0) => n == null ? 'N/A' : new Intl.NumberFormat(undefined, { maximumFractionDigits: digits }).format(n);
@@ -36,6 +38,7 @@ function Icon({ kind, size = 18 }: { kind: string; size?: number }) {
     info: <><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></>,
     chevron: <path d="m9 6 6 6-6 6"/>,
     folder: <path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11H3V7Z"/>,
+    book: <><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1m0-15c3-2 6-2 9-1v15c-3-1-6-1-9 1V5Z"/></>,
     plug: <><path d="M8 3v5m8-5v5M6 8h12v3a6 6 0 0 1-12 0V8Zm6 9v4"/></>,
   };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[kind] ?? paths.grid}</svg>;
@@ -157,20 +160,22 @@ function App() {
   const serenaValue = !s ? '—' : s.calls !== null ? compact(s.calls) : s.state === 'offline' ? 'Offline' : s.activity === 'empty' ? 'No activity' : 'Usage unavailable';
   const serenaUnit = s && s.calls !== null ? `observed tool calls · ${s.reportingInstances} of ${s.instances.length} ${s.instances.length === 1 ? 'instance' : 'instances'}` : s?.activity === 'empty' ? 'dashboards reachable · no counters recorded' : 'reported tool-call statistics';
   const selectedInstance = s?.instances.find(instance => instance.port === instancePort) ?? s?.instances.find(instance => instance.calls !== null) ?? s?.instances[0];
-  const group = navigation.find(n=>n.screens.includes(active))??navigation[0];
-  const descriptions:Record<string,string>={overview:'A clear view of your sessions and optimizer activity.',managed:'Your sessions, stacks and actual tool activity.',setup:'Choose your agent, pick a stack, review and launch.',registry:'Find a tool. Check compatibility. Add it to one stack.', 'cost-usage':'Understand reported usage and qualified cost estimates.',settings:'Your local preferences, billing and connections.'};
+  const group = [...navigation,helpNavigation].find(n=>n.screens.includes(active))??navigation[0];
+  const descriptions:Record<string,string>={overview:'A clear view of your sessions and optimizer activity.',managed:'Your sessions, stacks and actual tool activity.',setup:'Choose your agent, pick a stack, review and launch.',registry:'Find a tool. Check compatibility. Add it to one stack.', 'cost-usage':'Understand reported usage and qualified cost estimates.',settings:'Your local preferences, billing and connections.',help:'Simple steps for sessions, tools, costs and everyday use.'};
   const activeLabel = sections.find(([id]) => id === active)?.[2] ?? 'Overview';
   return <div className="app-shell"><button className="skip-link" onClick={()=>document.getElementById('main-content')?.focus()}>Skip to content</button>
     <aside className="sidebar"><a href="#overview" className="brand"><img src="/icon.svg" className="brand-logo" alt=""/><div>Shrinkcage<small>LESS CONTEXT. MORE CLARITY.</small></div></a>
       <nav aria-label="Main navigation">{navigation.map(n=><a key={n.id} href={'#'+n.id} onClick={()=>setActive(n.id)} className={group.id===n.id?'active':''} aria-current={group.id===n.id?'page':undefined}><Icon kind={n.icon}/><span>{n.label}</span></a>)}</nav>
-      <div className="sidebar-bottom"><div className="local-workspace"><span className="workspace-icon"><Icon kind="terminal" size={15}/></span><div>On your machine<small>localhost:8790</small></div><i/></div><div className="sidebar-version"><span>SHRINKCAGE</span><span>v{VERSION}</span></div></div>
+      <div className="sidebar-bottom"><div className="sidebar-help"><a href="#help" onClick={()=>setActive('help')} aria-current={active==='help'?'page':undefined}><Icon kind="book" size={17}/><span>How to use</span></a></div><div className="local-workspace"><span className="workspace-icon"><Icon kind="terminal" size={15}/></span><div>On your machine<small>localhost:8790</small></div><i/></div><div className="sidebar-version"><span>SHRINKCAGE</span><span>v{VERSION}</span></div></div>
     </aside>
     <div className="main-shell"><header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>{activeLabel}</strong></div><div className="top-actions"><span className={'local-label'+(error?' reconnecting':'')}><i/>{error?'Reconnecting':'Local instance'}</span><button className="icon-button" onClick={theme} aria-label={dark?'Switch to light mode':'Switch to dark mode'} title={dark?'Silver appearance':'Graphite appearance'}><Icon kind={dark?'sun':'moon'}/></button><a className="button primary new-session-action" href="#setup" onClick={()=>setActive('setup')}><span aria-hidden="true">＋</span> New session</a></div></header>
       <nav className="mobile-navigation" aria-label="Section navigation">{navigation.map(n=><a key={n.id} href={'#'+n.id} onClick={()=>setActive(n.id)} className={group.id===n.id?'active':''} aria-current={group.id===n.id?'page':undefined}><Icon kind={n.icon} size={16}/>{n.label}</a>)}</nav>
+      <a className="mobile-help-link" href="#help" onClick={()=>setActive('help')} aria-current={active==='help'?'page':undefined}><Icon kind="book" size={14}/>How to use</a>
       <main id="main-content" tabIndex={-1}><div className="page-heading"><div><div className="eyebrow">LOCAL WORKSPACE</div><h1 tabIndex={-1}>{active==='registry'?'Optimizers':activeLabel}</h1><p>{descriptions[active]??'Explore the details when you need them.'}</p></div><div className="refresh-control"><button className="button" onClick={()=>{void refresh(true);window.dispatchEvent(new Event('shrinkcage:refresh'));}} disabled={loading}><span className={loading?'refreshing':''}><Icon kind="refresh" size={15}/></span>{loading?'Refreshing…':'Refresh'}</button><span aria-live="polite">{data?'Updated '+stamp(data.updatedAt):'Connecting to local sources…'}</span></div></div>
       {group.screens.length>1&&<nav className="context-navigation" aria-label="Workspace views">{group.screens.map(id=><a key={id} href={'#'+id} onClick={()=>setActive(id)} aria-current={active===id?'page':undefined}>{sections.find(([key])=>key===id)?.[2]}</a>)}</nav>}
-      {error && <div role="alert" className="global-error">{error} {data && `Showing the last response from ${stamp(data.updatedAt)}.`}<button onClick={() => void refresh(true)} disabled={loading}>Retry</button></div>}
-      <Suspense fallback={<section className="panel"><p>Loading optimizer controls…</p></section>}><ControlWorkspace active={active}/></Suspense>
+      {error && active!=='help' && <div role="alert" className="global-error">{error} {data && `Showing the last response from ${stamp(data.updatedAt)}.`}<button onClick={() => void refresh(true)} disabled={loading}>Retry</button></div>}
+      <Suspense fallback={active==='help'?null:<section className="panel"><p>Loading optimizer controls…</p></section>}><ControlWorkspace active={active}/></Suspense>
+      <Screen id="help" active={active}><Suspense fallback={<section className="panel"><p>Loading your guide…</p></section>}><HowToUse/></Suspense></Screen>
       <Screen id="overview" active={active}><div className="overview-section-heading"><h2>Shared optimizer activity</h2><a href="#analytics">View history ↗</a></div>
       <div className="overview-grid" aria-busy={loading && !data}>
         <OverviewCard icon="layers" name="Headroom" subtitle="Context compression" state={h?.state} value={h ? compact(h.saved) : '—'} unit="tokens saved · proxy runtime" detail={<><span>{h ? pct(h.percent) : '—'} <small>reduction</small></span><span>{h ? fmt(h.requests) : '—'} <small>requests</small></span></>}/>
@@ -224,7 +229,7 @@ function App() {
           <details className="troubleshooting"><summary>Connection troubleshooting</summary><p><strong>Headroom:</strong> Confirm the proxy is running on 8787. For telemetry-dependent statistics, prefix your existing launch command with <code>HEADROOM_TELEMETRY=on</code> and restart it yourself.</p><p><strong>RTK:</strong> Make sure <code>rtk</code> is on the PATH inherited by this server. “No tracking data yet” means the source reports no commands.</p><p><strong>Serena:</strong> Inspect Serena’s startup errors and language-server availability. Check your coding agent’s existing MCP configuration and logs for a successful Serena handshake and a tool invocation. A heartbeat alone cannot verify MCP. The monitor never starts Serena or edits configuration.</p><p>Port discovery: {s!.ports[0]}–{s!.ports.at(-1)}. Override at startup with <code>SERENA_PORT_START</code> and <code>SERENA_PORT_COUNT</code> (maximum 20 ports).</p></details>
         </section></Screen>
         <footer><span><span className="privacy-dot"/>Local data. Native permissions.</span><span>Refreshes every 10 seconds</span></footer>
-      </> : <div className="panel initial-loading"><Icon kind="health" size={28}/><h2>{error ? 'Waiting for the local server' : 'Reading your local tools…'}</h2><p>Each integration connects independently.</p></div>}
+      </> : active!=='help' && <div className="panel initial-loading"><Icon kind="health" size={28}/><h2>{error ? 'Waiting for the local server' : 'Reading your local tools…'}</h2><p>Each integration connects independently.</p></div>}
       </main>
     </div>
   </div>;
