@@ -6,6 +6,8 @@
 - Explain session launch, tools, profiles, history, costs, comparisons, settings and recovery in short steps. Keep advanced topics expandable and link to the actual screens.
 - Keep the guide available when APIs are offline, without losing drafts in session controls. Verify guide links, keyboard navigation, deep links, responsive themes and read-only behavior in the browser suite.
 
+- Synchronize the concurrent-session test fixture with an explicit release instead of a two-second observation window, preserving its isolation assertions on slower runners.
+
 ## 1.5.1 — preserve moved launcher files
 
 - Recheck canonical launcher directories during creation and native-file cleanup. Preserve resources if an owned parent is replaced by a symlink or junction.

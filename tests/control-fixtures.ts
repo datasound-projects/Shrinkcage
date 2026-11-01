@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 
-const COMMON=`import {spawn,spawnSync} from 'node:child_process';import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';import {dirname,join} from 'node:path';import {fileURLToPath} from 'node:url';import {createInterface} from 'node:readline';const args=process.argv.slice(2);const root=dirname(fileURLToPath(import.meta.url));`;
+const COMMON=`import {spawn,spawnSync} from 'node:child_process';import {existsSync,readFileSync,writeFileSync,mkdirSync} from 'node:fs';import {dirname,join} from 'node:path';import {fileURLToPath} from 'node:url';import {createInterface} from 'node:readline';const args=process.argv.slice(2);const root=dirname(fileURLToPath(import.meta.url));`;
 const MCP=`const rl=createInterface({input:process.stdin});rl.on('line',line=>{try{const m=JSON.parse(line);if(m.id===undefined)return;const result=m.method==='initialize'?{protocolVersion:'2024-11-05',capabilities:{tools:{}},serverInfo:{name:'fixture',version:'1'}}:m.method==='tools/list'?{tools:[{name:'find_symbol',inputSchema:{type:'object'}}]}:{content:[{type:'text',text:'PRIVATE_RESULT_DO_NOT_STORE'}]};process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:m.id,result})+'\\n');}catch{}});rl.on('close',()=>process.exit(0));`;
 const TOML=import.meta.resolve('smol-toml');
 const CODEX=COMMON+`
@@ -39,6 +39,7 @@ for(const name of Object.keys(overrides).filter(key=>key.endsWith('.command')&&k
 if(process.env.FIXTURE_USE_HOOK){const hook=JSON.parse(readFileSync(join(process.cwd(),'.codex/hooks.json'),'utf8')).hooks.PreToolUse.find(g=>g.hooks.some(h=>h.statusMessage==='Shrinkcage RTK'));if(hook){const command=hook.hooks[0].command;const path=join(process.cwd(),'.codex/shrinkcage-rtk.mjs');spawnSync(process.execPath,[path],{input:JSON.stringify({permission_mode:'default',hook_event_name:'PreToolUse',tool_name:'Bash',tool_input:{command:'git status'}}),env:process.env,encoding:'utf8',shell:false});}}
 if(args.includes('--echo-stdin')){for await(const chunk of process.stdin)process.stdout.write(chunk);}
 if(args.includes('--wait')){setInterval(()=>{},1000);await new Promise(()=>{});}
+if(process.env.FIXTURE_RELEASE_FILE){const deadline=Date.now()+20000;while(!existsSync(process.env.FIXTURE_RELEASE_FILE)){if(Date.now()>=deadline)throw Error('Fixture release timed out');await new Promise(r=>setTimeout(r,50));}}
 if(process.env.FIXTURE_DELAY_MS)await new Promise(r=>setTimeout(r,Number(process.env.FIXTURE_DELAY_MS)));console.log('FIXTURE_TERMINAL_OUTPUT');for(const c of children)if(c.exitCode===null)await new Promise(r=>{c.once('close',r);setTimeout(()=>{c.kill('SIGTERM');r();},3000).unref();});
 const exit=args.indexOf('--exit');process.exitCode=exit<0?0:Number(args[exit+1]);
 `;

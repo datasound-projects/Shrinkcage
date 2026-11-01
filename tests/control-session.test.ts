@@ -110,16 +110,18 @@ test('native billing contradictions and subscription gateway requests fail indep
 });
 test('concurrent sessions in one project retain independent stacks and durable pending edits',async()=>{
   const f=await fakeWorkspace();try{
-    const env={...f.env,FIXTURE_NATIVE_USAGE:'1',FIXTURE_DELAY_MS:'2000'};
+    const release=join(f.root,'release-concurrent-sessions');
+    const env={...f.env,FIXTURE_NATIVE_USAGE:'1',FIXTURE_RELEASE_FILE:release};
     const baseline=await plan(f,'codex','baseline','api',env),lean=await plan(f,'claude','lean','api',env);
     const running=Promise.all([cli(['run','codex','--billing','api','--profile','baseline','--project',f.project,'--approve',baseline.fingerprint],env,f.project),cli(['run','claude','--billing','api','--profile','lean','--project',f.project,'--approve',lean.fingerprint],env,f.project)]);
     const store=new ControlStore(f.data);try{
-      let active:ManagedSession[]=[];for(let i=0;i<150;i++){active=store.sessions().filter(s=>['running','starting'].includes(s.status));if(active.length===2)break;await new Promise(r=>setTimeout(r,40));}
+      let active:ManagedSession[]=[];for(let i=0;i<500;i++){active=store.sessions().filter(s=>['running','starting'].includes(s.status));if(active.length===2)break;await new Promise(r=>setTimeout(r,40));}
       assert.equal(active.length,2);assert.equal(new Set(active.map(s=>s.id)).size,2);assert.equal(active.find(s=>s.agent==='codex')?.plannedTools.length,0);assert.deepEqual(active.find(s=>s.agent==='claude')?.plannedTools,['rtk']);
       const target=active.find(s=>s.agent==='claude')!;const pending=store.setSessionPreference(target.id,{tools:[]});assert.equal(pending.state,'requires-restart');
+      await writeFile(release,'release');
       assert.ok((await running).every(r=>r.code===0));assert.deepEqual(store.session(target.id)?.pending?.tools,[]);assert.deepEqual(store.session(target.id)?.plannedTools,['rtk']);
       assert.equal(store.sessions().filter(s=>s.usage).length,2);store.clearSessionPreference(target.id);assert.equal(store.session(target.id)?.pending,undefined);
-    }finally{store.close();await running;}
+    }finally{await writeFile(release,'release');store.close();await running;}
   }finally{await f.close();}
 });
 test('native transcript links reject wrong projects, identities, secrets and symlinks',async()=>{
