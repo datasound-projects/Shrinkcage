@@ -7,6 +7,7 @@ export const sections = [
   ['validation', 'health', 'Validation'], ['headroom', 'layers', 'Headroom'], ['rtk', 'terminal', 'RTK'], ['serena', 'code', 'Serena'],
   ['cost-usage', 'chart', 'Cost & usage'], ['analytics', 'chart', 'Shared analytics'], ['benchmarks', 'chart', 'Experiments'],
   ['settings', 'plug', 'Settings'], ['connectors', 'plug', 'Connectors'], ['health', 'health', 'System health'],
+  ['help', 'book', 'How to use'],
 ] as const;
 export const navigation = [
   {id:'overview',icon:'grid',label:'Overview',screens:['overview']},
@@ -17,6 +18,8 @@ export const navigation = [
 ];
 const valid=(id:string)=>sections.some(([key])=>key===id);
 const fromHash=()=>{const id=window.location.hash.slice(1);return valid(id)?id:'overview';};
+
+export const helpNavigation={id:'help',icon:'book',label:'How to use',screens:['help']};
 
 /** Navigation works even when a metrics source is offline. Existing deep links remain valid. */
 export function useSectionNavigation(_ready?: boolean) {

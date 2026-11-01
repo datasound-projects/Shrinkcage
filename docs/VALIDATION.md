@@ -61,7 +61,7 @@ See [compatibility](COMPATIBILITY.md), [SDK](PLUGINS.md), [accounting](ACCOUNTIN
 
 The initial 30 October 2026 review queried canonical public GitHub metadata/READMEs/licenses/releases/CI/advisories and official npm/PyPI/crates provenance. Ten scoped catalog reviews are retained in registry/reviews/initial-review.json; Token Savior remains under review for unreproducible/withdrawn benchmark evidence. Versioned source/package observations are separate. Read-only live discovery is tested without running upstream candidate code. No complete dependency vulnerability audit, independent security certification or model-backed efficiency benchmark was performed. Returned advisory records provide partial coverage only.
 
-The required CI includes registry validation and all three browser suites. The scheduled metadata workflow is review-only and cannot approve entries or install updates. Exact CI evidence is attached to the published commit/PR; local checks alone are not cross-platform validation.
+The required CI includes registry validation and all five browser suites. The scheduled metadata workflow is review-only and cannot approve entries or install updates. Exact CI evidence is attached to the published commit/PR; local checks alone are not cross-platform validation.
 
 Windows CI exposed automatic CRLF conversion of the digest-covered catalog. Registry JSON now explicitly uses LF through `.gitattributes`; integrity verification remains byte-exact. A forced `core.autocrlf=true` checkout is checked locally, then the full OS/runtime matrix verifies the correction.
 
@@ -84,3 +84,8 @@ Native agent version/help checks are now sequential within each agent, with an e
 Nine new tests cover one-time/idempotent approvals, real managed fake-agent execution, all four agent/billing combinations including a full Headroom/RTK/Serena API stack, expired/stale approvals, wrong targets and arbitrary fields, non-interactive refusal, symlink launch roots, redacted desktop failures, and the real HTTP Origin/capability boundary. The fourth browser suite covers Sessions Start, tool selection, explicit review, missing Herdr, different same-project stacks, and launching a saved pending stack through real API/SQLite/subprocesses. Only its desktop opener is synthetic.
 
 On this macOS host, the actual Terminal app and native Herdr 0.9.5 each launched isolated fake Codex sessions with RTK/Serena usage receipts and clean exits. A separate real Codex 0.165.0 subscription session reached running state with selected RTK/Serena configuration and was closed cleanly without sending a task. Those real tools remained configured rather than falsely marked used; native hook/MCP policy and inherited external optimizers were disclosed. No paid task-quality, cost-savings or native Windows/Linux GUI benchmark is claimed. Herdr Windows and automatic restoration remain unsupported.
+
+
+## In-app guide · 1 November 2026
+
+The How to use page adds a separate bottom-sidebar destination and a mobile link. Its fifth browser suite checks all ten manual topics, links, keyboard access, direct and back navigation, both themes, widths from 320 to 1440 pixels, and readable content with every API offline. It also rejects mutation requests. The control browser suite verifies that opening the guide preserves an unsaved profile. Build and package checks include the real guide assets; no backend or optimizer behavior changes for this addition.

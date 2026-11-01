@@ -38,6 +38,8 @@ Herdr 0.9.5+ launches are supported on macOS/Linux through a separate private se
 - **Cost & usage:** reported tokens, qualified price estimates and controlled comparisons.
 - **Settings:** local discovery, billing, prices, privacy and diagnostics.
 
+Open **How to use** at the bottom of the sidebar for the in-app manual. It covers each feature in short steps, with links to the right screens. On phones, the guide link sits below the main navigation. The guide also works when metric sources are offline.
+
 One screen is shown at a time. Context tabs hold secondary tools; drafts survive navigation. Choose silver or graphite appearance. Existing deep links still work, even when a metrics source is offline.
 
 ![Start a reviewed session — illustrative test data](docs/images/start-session.png)

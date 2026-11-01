@@ -127,3 +127,7 @@ Unsupported installed agents remain visible with guidance, but launch previews a
 ## Start from the dashboard
 
 Open **Sessions → Start session**, select agent, billing, project and tools, then review and approve the plan. Choose **Terminal** or supported **Herdr** and click **Start session**. The launcher opens a new interactive CLI and reports its actual session ID. Saved profiles and pending session-stack previews provide the same action. Native login/trust/approvals still apply. [Terminal compatibility and recovery](TERMINALS.md).
+
+## In-app manual
+
+Choose **How to use** at the bottom of the desktop sidebar, or below the main navigation on a phone. The guide starts with the first-session workflow. Expand a topic for profiles, tools, costs, experiments, settings or troubleshooting. Its links open the right screen. The direct local address is `http://localhost:8790/#help`; it remains readable when telemetry and discovery APIs are unavailable.
