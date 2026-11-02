@@ -20,7 +20,7 @@ export function TerminalStart({plan,reviewed,mutate,refresh}:Props){
   },[launch?.id,waiting,refresh]);
   const target='herdr' as const;
   const selected=choices.find(c=>c.id==='herdr');
-  useEffect(()=>{if(!launch?.sessionId)return;chooseSession(launch.sessionId,plan.project.id);window.location.hash='managed';},[launch?.sessionId]);
+  useEffect(()=>{if(!launch?.sessionId)return;window.dispatchEvent(new Event('shrinkcage:session-launched'));chooseSession(launch.sessionId,plan.project.id);window.location.hash='managed';},[launch?.sessionId]);
   const start=async()=>{if(request.current.settled)request.current={id:crypto.randomUUID(),settled:false,emulator:undefined,attempted:false};if(!request.current.attempted){request.current.emulator=chosenTerminal();request.current.attempted=true;}setBusy(true);setError('');try{const value=await mutate('/terminal-launches',{fingerprint:plan.fingerprint,target,emulator:request.current.emulator,requestId:request.current.id,approved:true});request.current.settled=true;setLaunch(value);if(value.sessionId)void refresh();}catch(e){setError(e instanceof TypeError||e instanceof Error&&e.name==='AbortError'?'The launch was not confirmed. Check Herdr, then retry safely.':e instanceof Error?e.message:'Herdr could not open.');}finally{setBusy(false);}};
   return <div className="terminal-start" aria-label="Start reviewed session">
     <div className="terminal-start-controls"><button className="button primary" disabled={!plan.ready||!reviewed||busy||waiting||!selected?.available} onClick={()=>void start()}>{busy?'Opening Herdr…':waiting?'Waiting for Herdr…':'Open in Herdr'}</button><span className="control-help">A persistent Herdr session with its own configuration.</span></div>
