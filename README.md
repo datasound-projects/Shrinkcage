@@ -66,7 +66,7 @@ Replace the path with your project folder, for example `C:\Projects\my-app` on W
 
 Each launch has its own ID, tools and configuration, including concurrent sessions in the same project. Stack edits prepare the next launch; they do not reconfigure a running agent. Existing external hooks can limit isolation, and the plan explains that limitation. Native sandbox, trust and approval rules remain in place.
 
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.6.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
+For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.6.1.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
 
 ## What works
 
@@ -76,7 +76,7 @@ For a global `shrinkcage` command, run `npm run package`, then `npm install -g .
 | Modern Claude Code | Managed sessions, native usage and subscription/API billing awareness; version 2.1+ and required interfaces are checked |
 | RTK | Session-scoped output-rewrite hooks; shared output-token estimates |
 | Serena | Session-owned MCP with observed calls; shared dashboard monitoring |
-| Headroom | Codex API routing through an existing verified proxy; shared compression metrics |
+| Headroom | Codex and Claude subscription/API sessions through an existing verified local proxy; shared compression metrics |
 | SDK v2 MCP plugins | Approved local stdio servers, typed settings, protocol checks and owned removal |
 | Gemini CLI | Read-only saved-session discovery and usage |
 | Other registry tools | Scoped catalog review and guidance; automatic activation requires a reviewed adapter |

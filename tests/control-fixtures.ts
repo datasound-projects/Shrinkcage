@@ -12,6 +12,7 @@ const CODEX=COMMON+`
 if(args.includes('--version')){console.log('codex-cli '+(process.env.FIXTURE_CODEX_VERSION||'0.165.0'));process.exit(0);}
 if(args.includes('--help')){console.log('--config --no-daemon --model --sandbox --no-alt-screen');process.exit(0);}
 if(args[0]==='login'&&args[1]==='status'){console.log(process.env.FIXTURE_BILLING==='subscription'?'Logged in using ChatGPT':'Logged in using an API key');process.exit(0);}
+for(let i=0;i<args.length;i++)if(args[i]==='--settings'){const settings=JSON.parse(args[++i]);if(settings.env)Object.assign(process.env,settings.env);}
 if(process.env.FIXTURE_CAPTURE)writeFileSync(process.env.FIXTURE_CAPTURE,JSON.stringify({args,cwd:process.cwd(),tty:!!process.stdin.isTTY}));
 
 if(process.env.FIXTURE_NATIVE_USAGE){
@@ -30,6 +31,7 @@ const children=[];let stopped=false;
 const stop=s=>{if(stopped)return;stopped=true;for(const c of children)c.kill(s);process.exit(s==='SIGINT'?130:143);};process.on('SIGTERM',()=>stop('SIGTERM'));process.on('SIGINT',()=>stop('SIGINT'));
 if(process.env.FIXTURE_STARTED)writeFileSync(process.env.FIXTURE_STARTED,String(process.pid));
 const overrides={};for(let i=0;i<args.length;i++)if(args[i]==='--config'){const text=args[++i],at=text.indexOf('=');try{overrides[text.slice(0,at)]=JSON.parse(text.slice(at+1));}catch{}}
+if(process.env.FIXTURE_VERIFY_ROUTE){const endpoint=process.env.SHRINKCAGE_AGENT==='claude'?process.env.ANTHROPIC_BASE_URL:overrides.openai_base_url||process.env.OPENAI_BASE_URL;const selected=process.env.FIXTURE_VERIFY_ROUTE==='required';if(selected&&!endpoint)throw Error('Missing Headroom route');if(!selected&&endpoint)throw Error('Unexpected Headroom route');if(endpoint){const target=new URL(endpoint);if(target.hostname!=='127.0.0.1')throw Error('Fixture route must stay loopback');const url=target.origin+(process.env.SHRINKCAGE_AGENT==='claude'?'/v1/messages':'/v1/responses');const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json','x-fixture-session':process.env.SHRINKCAGE_SESSION_ID,'x-fixture-agent':process.env.SHRINKCAGE_AGENT,'x-fixture-billing':process.env.FIXTURE_BILLING},body:JSON.stringify({fixture:true})});if(!r.ok)throw Error('Headroom route failed');}}
 for(let i=0;i<args.length;i++)if(args[i]==='--mcp-config'){const config=JSON.parse(args[i+1]);for(const [name,s]of Object.entries(config.mcpServers)){overrides['mcp_servers.'+name+'.command']=s.command;overrides['mcp_servers.'+name+'.args']=s.args;overrides['mcp_servers.'+name+'.cwd']=process.cwd();}}
 for(const name of Object.keys(overrides).filter(key=>key.endsWith('.command')&&key.startsWith('mcp_servers.shrinkcage_')).map(key=>key.split('.')[1])){
  const command=overrides['mcp_servers.'+name+'.command'];if(!command)continue;
@@ -62,12 +64,12 @@ if(args.includes('--help')){console.log('--project-from-cwd --context --transpor
 if(process.env.FIXTURE_SERENA_CRASH)process.exit(8);
 ${MCP}`;
 const HEADROOM=COMMON+`
-if(args.includes('--version')){console.log('headroom, version 0.42.0');process.exit(0);}
-if(args.includes('--help')){console.log('--no-proxy --no-mcp --code-memory --port --proxy-url --transport');process.exit(0);}
+if(args.includes('--version')){console.log('headroom, version '+(process.env.FIXTURE_HEADROOM_VERSION||'0.42.0'));process.exit(0);}
+if(args.includes('--help')){console.log(args[0]==='mcp'?(process.env.FIXTURE_HEADROOM_NO_MCP?'unsupported':'--proxy-url --transport'):(process.env.FIXTURE_HEADROOM_NO_WRAPPER?'unsupported':'--no-proxy --no-mcp --code-memory --port'));process.exit(0);}
 if(args[0]==='mcp'){${MCP}}else{
 if(process.env.FIXTURE_WRAPPER_FAIL)process.exit(9);
 if(!args.includes('--no-proxy')||!args.includes('--no-mcp')||!args.includes('--code-memory'))process.exit(10);
-const pass=args.slice(args.indexOf('--')+1);const c=spawn(process.execPath,[join(root,'codex.mjs'),...pass],{stdio:'inherit',env:process.env,shell:false});
+const pass=args.slice(args.indexOf('--')+1),port=args[args.indexOf('--port')+1],url='http://127.0.0.1:'+port+'/v1';const c=spawn(process.execPath,[join(root,args[1]+'.mjs'),'--config','openai_base_url='+JSON.stringify(url),...pass],{stdio:'inherit',env:{...process.env,OPENAI_BASE_URL:url},shell:false});
 process.on('SIGTERM',()=>c.kill('SIGTERM'));process.on('SIGINT',()=>c.kill('SIGINT'));c.on('close',(code,signal)=>{process.exitCode=signal?1:code??1;});}
 `;
 export async function fakeWorkspace(){
@@ -77,9 +79,10 @@ export async function fakeWorkspace(){
     if(process.platform==='win32')await writeFile(join(bin,name+'.cmd'),'@echo off\r\nnode "%~dp0'+name+'.mjs" %*\r\n');
     else{await writeFile(join(bin,name),'#!/usr/bin/env node\n'+code);await chmod(join(bin,name),0o700);}
   }
-  const health=createServer((req,res)=>{if(req.url==='/health'){res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({service:'headroom-proxy',status:'healthy'}));}else{res.writeHead(404);res.end();}});await new Promise<void>(r=>health.listen(0,'127.0.0.1',r));const address=health.address();if(!address||typeof address==='string')throw Error('Fixture listener failed');
-  const env={...process.env,PATH:bin+(process.platform==='win32'?';':':')+dirname(process.execPath),HOME:home,USERPROFILE:home,CODEX_HOME:join(home,'.codex'),CLAUDE_CONFIG_DIR:join(home,'.claude'),SHRINKCAGE_DATA_DIR:data,SHRINKCAGE_HEADROOM_PORT:String(address.port),HEADROOM_BEACON:'off',DO_NOT_TRACK:'1',OPEN_BROWSER:'0',APPDATA:join(home,'Roaming'),LOCALAPPDATA:join(home,'Local'),XDG_CONFIG_HOME:join(home,'.config')};
-  return {root,bin,project,home,data,env,close:async()=>{await new Promise<void>(r=>health.close(()=>r()));await rm(root,{recursive:true,force:true});}};
+  const headroomState={healthy:true,optimize:true};const requests:{session:string;agent:string;billing:string;path:string}[]=[];
+  const health=createServer((req,res)=>{if(req.url==='/health'){res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({service:'headroom-proxy',status:headroomState.healthy?'healthy':'unhealthy',version:'0.42.0',config:{optimize:headroomState.optimize}}));}else if(req.method==='POST'&&['/v1/messages','/v1/responses'].includes(req.url??'')){requests.push({session:String(req.headers['x-fixture-session']),agent:String(req.headers['x-fixture-agent']),billing:String(req.headers['x-fixture-billing']),path:req.url!});req.resume();res.writeHead(200,{'content-type':'application/json'});res.end('{}');}else{res.writeHead(404);res.end();}});await new Promise<void>(r=>health.listen(0,'127.0.0.1',r));const address=health.address();if(!address||typeof address==='string')throw Error('Fixture listener failed');
+  const env={...process.env,PATH:bin+(process.platform==='win32'?';':':')+dirname(process.execPath),HOME:home,USERPROFILE:home,OPENAI_BASE_URL:undefined,ANTHROPIC_BASE_URL:undefined,CLAUDE_CODE_USE_BEDROCK:undefined,CLAUDE_CODE_USE_VERTEX:undefined,CLAUDE_CODE_USE_FOUNDRY:undefined,OPENAI_API_KEY:undefined,ANTHROPIC_API_KEY:undefined,ANTHROPIC_AUTH_TOKEN:undefined,CLAUDE_CODE_OAUTH_TOKEN:undefined,CODEX_HOME:join(home,'.codex'),CLAUDE_CONFIG_DIR:join(home,'.claude'),SHRINKCAGE_DATA_DIR:data,SHRINKCAGE_HEADROOM_PORT:String(address.port),HEADROOM_BEACON:'off',DO_NOT_TRACK:'1',OPEN_BROWSER:'0',APPDATA:join(home,'Roaming'),LOCALAPPDATA:join(home,'Local'),XDG_CONFIG_HOME:join(home,'.config')};
+  return {root,bin,project,home,data,env,requests,headroomState,close:async()=>{await new Promise<void>(r=>health.close(()=>r()));await rm(root,{recursive:true,force:true});}};
 }
 const ENTRY=fileURLToPath(new URL('../server/control/entry.ts',import.meta.url));
 const TSX=import.meta.resolve('tsx');

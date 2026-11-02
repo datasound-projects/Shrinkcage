@@ -59,7 +59,7 @@ test('T04 unavailable optional tools have explicit omissions; required or blocke
 test('T04 agent, OS and dependency restrictions do not get misreported as active',()=>{
   const timed=composePlan({profile:balanced(),project,agent:{...agent,version:null,compatible:false},config:config(),detections:detections(),platform:'linux'});assert.ok(timed.errors.some(e=>e.includes('Retry discovery')));assert.ok(!timed.errors.some(e=>e.includes('Upgrade')));
 
-  const profile=balanced();profile.profile.agent='claude';const p=composePlan({profile,project,agent:{...agent,id:'claude',version:'2.1.118'},config:config(),detections:detections(),platform:'win32'});assert.equal(p.ready,true);assert.deepEqual(p.tools,['rtk','serena']);assert.ok(p.omitted.some(t=>t.id==='headroom'));
+  const profile=balanced();profile.profile.agent='claude';const p=composePlan({profile,project,agent:{...agent,id:'claude',version:'2.1.118'},config:config(),detections:detections(),platform:'win32'});assert.equal(p.ready,true);assert.deepEqual(p.tools,['rtk','serena','headroom']);assert.equal(p.omitted.length,0);
   assert.equal(composePlan({profile,project,agent,config:config(),detections:[],platform:'linux'}).ready,false);
   assert.equal(composePlan({profile:balanced(),project,agent:{...agent,installed:false,compatible:false},config:config(),detections:detections(),platform:'linux'}).ready,false);
   const constrained=CATALOG.map(m=>m.id==='rtk'?{...m,platforms:[]}:m);assert.ok(composePlan({profile:balanced(),project,agent,config:config(),detections:detections(),platform:'linux',catalog:constrained}).omitted.some(t=>t.id==='rtk'));

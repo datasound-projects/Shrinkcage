@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.1
+
+- Enable Headroom for supported Codex and Claude subscription/API sessions; remove the incorrect API-only UI, registry and planner restrictions.
+- Merge Claude’s process-only proxy settings with RTK and usage hooks. Keep authentication and existing project files unchanged.
+- Share compatibility checks across selection, recommendations, plans and validation. Detect missing retrieval interfaces, disabled compression and conflicting Claude cloud/gateway routes.
+- Prevent a Codex wrapper session from hot-updating shared proxy settings; invalidate stale launch previews on tool version/health changes.
+- Cover 192 plan combinations, all 32 native-agent fixture stacks, concurrent independent routes, recovery, receipts and billing integrity. Update the curated Headroom entry and its integrity record.
+
+
 ## 1.6.0 — projects and persistent Herdr sessions
 
 - Open on Projects: add a folder, see its sessions and start another with independent tool choices.

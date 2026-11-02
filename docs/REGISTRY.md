@@ -27,7 +27,7 @@ Built-in profiles stay immutable. Adding to a custom profile preserves its other
 
 Ten entries passed scoped catalog review: Headroom, RTK, Serena, Context Mode, codemem, LiteLLM, ccusage, Langfuse, LLMLingua and mcp2cli. Token Savior is held in the review queue: its upstream README says the headline benchmark harness is unavailable and withdraws a later measurement. This is not a claim that the software cannot be useful.
 
-Headroom, RTK and Serena reuse the existing managed adapters. The other public entries are guided/catalog-only; supported local stdio MCP plugins can be approved separately through the SDK. Public documentation of Codex/Claude support is distinct from Shrinkcage adapter support. Headroom managed routing remains **Codex API only**. No generic proxy routing is assumed for subscription accounts.
+Headroom, RTK and Serena reuse the existing managed adapters. The other public entries are guided/catalog-only; supported local stdio MCP plugins can be approved separately through the SDK. Public documentation of Codex/Claude support is distinct from Shrinkcage adapter support. Headroom supports reviewed Codex/Claude subscription and API paths through a verified local proxy while preserving native authentication. This does not imply support for arbitrary gateways or Claude cloud-provider routes.
 
 Licenses are not reduced to a green open-source badge: Context Mode is Elastic-2.0 source-available; Serena includes GPL-3.0-or-later and MIT components; LiteLLM/Langfuse distinguish core and enterprise terms. The unrelated crates.io `rtk` package is excluded from official RTK installation provenance. Package and GitHub release versions remain separate observations.
 

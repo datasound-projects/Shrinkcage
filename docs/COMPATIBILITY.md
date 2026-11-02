@@ -6,7 +6,7 @@
 | Claude Code | Modern CLI native settings/session-ID/strict-MCP interfaces; four billing paths tested with fixtures | Legacy 0.x client support; selective removal of external hooks; mandatory subscription gateway |
 | RTK | Native session rewrite hooks for both agents; shared estimated gain/history | External hooks can be independently turned off; output estimates are provider token savings |
 | Serena | Session-owned stdio MCP and observed tool names/calls; independent shared dashboard discovery | Dashboard reachability proves Codex connection or token savings |
-| Headroom | Codex API routing through an already healthy loopback proxy | Claude managed routing, subscription OAuth proxying, owned proxy install/update, session allocation of shared counters |
+| Headroom | Supported Codex/Claude subscription and API sessions through a verified loopback proxy; native auth preserved | Claude cloud/custom gateways, owned proxy install/update, session allocation of shared counters |
 | SDK v2 stdio MCP | Approved local foreground native executable or reviewed Node entry point; typed per-session options, real protocol validation and owned optional single-file copy | Arbitrary OAuth/env inheritance, remote HTTP auth, npm-shim execution, package installation, OS sandboxing or automatic quality proof |
 | Gemini | Read-only saved-session discovery | Managed launch or optimizer activation |
 | context-mode, LeanCTX, codemem, LiteLLM, Langfuse | Official documentation and guided catalog | Reviewed managed activation, verified session isolation or measured benefit |

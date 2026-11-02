@@ -1,3 +1,4 @@
+import { toolCompatibility } from './compatibility.js';
 import { VERSION } from '../version.js';
 import { CATALOG } from './catalog.js';
 import { fingerprint } from './schema.js';
@@ -47,17 +48,12 @@ export function composePlan(input:PlannerInput):OptimizationPlan {
   for(const toolId of graph.order){
     const manifest=catalog.find(t=>t.id===toolId)!,d=detections.get(toolId as ToolId);
     let reason='';
-    if(manifest.mode!=='managed')reason='Guided only; no reviewed activation adapter.';
-    else if(!manifest.agents.includes(agent.id)||!manifest.platforms.includes(platform))reason='Unsupported agent or operating system.';
-    else if(manifest.billingModes&&!manifest.billingModes.includes(input.billing?.mode??'unknown'))reason='Unsupported billing mode for this adapter.';
-    else if(manifest.architectures&&!manifest.architectures.includes('any')&&!manifest.architectures.includes(process.arch))reason='Unsupported machine architecture.';
-    else if(!d?.installed)reason='Tool is missing from PATH.';
-    else if(!d.compatible)reason='Installed version or command interfaces are unsupported.';
+    reason=toolCompatibility(manifest,d,{agent:agent.id,billing:input.billing?.mode??'unknown',platform,architecture:process.arch})??'';
+    if(reason){/* preserve the common compatibility diagnosis */}
+    else if(toolId==='headroom'&&config.headroomRoutingConflict)reason=config.headroomRoutingConflict;
     else if(toolId==='rtk'&&config.hooksDisabled)reason='Codex hooks are disabled by existing configuration; Shrinkcage will not override that policy.';
-    else if(toolId==='headroom'&&(input.billing?.mode!=='api'||input.billing.nativeMode==='subscription'))reason='Headroom routing is API-only. Native subscription or unknown billing is preserved without a gateway.';
     else if(toolId==='serena'&&config.serenaEntries>0&&!(config.serenaEntries===1&&config.replaceSerenaEntry))reason='External Serena MCP aliases cannot be safely shadowed. Existing entries remain unchanged; inspect this setup first.';
     else if(toolId==='headroom'&&(config.headroomEntries??0)>0&&!(config.headroomEntries===1&&config.replaceHeadroomEntry))reason='External Headroom MCP aliases cannot be safely shadowed. Existing entries remain unchanged; inspect this setup first.';
-    else if(toolId==='headroom'&&d.serviceHealthy!==true)reason='No verified Headroom proxy on its configured loopback port. Start it separately; Shrinkcage does not take ownership.';
     else if(manifest.dependencies.some(id=>!tools.includes(id as ToolId)))reason='A dependency could not be activated.';
     if(reason){omitted.push({id:toolId,reason});if(graph.required[toolId]||profile.fallback==='block')errors.push(toolId+': '+reason);else warnings.push(toolId+' omitted: '+reason);}
     else tools.push(toolId as ToolId);
@@ -74,7 +70,7 @@ export function composePlan(input:PlannerInput):OptimizationPlan {
   warnings.push(...isolation.limitations);
   warnings.push('Passive native session hooks collect allowlisted identity and usage only. Hooks blocked by native trust or policy leave session telemetry unavailable.');
   if(tools.includes('serena'))warnings.push('Serena can read/index the approved project and create its own project metadata. Only MCP names and call counts are retained by Shrinkcage.');
-  if(tools.includes('headroom'))warnings.push('Headroom reuses an external proxy. Proxy totals are shared and cannot be attributed to this session. No RTK, memory or global MCP setup is performed by the wrapper.');
+  if(tools.includes('headroom'))warnings.push('Headroom reuses an external proxy. Native subscription or API authentication is preserved. Proxy totals are shared and cannot be attributed to this session. Shared proxy compression settings are not changed. Retrieval MCP activity does not prove that model traffic was compressed. No RTK, memory or global MCP setup is performed.');
   const shadowedMcp:('serena'|'headroom')[]=[];
   const suppressedMcp:('serena'|'headroom')[]=[];
   if(agent.id==='codex'){
@@ -85,7 +81,7 @@ export function composePlan(input:PlannerInput):OptimizationPlan {
   }
   for(const name of suppressedMcp)warnings.push('The external '+name+' MCP alias is disabled only for this new process because it is not selected. Saved config and other sessions are unchanged.');
   if(config.externalHeadroomRouting&&!tools.includes('headroom'))warnings.push('External Headroom routing remains inherited. Its retrieval MCP is preserved; an off selection cannot disable external compression safely. This is not an isolated baseline.');
-  if(agent.id==='claude'&&config.externalHeadroomRouting)errors.push('External Headroom routing conflicts with the isolated Claude MCP stack. This version cannot safely replace that integration; keep using the existing native session or review its external setup separately.');
+  if(agent.id==='claude'&&config.externalHeadroomRouting&&!tools.includes('headroom'))errors.push('External Headroom routing conflicts with the isolated Claude MCP stack. This version cannot safely replace that integration; keep using the existing native session or review its external setup separately.');
   const inheritedConfiguration=[
     ...(config.rtkHooks?['An external or legacy RTK hook remains inherited.']:[]),
     ...(config.headroomHooks?['External Headroom lifecycle hooks remain inherited.']:[]),
@@ -104,7 +100,7 @@ export function composePlan(input:PlannerInput):OptimizationPlan {
   }}
   const phaseOrder=['preflight','activate','verify','cleanup'];actions.sort((a,b)=>phaseOrder.indexOf(a.phase)-phaseOrder.indexOf(b.phase));
   const headroomPort=tools.includes('headroom')?detections.get('headroom')?.endpointPort??8787:null;
-  const facts={schemaVersion:1,engineVersion:VERSION,adapterApiVersion:2,manifests:catalog.filter(m=>graph.order.includes(m.id)),billing:input.billing?{mode:input.billing.mode,nativeMode:input.billing.nativeMode,source:input.billing.source}:null,model:input.model??null,toolConfig:input.toolConfig??{},isolation,profile:save,project,agent,tools,omitted,config:{...config,errors:[...config.errors].sort()},platform,headroomPort,binaries:input.detections.map(d=>({id:d.id,version:d.version,binary:d.binaryFingerprint,compatible:d.compatible,healthy:d.id==='headroom'?d.serviceHealthy:null})).sort((a,b)=>a.id.localeCompare(b.id,'en'))};
+  const facts={schemaVersion:1,engineVersion:VERSION,adapterApiVersion:2,manifests:catalog.filter(m=>graph.order.includes(m.id)),billing:input.billing?{mode:input.billing.mode,nativeMode:input.billing.nativeMode,source:input.billing.source}:null,model:input.model??null,toolConfig:input.toolConfig??{},isolation,profile:save,project,agent,tools,omitted,config:{...config,errors:[...config.errors].sort()},platform,headroomPort,binaries:input.detections.map(d=>({id:d.id,version:d.version,binary:d.binaryFingerprint,compatible:d.compatible,healthy:d.id==='headroom'?d.serviceHealthy:null,agentSupport:d.agentSupport??null,compressionEnabled:d.compressionEnabled??null})).sort((a,b)=>a.id.localeCompare(b.id,'en'))};
   const hash=fingerprint(facts);const unique=(values:string[])=>[...new Set(values)].sort();
   const binaryFingerprints=Object.fromEntries([[agent.id,agent.binaryFingerprint],...input.detections.filter(d=>tools.includes(d.id)).map(d=>[d.id,d.binaryFingerprint])]);
   return {schemaVersion:1,fingerprint:hash,agent:agent.id,agentVersion:agent.version,profile:profile.id,profileRevision:save.revision,project,scope:profile.scope,tools,omitted,actions,errors:unique(errors),warnings:unique(warnings),ready:errors.length===0,evidence:input.detections.filter(d=>tools.includes(d.id)).flatMap(d=>d.evidence),configDigests:config.digests,launchCommand:`shrinkcage run ${agent.id} --profile ${profile.id} --project-id ${project.id} --approve ${hash}`,approvalRequired:true,headroomPort,binaryFingerprints,shadowedMcp,suppressedMcp,inheritedConfiguration,requiredTools:tools.filter(id=>graph.required[id]||profile.fallback==='block'),billing:input.billing,model:input.model??null,toolConfig:input.toolConfig??{},isolation};

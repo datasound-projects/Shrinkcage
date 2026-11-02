@@ -16,8 +16,8 @@ export class OptimizerRegistry {
       if(manifest.mode==='managed'&&!['rtk','serena','headroom'].includes(manifest.id))throw new ControlError('No reviewed executable adapter.');
       const freeze=(v:unknown):unknown=>{if(v&&typeof v==='object'){Object.values(v).forEach(freeze);Object.freeze(v);}return v;};
       const reviewed=freeze(structuredClone(manifest)) as OptimizerManifest;
-      this.entries.set(manifest.id,Object.freeze({apiVersion:2,adapterVersion:'2.0.0',manifest:reviewed,
-        billingModes:manifest.id==='headroom'?['api']:['subscription','api','hybrid','unknown'],
+      this.entries.set(manifest.id,Object.freeze({apiVersion:2,adapterVersion:'2.1.0',manifest:reviewed,
+        billingModes:reviewed.billingModes??['subscription','api','hybrid','unknown'],
         activation:manifest.mode==='managed'?'next-launch':'guided',liveChanges:false,
         lifecycle:['detect','validate','plan','apply','verify','observe','undo'],
         configuration:['serena','headroom'].includes(manifest.id)?['timeoutSeconds']:[],
@@ -30,7 +30,7 @@ export class OptimizerRegistry {
     const entry=this.get(id);if(!entry)return ['Unknown reviewed optimizer.'];
     const errors:string[]=[];
     if(!entry.manifest.agents.includes(agent as never))errors.push('Agent is not supported by this adapter.');
-    if(!entry.billingModes.includes(billing))errors.push('This adapter requires API billing; native subscription routing is preserved.');
+    if(!entry.billingModes.includes(billing))errors.push('Billing mode is outside this adapter’s supported interfaces.');
     if(entry.activation==='guided')errors.push('Guided catalog entry; no executable adapter.');
     return errors;
   }

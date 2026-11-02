@@ -79,8 +79,17 @@ export async function detectTool(id:BuiltinToolId,env:NodeJS.ProcessEnv=process.
     const args=id==='rtk'?['hook','--help']:id==='headroom'?['wrap','codex','--help']:['start-mcp-server','--help'];const [result,help]=await Promise.all([runBounded(binary,['--version'],{env:safeEnv}),runBounded(binary,args,{env:safeEnv})]);d.version=versionOf(result.stdout);d.compatible=result.code===0&&versionCompatible(d.version,manifest.minVersion,manifest.maxMajor);
     const flags=id==='rtk'?['codex']:id==='headroom'?['--no-proxy','--no-mcp','--code-memory']:['--project-from-cwd','--context','--transport','--enable-web-dashboard'];
     d.compatible=d.compatible&&help.code===0&&flags.every(flag=>help.stdout.includes(flag));
+    if(id==='headroom'){
+      const mcp=await runBounded(binary,['mcp','serve','--help'],{env:safeEnv});
+      const retrieval=mcp.code===0&&['--proxy-url','--transport'].every(flag=>mcp.stdout.includes(flag));
+      const reviewed=result.code===0&&versionCompatible(d.version,manifest.minVersion,manifest.maxMajor);
+      d.agentSupport={codex:d.compatible&&retrieval,claude:reviewed&&retrieval};
+      d.compatible=Object.values(d.agentSupport).some(Boolean);
+      if(!d.agentSupport.codex)d.diagnostics.push('Codex needs the reviewed scoped wrap and retrieval interfaces.');
+      if(!d.agentSupport.claude)d.diagnostics.push('Claude needs the reviewed proxy and retrieval interfaces.');
+    }
     if(id==='rtk'&&d.compatible){const check=await runBounded(binary,['hook','codex'],{env,input:JSON.stringify({hook_event_name:'PreToolUse',tool_name:'Bash',permission_mode:'default',tool_input:{command:'git status'}})});const output=JSON.parse(check.stdout||'{}');d.compatible=check.code===0&&output.hookSpecificOutput?.updatedInput?.command==='rtk git status';}
-    if(id==='headroom'){d.endpointPort=headroomPort(env);d.serviceHealthy=await headroomHealth(env);if(d.serviceHealthy)d.status='service_healthy';}
+    if(id==='headroom'){d.endpointPort=headroomPort(env);const health=await headroomDocument('health',env);d.serviceHealthy=!!health&&typeof health.service==='string'&&/headroom/i.test(health.service)&&health.status==='healthy';const config=health?.config;d.compressionEnabled=config&&typeof config==='object'&&!Array.isArray(config)&&typeof (config as Record<string,unknown>).optimize==='boolean'?(config as Record<string,boolean>).optimize:null;if(d.serviceHealthy)d.status='service_healthy';}
     if(!d.compatible){d.status='unsupported';d.diagnostics.push('Version or native interface is outside the reviewed compatibility contract.');}
     d.evidence.push({tool:id,status:d.status,source:'Installed CLI version and fixed help/contract probes',observedAt:checkedAt,scope:'shared',confidence:d.compatible?'verified':'inconclusive',agentVersion:null,toolVersion:d.version,limitations:manifest.limitations});
   }catch{d.status='failed';d.compatible=false;d.diagnostics.push('Read-only CLI probe failed, timed out or returned malformed data.');}

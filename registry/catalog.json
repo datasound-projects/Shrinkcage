@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "taxonomyVersion": 1,
   "version": "1.0.0",
-  "revision": 1,
-  "publishedAt": "2026-10-30T05:40:19.853Z",
+  "revision": 2,
+  "publishedAt": "2026-11-02T02:52:01.255Z",
   "repository": "datasound-projects/Shrinkcage",
   "entries": [
     {
@@ -85,12 +85,12 @@
           {
             "id": "codex",
             "support": "adapter-tested",
-            "notes": "Reviewed native interface and isolated Shrinkcage fixtures; authenticated model-backed tasks were not run."
+            "notes": "Codex and Claude subscription/API launch paths, hooks, retrieval and session isolation tested with controlled fixtures. Authenticated model-backed tasks are a separate check."
           },
           {
             "id": "claude",
-            "support": "documented",
-            "notes": "Upstream documents Claude wrapping. The Shrinkcage managed adapter is separately restricted to Codex API sessions."
+            "support": "adapter-tested",
+            "notes": "Codex and Claude subscription/API launch paths, hooks, retrieval and session isolation tested with controlled fixtures. Authenticated model-backed tasks are a separate check."
           }
         ],
         "platforms": [
@@ -103,7 +103,7 @@
           "arm64"
         ],
         "billing": {
-          "subscription": "unknown",
+          "subscription": "native-preserved",
           "api": "native-preserved"
         },
         "mechanisms": [
@@ -115,11 +115,12 @@
         "conflicts": [],
         "isolation": "process",
         "requirements": [
-          "A separately installed Headroom CLI and an existing healthy local proxy.",
-          "Shrinkcage managed routing currently supports Codex API sessions only."
+          "A separately installed reviewed Headroom CLI, supported native Codex/Claude CLI, and an existing healthy local proxy.",
+          "Codex uses its scoped wrapper. Claude uses process-only endpoint settings and a dedicated retrieval MCP. Native sign-in is preserved."
         ],
         "limitations": [
-          "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+          "Claude cloud-provider and different custom-gateway routes need a separately reviewed adapter.",
+          "Shared proxy counters cannot prove per-session token or cash savings; retrieval MCP receipts do not prove compressed model traffic.",
           "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
         ]
       },
@@ -143,9 +144,9 @@
           "Reads model traffic and tool data",
           "Network to the configured model endpoint"
         ],
-        "network": "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+        "network": "The CLI sends native authentication headers through the approved local proxy to its existing provider upstream. Shrinkcage does not read or persist OAuth secrets.",
         "warnings": [
-          "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+          "The CLI sends native authentication headers through the approved local proxy to its existing provider upstream. Shrinkcage does not read or persist OAuth secrets.",
           "No upstream executable or install script was run during registry research.",
           "Dependency audit and independent task benchmark were not performed."
         ],
@@ -200,6 +201,18 @@
             "url": "https://pypi.org/project/headroom-ai/",
             "kind": "package",
             "observedAt": "2026-10-30T05:31:35.287Z"
+          },
+          {
+            "label": "Headroom subscription/API routing and isolation regression tests",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/tests/headroom-routing.test.ts",
+            "kind": "test",
+            "observedAt": "2026-11-02T02:52:01.255Z"
+          },
+          {
+            "label": "Adapter compatibility correction review",
+            "url": "https://github.com/datasound-projects/Shrinkcage/blob/main/registry/reviews/headroom-r2.json",
+            "kind": "review",
+            "observedAt": "2026-11-02T02:52:01.255Z"
           }
         ],
         "benchmarks": [
@@ -209,7 +222,7 @@
             "url": "https://docs.headroomlabs.ai/docs",
             "methodology": "Refer to the linked upstream documentation for its workload, versions and method. No savings percentage is imported as a Shrinkcage measurement.",
             "limitations": [
-              "Routing can expose provider credentials to the configured upstream. Subscription OAuth routing is not assumed.",
+              "Shared proxy counters cannot prove per-session token or cash savings; retrieval MCP receipts do not prove compressed model traffic.",
               "No causal savings, task-quality equivalence or cross-tool additive gain is asserted."
             ]
           }
@@ -300,11 +313,11 @@
       },
       "trust": {
         "state": "approved",
-        "reviewedAt": "2026-10-30T05:40:19.853Z",
+        "reviewedAt": "2026-11-02T02:52:01.255Z",
         "reviewer": "datasound-projects (Codex-assisted)",
         "scope": "managed-adapter",
         "reviewedVersion": "v0.42.0",
-        "decision": "Maintainer-authorized metadata and documentation review for the stated scope. Partial security, functional, compatibility and benchmark gates remain explicit; listing is not a security guarantee or proof of local activation.",
+        "decision": "Owner-authorized extension of the existing reviewed Headroom adapter to native subscription/API Codex and Claude sessions; credential-free fixture coverage is separate from paid model task validation.",
         "limitations": [
           "Approval covers the recorded review scope, not a security guarantee, installation, local compatibility or runtime effectiveness.",
           "Partial and unavailable gates remain visible; upstream documentation is not an independent benchmark."

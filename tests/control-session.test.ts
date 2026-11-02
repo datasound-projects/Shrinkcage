@@ -28,7 +28,7 @@ async function plan(f:Awaited<ReturnType<typeof fakeWorkspace>>,agent:string,pro
 
 test('versioned registry cannot promote imported guidance into execution; configuration is bounded',()=>{
   assert.equal(optimizerRegistry.list().length,8);assert.equal(optimizerRegistry.get('rtk')?.apiVersion,2);
-  assert.ok(optimizerRegistry.validate('headroom','codex','subscription').length);
+  for(const agent of ['codex','claude'])for(const mode of ['subscription','api','hybrid','unknown'] as const)assert.deepEqual(optimizerRegistry.validate('headroom',agent,mode),[]);
   assert.ok(optimizerRegistry.validate('context-mode','claude','api').length);
   assert.ok(optimizerRegistry.validate('absent','codex','api').length);
   assert.throws(()=>new OptimizerRegistry([CATALOG[0],CATALOG[0]]),/Duplicate/);
@@ -100,10 +100,10 @@ test('subscription/API paths for both real managed launchers correlate native id
     await assert.rejects(lstat(join(f.project,'.codex')));await assert.rejects(lstat(join(f.project,'.claude')));
   }finally{await f.close();}
 });
-test('native billing contradictions and subscription gateway requests fail independently',async()=>{
+test('native billing contradictions fail while compatible subscription compression remains available',async()=>{
   const f=await fakeWorkspace();try{
     const env={...f.env,FIXTURE_BILLING:'subscription'};
-    const p=await plan(f,'codex','balanced','subscription',env);assert.ok(!p.tools.includes('headroom'));assert.match(p.omitted.find(o=>o.id==='headroom')!.reason,/API-only/);
+    const p=await plan(f,'codex','balanced','subscription',env);assert.ok(p.tools.includes('headroom'));assert.equal(p.omitted.some(o=>o.id==='headroom'),false);
     const conflict=await cli(['plan','codex','--billing','api','--profile','lean','--project',f.project,'--json'],env,f.project);assert.equal(conflict.code,2);assert.match(JSON.parse(conflict.stdout).errors.join(' '),/conflicts with native/);
     const old=await cli(['plan','claude','--billing','subscription','--profile','lean','--project',f.project,'--json'],{...env,FIXTURE_CLAUDE_VERSION:'0.2.29'},f.project);assert.equal(old.code,2);assert.match(JSON.parse(old.stdout).errors.join(' '),/version/);
   }finally{await f.close();}
