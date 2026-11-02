@@ -34,6 +34,13 @@ try{
   await page.waitForFunction(()=>!document.querySelector('[aria-label="Review session configuration"]')?.disabled);
   for(const name of ['RTK','Serena'])await page.getByRole('switch',{name:'Setup enable '+name,exact:true}).check();
   await page.getByRole('switch',{name:'Setup enable Headroom',exact:true}).uncheck();
+  let releasePlan;const heldPlan=new Promise(r=>{releasePlan=r;});let capturedPlan=false;
+  const delayPlan=async route=>{const response=await route.fetch();capturedPlan=true;await heldPlan;await route.fulfill({response});};
+  await page.route('**/api/control/v1/plans',delayPlan);await page.getByRole('button',{name:'Review session configuration',exact:true}).click();
+  for(let i=0;i<200&&!capturedPlan;i++)await new Promise(r=>setTimeout(r,50));assert.equal(capturedPlan,true);
+  await page.getByRole('combobox',{name:'Setup agent',exact:true}).selectOption('claude');const delivered=page.waitForResponse(r=>r.url().endsWith('/plans'));releasePlan();await delivered;await page.waitForFunction(()=>document.querySelector('[aria-label="Review session configuration"]')?.disabled===false);
+  assert.equal(await page.locator('[aria-label="Setup configuration preview"]').count(),0,'an old Codex review cannot appear after choosing Claude');await page.unroute('**/api/control/v1/plans',delayPlan);
+  await page.getByRole('combobox',{name:'Setup agent',exact:true}).selectOption('codex');await page.getByRole('combobox',{name:'Setup billing',exact:true}).selectOption('api');await page.waitForFunction(()=>document.querySelector('[aria-label="Review session configuration"]')?.disabled===false);await page.getByRole('switch',{name:'Setup enable Headroom',exact:true}).uncheck();
   await page.getByRole('button',{name:'Review session configuration',exact:true}).click();const start=page.getByRole('button',{name:'Open in Herdr',exact:true});await start.waitFor();assert.equal(await start.isDisabled(),true);assert.equal(opened.length,0);
   await page.getByRole('checkbox',{name:'Approve setup launch preview',exact:true}).check();assert.equal(await start.isDisabled(),true);await page.getByText('Herdr is not installed in this isolated fixture.',{exact:false}).first().waitFor();assert.equal(await page.getByRole('combobox',{name:'Session terminal',exact:true}).count(),0,'no silent Terminal fallback');
   available=true;await page.getByText('Herdr availability & persistence',{exact:true}).click();await page.getByRole('button',{name:'Recheck Herdr',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.terminal-start .primary')?.disabled);
