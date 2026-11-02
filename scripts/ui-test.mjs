@@ -41,7 +41,7 @@ try{
     await route.fulfill({json:data??{error:'Not found'}});
   });
   const view=async id=>{await page.evaluate(id=>{location.hash=id;},id);await page.locator('[data-screen="'+id+'"]:visible').first().waitFor();};
-  await page.goto(base);await page.getByRole('heading',{name:'Overview',exact:true}).waitFor();assert.equal(await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link').count(),5);await page.locator('.recent-sessions').waitFor();await page.waitForFunction(()=>!document.querySelector('.headroom .card-value')?.textContent.includes('—'));
+  await page.goto(base+'/#overview');await page.getByRole('heading',{name:'Overview',exact:true}).waitFor();assert.equal(await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link').count(),5);await page.locator('.recent-sessions').waitFor();await page.waitForFunction(()=>!document.querySelector('.headroom .card-value')?.textContent.includes('—'));
   await mkdir('artifacts',{recursive:true});
   await page.evaluate(()=>{const x=document.createElement('div');x.textContent='Illustrative test data';x.style.cssText='position:fixed;bottom:8px;right:12px;z-index:1000;background:#25352c;color:#fff;padding:4px 8px;border-radius:5px;font:10px sans-serif';document.body.append(x);});
   await page.screenshot({path:'artifacts/overview.png'});await view('sessions');await page.locator('.session-inspector').waitFor();await page.locator('#sessions').screenshot({path:'artifacts/sessions.png'});

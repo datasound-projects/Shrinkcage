@@ -1,43 +1,35 @@
-# Start a session
+# Projects and persistent coding sessions
 
-1. Open **Sessions → Start session**.
-2. Choose Codex or Claude Code, billing, a project and compatible tools.
-3. Review the changes and tick the approval box.
-4. Choose **Terminal** or **Herdr**, then **Start session**.
+1. Open **Projects**. Click **Add project** and select its folder.
+2. Click **New session**. Choose Codex or supported Claude Code. Leave billing on **Detect automatically** if unsure.
+3. Keep the recommended tools or change the switches. Each session has its own stack.
+4. Click **Review session**. Read changes and notices, approve, then **Open in Herdr**.
+5. In Herdr, type your coding task. Detach with **Ctrl+B, then Q**. Select the session in Projects and click **Reopen in Herdr** to return.
 
-The agent opens in a real interactive terminal. Complete any native sign-in, trust or permission prompt there. The dashboard waits for the launcher to confirm a session ID; opening a window alone never marks an optimizer active. Tool usage still requires its own protocol or hook evidence.
+The native folder picker uses macOS's folder dialog, Windows FolderBrowserDialog, or Linux Zenity/KDialog. A desktop and its permissions are required. **Enter a folder path instead** remains available. Choosing a folder approves that project only. Home/root, credential folders and symlinks remain blocked. The web app cannot browse arbitrary files or run browser-supplied commands.
 
-Saved profiles have the same Start action. To use an edited session stack, save the next-launch stack, preview its restart plan and approve the new session. This starts a separate CLI; stop the original in its own terminal when appropriate.
+## Herdr support and persistence
 
-## Supported terminals
+Browser launches always use Herdr. The native Terminal/desktop window displays its TUI; it is not an alternate session mode. Reviewed Herdr **0.9.5+ in the 0.9 family** is supported on macOS/Linux. Missing or unsupported Herdr blocks launch with a diagnostic; no silent terminal fallback or installer runs. [Official installation](https://herdr.dev/tui/docs/install/).
 
-| Target | Support |
-|---|---|
-| macOS Terminal | Built-in Terminal app, opened with the fixed system `open` interface. Actual native window/TTY startup tested locally. |
-| Linux desktop | GNOME Terminal, Konsole, x-terminal-emulator or xterm with DISPLAY/WAYLAND_DISPLAY. No display means Copy command; desktop-specific GUI behavior is not exhaustively tested. |
-| Windows | A new Windows PowerShell window. Generated scripts, arguments and fake-agent lifecycle are covered in Windows CI; native Windows GUI behavior has not been tested here. Existing execution policies are preserved. |
-| Herdr | Reviewed 0.9.5+ in the 0.9 family on macOS/Linux, with version/config capability checks. A dedicated `sc-…` session and private configuration start the managed launcher directly. Windows Herdr and automatic agent restoration are unsupported. |
+Each launch has a generated named Herdr session and private configuration. Reopen attaches to that existing live session and does not start another agent. It verifies the saved launcher/config hashes, rejects moved or symlinked resources, and checks that the exact named server is still running. It never types into an unrelated pane. Earlier records without a saved binding cannot be reopened through this feature.
 
-Herdr is optional and installed separately. Shrinkcage never downloads it, installs global agent hooks, types commands into existing panes or changes its saved configuration. After the managed CLI ends, the private Herdr pane returns to a plain shell. Keep its window open while working; reconnect controls are not yet provided in Shrinkcage.
+Detach keeps the original processes and their conversation running. A computer reboot, power loss, agent exit or full Herdr server stop does not. Automatic agent restoration is disabled: another agent launch must pass Shrinkcage's current compatibility and approval checks. If the CLI has finished, reopening a still-running Herdr session opens its existing terminal, not a resumed conversation. Extra panes return to plain shells. [Official persistence behavior](https://herdr.dev/tui/docs/session-state/).
 
-## Launch safeguards
+Herdr's own session and screen state can contain terminal content. Shrinkcage does not read or export it. Owned launch files are retained for reconnect and contain non-secret context only. Herdr manages its own named-session state. Do not delete an owned launcher directory while that Herdr session still needs its default-shell file.
 
-The server retains a ready plan for five minutes. The Start request can contain only that fingerprint, a supported target and an idempotent request ID, plus explicit approval. It cannot contain a command, URL, executable, environment or arbitrary agent arguments. Exact local Origin, the page capability and strict schemas are required.
+Windows Herdr launch remains unsupported. Windows folder selection, monitoring, plans and the existing terminal CLI workflow remain available. This is an explicit compatibility limit, not a claimed native Windows Herdr validation.
 
-Before opening, the server recomputes the plan. A private launcher file calls the fixed Shrinkcage entry point with a single-use approval ID. The terminal atomically consumes that approval and recomputes the plan again. Changed agents, binaries, configuration, profiles, billing or registry evidence require another review. Repeated requests with the same ID do not open another window. Used, expired and non-interactive approvals fail closed.
+## Launch authorization and recovery
 
-The existing managed runner handles session IDs, process ownership, hooks/MCP, native permissions, receipts and cleanup. There is no generic browser-to-shell or browser-to-stop endpoint.
+Review approval is single-use and expires after five minutes. Before opening, the server recomputes the plan. A private launcher invokes the fixed Shrinkcage entry point using its ticket ID. The terminal atomically claims that approval and recomputes the plan again. Changes to agents, binaries, configuration, profiles, billing or registry evidence require a fresh review. Repeated launch requests with the same ID do not start another agent. If a response is lost or times out, the browser retries that original request ID instead of opening a duplicate.
 
-Only non-secret path/port context is retained privately to keep executable discovery and native configuration consistent. OAuth credentials and API keys are not transferred from the server into launch files or returned over HTTP. The terminal uses its native login/environment; if the account differs from the preview, review again after signing in through the CLI.
+Only non-secret path/port context is retained privately for executable discovery and native configuration. OAuth credentials and API keys are not copied from the server into files or HTTP responses. Your terminal uses its native login/environment. Native sign-in, trust, sandboxing, approvals and permissions still apply.
 
-Launch metadata is bounded; native launch files are removed after a completed claim when their hashes still match. Changed files are preserved. Herdr bootstrap files and its private temporary config remain available for the persistent Herdr server; close those sessions before removing app data. No unrelated files or processes are removed.
+- **Herdr missing:** install it separately, then use **Recheck Herdr** in the review.
+- **Nothing opened:** inspect existing windows before retrying. Check desktop permissions.
+- **Reopen says no longer running:** start a new reviewed session. Shrinkcage does not pretend to recover stopped processes.
+- **Changed configuration or expired approval:** review again. Saved approvals cannot bypass revalidation.
+- **No activity:** selected/configured tools are not marked used until actual receipts are observed.
 
-## If the window does not start
-
-- Use **Recheck terminals** after installing or opening a desktop terminal.
-- If Start says to restart Shrinkcage, the browser has newer assets than the running backend. Restart the dashboard, then review again.
-- A blocked native trust/sign-in prompt is handled in the terminal. Shrinkcage does not approve it automatically.
-- If a window opened but confirmation is delayed, check that window before retrying. Five-minute approvals and a pending-launch cap prevent repeated unattended launches.
-- **Copy command** remains available when no supported desktop terminal exists. Windows security policy or managed desktops may require this fallback.
-
-No installation, window opening or successful CLI startup proves cost savings. Native optimizer activation, tool use, billing-aware measurements and controlled quality comparisons remain separate evidence.
+The existing CLI and reviewed legacy terminal API remain compatible for advanced use. Native terminal openers use fixed macOS `open`, Windows PowerShell and a small Linux desktop allowlist. No generic browser-to-shell route exists. A window opening, tool installation or successful process start is not evidence of cost savings.

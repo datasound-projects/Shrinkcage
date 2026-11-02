@@ -1,4 +1,4 @@
-# Validation record · 1.5.1
+# Validation record · 1.6.0
 
 Release checks cover the existing monitor and the session optimization control plane. Production adapters never substitute fixture measurements. The [historical 1.1 record](history/VALIDATION_1_1.md) is preserved.
 
@@ -23,7 +23,7 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 142 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Unit/integration | 148 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
 | Exhaustive stack matrix | 192 agent/billing/platform/tool-subset combinations; twenty supported Codex/Claude API/subscription stacks through real isolated subprocesses, receipt counts, exact cache accounting, permissions and owned cleanup |
 | Usage-scope regression | Seven tests for freshest cumulative records, cross-agent identity, stale data, conflicting billing, budget deduplication, cache pricing and qualified experiment rejection |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
@@ -89,3 +89,12 @@ On this macOS host, the actual Terminal app and native Herdr 0.9.5 each launched
 ## In-app guide · 1 November 2026
 
 The How to use page adds a separate bottom-sidebar destination and a mobile link. Its fifth browser suite checks all ten manual topics, links, keyboard access, direct and back navigation, both themes, widths from 320 to 1440 pixels, and readable content with every API offline. It also rejects mutation requests. The control browser suite verifies that opening the guide preserves an unsaved profile. Build and package checks include the real guide assets; no backend or optimizer behavior changes for this addition.
+
+
+## Project sessions and folder selection · 1.6
+
+Six additional tests cover native-picker argument contracts, cancellation, canonical project registration, private-path/symlink rejection, duplicate-dialog recovery, strict HTTP authorization, and Herdr reattach identity/hash/ownership checks without another agent launch. The terminal browser suite now exercises the project-first default, native selection/cancel fixtures, per-project session lists, compatible tool defaults, missing-Herdr recovery, Herdr-only launch, independent same-project stacks, next-launch changes and reconnect without a duplicate agent. Its folder dialog, desktop opener and Herdr liveness boundary are synthetic; actual managed subprocesses, SQLite, hooks and receipts are used. Native GUI checks are reported separately; Windows Herdr remains unsupported.
+
+Native macOS validation used actual **Herdr 0.9.5** in an allocated PTY with an isolated fake Codex CLI and a real managed RTK fixture receipt. Ctrl+B/Q detached the client; the owned agent stayed running. The saved Reopen action reattached the same named Herdr session, with exactly one managed agent before and after. Both clients detached cleanly, then only that owned Herdr session was stopped and test data removed. This is a terminal/process check, not an authenticated model task or savings benchmark. Apple's real `osacompile` accepted the exact macOS folder-dialog script. Native graphical dialog interaction could not be completed because the GUI automation connection timed out; cancellation/selection and all authorization boundaries were exercised with isolated dialog fixtures. Native Windows/Linux graphical dialog interaction was not performed.
+
+The launch browser test also holds a real Codex preview response, switches the selected agent, and verifies that the stale response cannot become the current review. Controls wait for recommendations for the current agent/billing context. CI recovery checks wait for the actual Review-ready state rather than a transitional checkbox frame. Lost successful launch responses retry the original request ID and retain one agent/window.

@@ -6,10 +6,10 @@ import { runBounded,type Executable } from './probe.js';
 import { ControlError } from './schema.js';
 import type { TerminalChoice } from './terminal-types.js';
 
-const NAMES=['herdr','open','powershell.exe','gnome-terminal','konsole','x-terminal-emulator','xterm'] as const;
+const NAMES=['herdr','open','osascript','zenity','kdialog','powershell.exe','gnome-terminal','konsole','x-terminal-emulator','xterm'] as const;
 export async function terminalExecutable(name:typeof NAMES[number],env:NodeJS.ProcessEnv=process.env):Promise<Executable|null>{
   if(!NAMES.includes(name))throw new ControlError('Unsupported terminal executable.');
-  const dirs=name==='open'?['/usr/bin']:(env.PATH??env.Path??'').split(delimiter).filter(Boolean);
+  const dirs=(name==='open'||name==='osascript')?['/usr/bin']:(env.PATH??env.Path??'').split(delimiter).filter(Boolean);
   for(const dir of dirs){if(/^[\\/]{2}/.test(dir)&&process.platform==='win32')continue;try{const file=await realpath(join(dir,name));const info=await lstat(file);if(!info.isFile())continue;await access(file,process.platform==='win32'?constants.F_OK:constants.X_OK);return {command:file,prefix:[],fingerprint:`${info.dev}:${info.ino}:${info.mtimeMs}:${info.size}`};}catch{/* fixed-name lookup only */}}
   return null;
 }

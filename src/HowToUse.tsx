@@ -3,17 +3,15 @@ export default function HowToUse(){
     <div className="help-start-grid">
       <section className="panel help-panel" aria-labelledby="help-first-session">
         <div className="eyebrow">START HERE</div><h2 id="help-first-session">Start your first session</h2>
-        <p>Choose your tools here. Do your coding in the terminal that opens.</p>
+        <p>One project can have many sessions. Each session has its own tools.</p>
         <ol className="help-steps">
-          <li><strong>Choose an agent.</strong> Open <a href="#setup">Sessions → Start session</a>. Pick Codex or a supported Claude Code installation. Use Detect installed tools &amp; billing to refresh discovery.</li>
-          <li><strong>Choose billing.</strong> Subscription means a ChatGPT or Claude plan. API means pay-as-you-go usage. Leave Detect / unknown if unsure. This does not change your login.</li>
-          <li><strong>Pick your project.</strong> Select its folder. If missing, open Add a local project. Paste the full folder path. Click Approve this project folder.</li>
-          <li><strong>Choose tools.</strong> Keep Optimization intent set to balanced. Click Recommend compatible tools. Adjust the checkboxes and any tool settings.</li>
-          <li><strong>Review the plan.</strong> Click Review session configuration. Read the changes and warnings. Fix any blocked items. Tick the approval box.</li>
-          <li><strong>Open your terminal.</strong> Choose Terminal or Herdr. Click Start session. Complete any native sign-in, trust or permission prompts.</li>
-          <li><strong>Start coding.</strong> Type your task in the new terminal. Return to <a href="#managed">Sessions</a> and select its row to see the stack, usage and tool activity.</li>
+          <li><strong>Add your project.</strong> Open <a href="#managed">Projects</a>. Click Add project. Choose its folder in the native dialog. You only need to add it once.</li>
+          <li><strong>Create a session.</strong> Select the project, then New session. Choose Codex or a supported Claude Code installation. Keep billing on Detect automatically if unsure. Your login stays the same.</li>
+          <li><strong>Choose tools.</strong> Compatible tools are recommended. Switch each tool on or off for this session. Advanced tool settings holds extra options.</li>
+          <li><strong>Review and open.</strong> Click Review session. Read the changes and notices. Fix any blocked items. Approve the configuration, then Open in Herdr.</li>
+          <li><strong>Work and come back.</strong> Type your task in Herdr. To detach, press Ctrl+B, then Q. In Projects, select the session and click Reopen in Herdr to return to that same running session.</li>
         </ol>
-        <a className="button primary" href="#setup">Start a session</a>
+        <a className="button primary" href="#setup">Create a session</a>
       </section>
       <section className="panel help-panel help-tools" aria-labelledby="help-tools-heading">
         <div className="eyebrow">YOUR TOOLS</div><h2 id="help-tools-heading">What each tool does</h2>
@@ -33,7 +31,7 @@ export default function HowToUse(){
       <details><summary>Where is everything?</summary><div className="help-topic-body">
         <dl className="help-area-list">
           <div><dt><a href="#overview">Overview</a></dt><dd>Recent sessions and separate tool contributions.</dd></div>
-          <div><dt><a href="#managed">Sessions</a></dt><dd>Launch and inspect managed sessions. Use <a href="#profiles">Profiles</a> for saved setups. Use <a href="#sessions">Saved history</a> to search existing records by agent, provider, project or model.</dd></div>
+          <div><dt><a href="#managed">Projects</a></dt><dd>Add a folder, then launch and reopen sessions inside that project. Use <a href="#profiles">Profiles</a> for saved setups. Use <a href="#sessions">Saved history</a> to search existing records by agent, provider, project or model.</dd></div>
           <div><dt><a href="#registry">Optimizers</a></dt><dd>Search the registry. Check <a href="#optimizers">Installed tools</a> and <a href="#validation">Validation</a>. Open the <a href="#headroom">Headroom</a>, <a href="#rtk">RTK</a> or <a href="#serena">Serena</a> tab for details and available logs.</dd></div>
           <div><dt><a href="#cost-usage">Cost &amp; usage</a></dt><dd>Tokens and cost figures. <a href="#analytics">Shared analytics</a> shows tool history with time filters. <a href="#benchmarks">Experiments</a> compares completed runs.</dd></div>
           <div><dt><a href="#settings">Settings</a></dt><dd>Billing, prices, budgets and privacy. <a href="#connectors">Connectors</a> controls history discovery. <a href="#health">System health</a> shows ports, errors and native dashboard links.</dd></div>
@@ -41,12 +39,12 @@ export default function HowToUse(){
       </div></details>
 
       <details><summary>Save a setup with Profiles</summary><div className="help-topic-body">
-        <ol><li>Open <a href="#profiles">Sessions → Profiles</a>. Choose a preset or New profile.</li><li>Choose tools and settings. Save the profile before previewing.</li><li>Select the launch agent, billing and project. Preview the plan. Review it, approve it, then Start session.</li></ol>
+        <ol><li>Open <a href="#profiles">Projects → Profiles</a>. Choose a preset or New profile.</li><li>Choose tools and settings. Save the profile before previewing.</li><li>Select the launch agent, billing and project. Preview the plan. Review it, approve it, then Open in Herdr.</li></ol>
         <p>Profiles are reusable setups. Baseline has no Shrinkcage-managed tools. Lean, Balanced and Maximum Savings offer different starting points. Custom lets you choose. The profile options also support import, export and Delete custom profile.</p>
       </div></details>
 
       <details><summary>Change the tools for one session</summary><div className="help-topic-body">
-        <ol><li>Open <a href="#managed">Sessions</a>. Select the session. Change its tool checkboxes or settings.</li><li>Click Save next-launch stack, then Preview restart plan.</li><li>Review and approve the plan. Click Start session to open a separate CLI.</li></ol>
+        <ol><li>Open <a href="#managed">Sessions</a>. Select the session. Change its tool checkboxes or settings.</li><li>Click Save next-launch stack, then Preview restart plan.</li><li>Review and approve the plan. Click Open in Herdr to open a separate CLI.</li></ol>
         <p>The original session keeps its configuration. Stop it in its own terminal when ready. Discard pending cancels the saved change.</p>
         <p>Tools configured outside Shrinkcage may still run. Read the preview warnings before treating a run as a clean baseline.</p>
       </div></details>
@@ -80,16 +78,17 @@ export default function HowToUse(){
 
       <details><summary>Stop a session or reopen the app</summary><div className="help-topic-body">
         <p>Use the CLI’s normal exit action or Ctrl+C in that coding terminal. Closing the dashboard does not stop an independently managed CLI. Herdr can keep an agent running after its outer window closes; stop the agent in its pane.</p>
-        <p>Start each new optimized run from Shrinkcage. Extra Herdr panes are plain shells. Automatic restoration and in-app reconnect controls are not supported.</p>
+        <p>Reopen in Herdr reconnects to a running session without starting another agent. New sessions opened from the app have this button. Older records may only offer history. A computer restart or stopped Herdr server ends live processes. Automatic agent restoration is disabled. Extra panes are plain shells; start each optimized run from Shrinkcage.</p>
         <p>To open Shrinkcage later, run <code>node scripts/start.mjs</code> from its folder. macOS/Linux can use <code>./start.sh</code>. Windows can use <code>start.cmd</code>. Keep that dashboard terminal open. Ctrl+C there stops only the dashboard.</p>
       </div></details>
 
       <details><summary>Fix a problem</summary><div className="help-topic-body">
         <dl className="help-fixes">
+          <div><dt>Folder picker unavailable?</dt><dd>Use Enter a folder path instead. Choose an existing project folder that Shrinkcage can access.</dd></div>
           <div><dt>Agent missing or unsupported?</dt><dd>Install or update its native CLI. Sign in there. Refresh Shrinkcage.</dd></div>
           <div><dt>Tool offline or validation failed?</dt><dd>Open <a href="#optimizers">Installed tools</a>, <a href="#validation">Validation</a> or <a href="#health">System health</a>. Follow the diagnostic, then recheck. Other tools can still work.</dd></div>
-          <div><dt>Plan changed or approval expired?</dt><dd>Review the configuration again. Approve the new plan, then Start session.</dd></div>
-          <div><dt>Terminal did not open?</dt><dd>Check existing windows before retrying. Use Recheck terminals or Copy command. Herdr needs a supported installation; Windows Herdr launch is unavailable.</dd></div>
+          <div><dt>Plan changed or approval expired?</dt><dd>Review the configuration again. Approve the new plan, then Open in Herdr.</dd></div>
+          <div><dt>Terminal did not open?</dt><dd>Check existing windows before retrying. Use Recheck Herdr in the launch review. Herdr needs a supported installation; Windows Herdr launch is unavailable.</dd></div>
           <div><dt>No activity or cost yet?</dt><dd>The agent must use the tool first. Costs also need usage and matching prices. Missing data stays N/A.</dd></div>
         </dl>
       </div></details>

@@ -126,6 +126,7 @@ export interface ControlState {
   schemaVersion: 1; version: string; platform: string; updatedAt: string;
   catalog: OptimizerManifest[]; detections: Detection[]; agents: AgentDetection[];
   profiles: SavedProfile[]; projects: ProjectRef[]; sessions: ManagedSession[];
+  herdrSessions?: {sessionId:string;name:string}[];
   benchmarks: Benchmark[]; receipts: Pick<SetupReceipt, 'id' | 'tool' | 'projectId' | 'status' | 'createdAt' | 'version'>[];
   diagnostics: string[]; csrfToken: string;
   accounting?: AccountingSettings; recommendations?: Recommendation[];

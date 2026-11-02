@@ -28,12 +28,16 @@ No Docker, cloud service or Shrinkcage account is needed. Install and sign in to
 
 ## Start your first session
 
-In **Sessions**, click **Start session**. Select Codex or Claude Code, choose billing and a project, then pick compatible tools. Review the plan, select **Terminal** or **Herdr**, and click **Start session**. The native CLI opens with that exact stack. Copy command is available as a fallback. No manual JSON editing is needed.
+1. Open **Projects** and click **Add project**. Choose its folder in the native dialog.
+2. Select the project and click **New session**. Pick Codex or Claude Code.
+3. Keep the recommended tools or switch them on/off for this session. Billing can stay on **Detect automatically**.
+4. Click **Review session**, check the changes and approve. Click **Open in Herdr**.
+5. Work in Herdr. Detach with **Ctrl+B, then Q**. Choose **Reopen in Herdr** in Shrinkcage to return to the same running session.
 
-Herdr 0.9.5+ launches are supported on macOS/Linux through a separate private session. Normal terminals also support Windows PowerShell. Native sign-in, project trust and approvals still apply. [Terminal support and safeguards →](docs/TERMINALS.md)
+Browser launches always use a separate Herdr session. Install a reviewed **Herdr 0.9.5+ in the 0.9 family** on macOS/Linux first; Shrinkcage does not install it automatically. A stopped server or computer restart does not keep live agent processes running. Windows Herdr launching remains unsupported. Native sign-in, project trust and approvals still apply. [Terminal support and safeguards →](docs/TERMINALS.md)
 
 - **Overview:** recent sessions and separate optimizer contributions.
-- **Sessions:** independent stacks, actual activation, tool activity and saved history.
+- **Projects:** choose a folder, see its sessions, pick tools for each and reopen Herdr. Profiles and saved history are available as secondary views.
 - **Optimizers:** a reviewed registry, local installations and validation details.
 - **Cost & usage:** reported tokens, qualified price estimates and controlled comparisons.
 - **Settings:** local discovery, billing, prices, privacy and diagnostics.
@@ -42,7 +46,9 @@ Open **How to use** at the bottom of the sidebar for the in-app manual. It cover
 
 One screen is shown at a time. Context tabs hold secondary tools; drafts survive navigation. Choose silver or graphite appearance. Existing deep links still work, even when a metrics source is offline.
 
-![Start a reviewed session — illustrative test data](docs/images/start-session.png)
+![Projects, sessions and independent tool choices — illustrative test data](docs/images/projects.png)
+
+[See the session launch screen](docs/images/start-session.png).
 
 ## Launch from your terminal
 
@@ -60,7 +66,7 @@ Replace the path with your project folder, for example `C:\Projects\my-app` on W
 
 Each launch has its own ID, tools and configuration, including concurrent sessions in the same project. Stack edits prepare the next launch; they do not reconfigure a running agent. Existing external hooks can limit isolation, and the plan explains that limitation. Native sandbox, trust and approval rules remain in place.
 
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.5.1.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
+For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.6.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
 
 ## What works
 

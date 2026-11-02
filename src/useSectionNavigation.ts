@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export const sections = [
-  ['overview', 'grid', 'Overview'], ['managed', 'terminal', 'Sessions'],
+  ['overview', 'grid', 'Overview'], ['managed', 'folder', 'Projects & sessions'],
   ['setup', 'plug', 'New session'], ['profiles', 'layers', 'Profiles'], ['sessions', 'folder', 'Saved history'],
   ['registry', 'layers', 'Optimizer Registry'], ['optimizers', 'layers', 'Installed tools'],
   ['validation', 'health', 'Validation'], ['headroom', 'layers', 'Headroom'], ['rtk', 'terminal', 'RTK'], ['serena', 'code', 'Serena'],
@@ -10,14 +10,14 @@ export const sections = [
   ['help', 'book', 'How to use'],
 ] as const;
 export const navigation = [
+  {id:'managed',icon:'folder',label:'Projects',screens:['managed','setup','profiles','sessions']},
   {id:'overview',icon:'grid',label:'Overview',screens:['overview']},
-  {id:'managed',icon:'terminal',label:'Sessions',screens:['managed','setup','profiles','sessions']},
   {id:'registry',icon:'layers',label:'Optimizers',screens:['registry','optimizers','validation','headroom','rtk','serena']},
   {id:'cost-usage',icon:'chart',label:'Cost & usage',screens:['cost-usage','analytics','benchmarks']},
   {id:'settings',icon:'plug',label:'Settings',screens:['settings','connectors','health']},
 ];
 const valid=(id:string)=>sections.some(([key])=>key===id);
-const fromHash=()=>{const id=window.location.hash.slice(1);return valid(id)?id:'overview';};
+const fromHash=()=>{const id=window.location.hash.slice(1);return valid(id)?id:'managed';};
 
 export const helpNavigation={id:'help',icon:'book',label:'How to use',screens:['help']};
 

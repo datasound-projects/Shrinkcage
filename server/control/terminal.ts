@@ -1,5 +1,6 @@
-import { chmod,lstat,mkdir,mkdtemp,realpath,rmdir,unlink,writeFile } from 'node:fs/promises';
+import { chmod,lstat,mkdir,realpath,rmdir,unlink,writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import type { ControlPlane } from './core.js';
 import { ControlError,digest } from './schema.js';
@@ -7,6 +8,7 @@ import { inspectTerminals,openTerminalScript,powershellQuote,shellQuote,terminal
 import { publicLaunch,type LaunchPreview,type TerminalChoice,type TerminalLaunch,type TerminalTarget } from './terminal-types.js';
 import { runManaged } from './runner.js';
 import { readBounded } from './paths.js';
+import { runBounded } from './probe.js';
 import type { LaunchOptions,OptimizationPlan } from './types.js';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
@@ -16,10 +18,34 @@ const TTL=5*60*1000;
 export interface TerminalOptions {
   openScript?:(file:string,env:NodeJS.ProcessEnv)=>Promise<void>;
   discover?:()=>Promise<TerminalChoice[]>;
+  sessionRunning?:(name:string)=>Promise<boolean>;
 }
 export class TerminalLauncher {
   constructor(private plane:ControlPlane,private options:TerminalOptions={}){}
   discover(){return this.options.discover?.()??inspectTerminals(this.plane.env);}
+  links(){return this.plane.store.terminalLaunches().filter(t=>t.target==='herdr'&&t.herdr&&t.sessionId).map(t=>({sessionId:t.sessionId!,name:t.herdr!.name}));}
+  private reopening=new Set<string>();
+  async reopen(sessionId:string){
+    if(!UUID.test(sessionId))throw new ControlError('Choose a valid managed session.');
+    const ticket=this.plane.store.terminalLaunches().find(t=>t.sessionId===sessionId&&t.target==='herdr'&&t.herdr);
+    if(!ticket?.herdr)throw new ControlError('This session has no saved Herdr link. Start a new session in Herdr.');
+    const binding=ticket.herdr;
+    if(this.reopening.has(sessionId))throw new ControlError('This session is already opening.','busy',409);
+    this.reopening.add(sessionId);try{
+      const choice=(await this.discover()).find(t=>t.id==='herdr');if(!choice?.available)throw new ControlError(choice?.reason??'Herdr is unavailable.');
+      const root=join(this.plane.store.dir,'launchers'),dir=join(root,ticket.id);
+      const verify=async()=>{if(await realpath(root)!==root||await realpath(dir)!==dir||(await lstat(root)).isSymbolicLink()||(await lstat(dir)).isSymbolicLink())throw new ControlError('The owned Herdr launcher moved or changed. Start a new reviewed session.');
+      for(const [name,hash]of [['herdr.command',ticket.scriptHash],['herdr.toml',binding.configHash],['start.command',binding.startHash]]){const bytes=await readBounded(join(dir,name!),32768);if(!bytes||digest(bytes.toString('utf8'))!==hash)throw new ControlError('The saved Herdr configuration changed. Start a new reviewed session.');}
+      };await verify();
+      const name=binding.name;if(!/^sc-[a-f0-9]{24}$/.test(name))throw new ControlError('The saved Herdr identity is invalid.');
+      let running=false;
+      if(this.options.sessionRunning)running=await this.options.sessionRunning(name);
+      else {const binary=await terminalExecutable('herdr',this.plane.env);if(!binary)throw new ControlError('Herdr is not installed.');const env={...this.plane.env};for(const key of Object.keys(env))if(key.startsWith('HERDR_'))delete env[key];
+        const result=await runBounded(binary,['session','list','--json'],{env});if(result.code===0){let data:unknown;try{data=JSON.parse(result.stdout);}catch{throw new ControlError('Herdr returned unreadable session status. Try again.');}const sessions=(data as {sessions?:unknown})?.sessions;if(!Array.isArray(sessions))throw new ControlError('Herdr returned unsupported session status.');running=sessions.some(s=>s&&typeof s==='object'&&s.name===name&&s.running===true);}}
+      if(!running)throw new ControlError('This Herdr session is no longer running. Start a new reviewed session. Reopening does not restore a stopped agent.');
+      await verify();await(this.options.openScript??openTerminalScript)(join(dir,'herdr.command'),this.plane.env);return {opened:true,sessionId};
+    }catch(e){if(e instanceof ControlError)throw e;throw new ControlError('The saved Herdr session could not open. Check Herdr or start a new reviewed session.');}finally{this.reopening.delete(sessionId);}
+  }
   remember(plan:OptimizationPlan,input:{agent:string;profile:string;projectId:string;options:LaunchOptions}){
     if(plan.ready){const context:Record<string,string|null>={};for(const key of CONTEXT)context[key]=this.plane.env[key]??null;
       this.plane.store.saveTerminalPreview({...input,fingerprint:plan.fingerprint,expiresAt:Date.now()+TTL,context});}
@@ -54,11 +80,12 @@ export class TerminalLauncher {
     await writeFile(file,body,{flag:'wx',mode:0o700});this.plane.store.updateTerminalLaunch(value.id,{scriptHash:digest(body)});
     if(value.target==='terminal')return file;
     const herdr=await terminalExecutable('herdr',this.plane.env);if(!herdr)throw new ControlError('Herdr is no longer installed.');
-    // A short private directory also avoids UNIX socket path-length failures.
-    const temp=await realpath(await mkdtemp('/tmp/shrinkcage-herdr-'));await chmod(temp,0o700);
-    const config=join(temp,'config.toml');await writeFile(config,`onboarding = false\n[terminal]\ndefault_shell = ${JSON.stringify(file)}\nshell_mode = "non_login"\nnew_cwd = "current"\n[update]\nversion_check = false\nmanifest_check = false\n`,{flag:'wx',mode:0o600});
-    const wrapper=join(dir,'herdr.command');const prefix=Object.keys(this.plane.env).filter(k=>/^HERDR_[A-Za-z0-9_]+$/.test(k)).map(k=>'unset '+k).join('\n');
-    const wrapperBody=`#!/bin/sh\ncd ${shellQuote(projectPath)} || exit 1\n${prefix}\nexport HERDR_AGENT=${shellQuote(value.preview.agent)}\nexport HERDR_CONFIG_PATH=${shellQuote(config)}\nexec ${shellQuote(herdr.command)} --session ${shellQuote('sc-'+value.id.slice(0,8))}\n`;await writeFile(wrapper,wrapperBody,{flag:'wx',mode:0o700});this.plane.store.updateTerminalLaunch(value.id,{scriptHash:digest(wrapperBody)});return wrapper;
+    const config=join(dir,'herdr.toml');
+    const configBody=`onboarding = false\n[terminal]\ndefault_shell = ${JSON.stringify(file)}\nshell_mode = "non_login"\nnew_cwd = "current"\n[session]\nresume_agents_on_restore = false\n[update]\nversion_check = false\nmanifest_check = false\n`;await writeFile(config,configBody,{flag:'wx',mode:0o600});
+    const name='sc-'+randomBytes(12).toString('hex');
+    const wrapper=join(dir,'herdr.command');const prefix=[...new Set([...Object.keys(this.plane.env).filter(k=>/^HERDR_[A-Za-z0-9_]+$/.test(k)),'HERDR_SESSION','HERDR_SOCKET_PATH','HERDR_AGENT'])].map(k=>'unset '+k).join('\n');
+    const context=['HOME','XDG_CONFIG_HOME'].filter(key=>this.plane.env[key]).map(key=>'export '+key+'='+shellQuote(this.plane.env[key]!)).join('\n');
+    const wrapperBody=`#!/bin/sh\ncd ${shellQuote(projectPath)} || exit 1\n${prefix}\n${context}\nexport HERDR_AGENT=${shellQuote(value.preview.agent)}\nexport HERDR_CONFIG_PATH=${shellQuote(config)}\nexec ${shellQuote(herdr.command)} --session ${shellQuote(name)}\n`;await writeFile(wrapper,wrapperBody,{flag:'wx',mode:0o700});this.plane.store.updateTerminalLaunch(value.id,{scriptHash:digest(wrapperBody),herdr:{name,configHash:digest(configBody),startHash:digest(body)}});return wrapper;
   }
 }
 

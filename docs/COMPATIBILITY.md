@@ -19,3 +19,8 @@ Reviewed Codex version families are 0.165 and 0.166; unreviewed minor and prerel
 New native tool versions are probed before launch. New plugin source identities require a fresh explicit approval; running sessions keep pinned snapshots. Agent versions and declared billing modes are included in validation context and exact plan fingerprints. Tools may remain unavailable while the rest of the application works.
 
 Subscription, API, unknown and hybrid billing remain separate accounting dimensions. No API key is required for native subscription sessions. Token/cost data is withheld where telemetry attribution, model identity, cache semantics or reviewed pricing is incomplete. See [accounting](ACCOUNTING.md) and [plugin development](PLUGINS.md).
+
+
+## Projects, folder selection and Herdr · 1.6
+
+Browser launches use reviewed Herdr 0.9.5+ in the 0.9 family on macOS/Linux. Windows Herdr launch is unsupported; monitoring, project selection and the existing CLI remain available. New owned sessions can reopen an existing live Herdr server after detach, with saved-file integrity and exact session checks. Older records without bindings are historical only. Full shutdown/reboot does not preserve live agent processes, and automatic agent restoration is disabled. Native folder selection uses macOS AppleScript, Windows Forms or Linux Zenity/KDialog; headless or missing-dialog environments retain the manual-path fallback. [Launch behavior and limits](TERMINALS.md).

@@ -28,12 +28,12 @@ try{
   });
   const view=async id=>{await page.evaluate(id=>{location.hash=id;},id);await page.locator('[data-screen="'+id+'"]:visible').first().waitFor();};
   const recheck=async()=>{const response=page.waitForResponse(r=>r.url().endsWith('/api/control/v1/state'));await page.getByRole('button',{name:'Refresh',exact:true}).click();await response;};
-  await page.goto(base+'/#setup');await page.locator('.setup-wizard summary').first().waitFor();
+  await page.goto(base+'/#setup');await page.locator('.simple-setup h2').waitFor();await page.getByText('Check installation or billing',{exact:true}).click();
   // Guided onboarding and a previously unknown SDK adapter use the actual API and local fixture CLI.
   await page.getByRole('button',{name:'Detect installed tools & billing',exact:true}).click();
   await page.getByRole('combobox',{name:'Setup billing',exact:true}).selectOption('api');
   await page.getByRole('combobox',{name:'Setup project',exact:true}).selectOption(project.ref.id);
-  await page.getByRole('combobox',{name:'Setup intent',exact:true}).selectOption('minimal');
+  await page.getByText('Advanced tool settings',{exact:true}).click();await page.getByRole('combobox',{name:'Setup intent',exact:true}).selectOption('minimal');
   await page.getByRole('button',{name:'Recommend compatible tools',exact:true}).click();
   await page.waitForFunction(()=>document.querySelector('[aria-label="Setup enable RTK"]')?.checked===true);
   const candidateFile=join(f.root,'future-manifest.json');
@@ -51,14 +51,14 @@ try{
   const registration=await cli(['optimizer','add-example','--id','future-ui'],f.env,f.project);assert.equal(registration.code,0,registration.stderr);
   const registered=await cli(['optimizer','add-example','--id','future-ui','--approve',JSON.parse(registration.stdout).fingerprint],f.env,f.project);assert.equal(registered.code,0,registered.stderr);
   await recheck();
-  await view('setup');await page.getByRole('checkbox',{name:'Setup enable Line Window',exact:true}).waitFor();
-  await page.getByRole('checkbox',{name:'Setup enable RTK',exact:true}).uncheck();
-  await page.getByRole('checkbox',{name:'Setup enable Line Window',exact:true}).check();
+  await view('setup');await page.getByRole('switch',{name:'Setup enable Line Window',exact:true}).waitFor();
+  await page.getByRole('switch',{name:'Setup enable RTK',exact:true}).uncheck();
+  await page.getByRole('switch',{name:'Setup enable Line Window',exact:true}).check();
   await page.locator('#setup').getByRole('spinbutton',{name:'Line Window Maximum returned lines',exact:true}).fill('25');
   await page.getByRole('button',{name:'Review session configuration',exact:true}).click();
   await page.getByRole('checkbox',{name:'Approve setup launch preview',exact:true}).waitFor();
   await page.getByRole('checkbox',{name:'Approve setup launch preview',exact:true}).check();
-  assert.ok(await page.getByRole('textbox',{name:'Setup launch command',exact:true}).inputValue());
+  await page.getByText('Advanced CLI command',{exact:true}).click();assert.ok(await page.getByRole('textbox',{name:'Setup launch command',exact:true}).inputValue());
   const wizardPlan=await(await fetch(base+'/api/control/v1/state')).json();
   assert.ok(wizardPlan.plugins.some(p=>p.manifest.id==='future-ui'));
   const pluginArgs=['codex','--billing','api','--profile','custom','--project',f.project,'--tools','future-ui','--tool-config',JSON.stringify({'future-ui':{lineLimit:25}})];
