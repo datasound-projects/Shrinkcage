@@ -15,6 +15,7 @@ try{
   await writeFile(join(f.bin,'herdr'),'#!/bin/sh\nexit 0\n');await chmod(join(f.bin,'herdr'),0o700);
   const folders=[null,f.project,other];
   plane=new ControlPlane({dataDir:f.data,env:{...f.env,FIXTURE_NATIVE_USAGE:'1'},home:f.home,pickDirectory:async()=>folders.shift()??null,terminal:{
+    desktopDiscovery:async()=>[{id:'terminal-app',name:'Terminal',icon:'▣',command:'/fixture/terminal'},{id:'wezterm',name:'WezTerm',icon:'▤',command:'/fixture/wezterm'}],
     discover:async()=>[{id:'terminal',name:'Terminal',available:true,reason:'Legacy interface'},{id:'herdr',name:'Herdr',available,reason:available?'Isolated Herdr fixture':'Herdr is not installed in this isolated fixture.'}],
     sessionRunning:async()=>true,
     openScript:async file=>{opened.push(file);const id=basename(dirname(file)),ticket=plane.store.terminalLaunch(id);if(['opening','waiting'].includes(ticket.state))runs.push(runTerminalTicket(plane,id,{interactive:true}).catch(e=>{errors.push(e.message);}));}
@@ -30,6 +31,8 @@ try{
   await manager.getByRole('button',{name:'Add project',exact:true}).click();await page.locator('.project-buttons').getByRole('button',{name:/^project /}).waitFor();
   const project=plane.store.projects().find(p=>p.label==='project');assert.ok(project);assert.equal(plane.store.projects().length,1);
   await manager.getByRole('link',{name:'New session',exact:true}).click();assert.equal(await page.getByRole('combobox',{name:'Setup project',exact:true}).inputValue(),project.id);
+  const terminalMenu=page.getByRole('combobox',{name:'Terminal application',exact:true});await terminalMenu.waitFor();await terminalMenu.selectOption('wezterm');await page.waitForFunction(()=>!document.querySelector('.terminal-picker select')?.disabled);assert.equal((await(await fetch(base+'/api/control/v1/terminal-emulators')).json()).preferred,'wezterm');
+  await page.getByRole('checkbox',{name:'Remember my choice',exact:true}).uncheck();await terminalMenu.selectOption('terminal-app');assert.equal((await(await fetch(base+'/api/control/v1/terminal-emulators')).json()).preferred,'wezterm','session override does not replace the saved default');
   const headroomSwitch=page.getByRole('switch',{name:'Setup enable Headroom',exact:true});
   for(const agent of ['codex','claude'])for(const billing of ['subscription','api']){
     await page.getByRole('combobox',{name:'Setup agent',exact:true}).selectOption(agent);await page.getByRole('combobox',{name:'Setup billing',exact:true}).selectOption(billing);
@@ -58,7 +61,8 @@ try{
   await page.getByText('Herdr availability & persistence',{exact:true}).click();await mkdir('artifacts',{recursive:true});await page.evaluate(()=>{const label=document.createElement('div');label.textContent='Illustrative test data';label.style.cssText='position:fixed;top:80px;right:28px;z-index:1000;color:#fff;background:#30363f;padding:5px 9px;border-radius:5px;font:10px sans-serif';document.body.append(label);});await page.evaluate(()=>{document.activeElement?.blur();window.scrollTo({top:0,behavior:'instant'});});await page.screenshot({path:'artifacts/start-session.png',fullPage:true});
   let loseAcknowledgement=true;const requestIds=[];const intercept=async route=>{if(route.request().method()!=='POST')return route.continue();requestIds.push(route.request().postDataJSON().requestId);if(loseAcknowledgement){loseAcknowledgement=false;await route.fetch();await route.abort('failed');}else await route.continue();};await page.route('**/api/control/v1/terminal-launches',intercept);
   await start.click();await page.getByRole('alert').filter({hasText:'The launch was not confirmed'}).waitFor();assert.equal(opened.length,1);await start.click();await page.getByRole('heading',{name:'Projects & sessions',level:1,exact:true}).waitFor({timeout:20000});await Promise.all(runs);assert.equal(requestIds[0],requestIds[1],'a lost response retries the original request');await page.unroute('**/api/control/v1/terminal-launches',intercept);
-  let sessions=plane.store.sessions();assert.equal(sessions.length,1);assert.deepEqual(sessions[0].plannedTools,['rtk','serena']);assert.deepEqual(sessions[0].appliedTools,['rtk','serena']);assert.equal(sessions[0].exitCode,0);assert.equal(opened.length,1);assert.equal(basename(opened[0]),'herdr.command');
+  await page.waitForFunction(()=>sessionStorage.getItem('shrinkcage:terminal')==='wezterm');
+  let sessions=plane.store.sessions();assert.equal(plane.store.terminalLaunches()[0].emulator,'terminal-app');assert.equal(sessions.length,1);assert.deepEqual(sessions[0].plannedTools,['rtk','serena']);assert.deepEqual(sessions[0].appliedTools,['rtk','serena']);assert.equal(sessions[0].exitCode,0);assert.equal(opened.length,1);assert.equal(basename(opened[0]),'herdr.command');
   await manager.getByRole('button',{name:'Reopen in Herdr',exact:true}).click();await manager.getByText('Opened the existing Herdr session.',{exact:true}).waitFor();assert.equal(plane.store.sessionCount(),1);assert.equal(opened.length,2,'reopen attaches without a second agent');
   // A second project has its own empty session list.
   await manager.getByRole('button',{name:'Add project',exact:true}).click();await page.locator('.project-buttons').getByRole('button',{name:/^other-project /}).waitFor();await manager.getByText('No sessions here yet.',{exact:false}).waitFor();

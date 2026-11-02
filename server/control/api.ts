@@ -12,6 +12,7 @@ import { parseLaunchOptions } from './schema.js';
 import { accountSession } from './accounting.js';
 const PREFIX='/api/control/v1';
 export async function controlRead(plane:ControlPlane,path:string,token:string):Promise<unknown>{
+  if(path===PREFIX+'/terminal-emulators')return plane.terminals.desktopChoices();
   if(path===PREFIX+'/terminals')return plane.terminals.discover();
   if(path===PREFIX+'/terminal-launches')return plane.terminals.list();
   if(path===PREFIX+'/registry')return plane.registry.view();
@@ -52,8 +53,10 @@ export async function controlWrite(plane:ControlPlane,path:string,value:unknown)
     case '/profiles/save':{const d=approved(value,['profile','revision']);return plane.store.saveProfile(d.profile,Number.isSafeInteger(d.revision)?Number(d.revision):-1);}
     case '/profiles/remove':{const d=approved(value,['id','revision']);if(!id(d.id)||!Number.isSafeInteger(d.revision))throw new ControlError('Invalid profile removal.');plane.store.removeProfile(d.id as string,Number(d.revision));return {removed:true};}
     case '/plans':{const d=approved(value,['agent','profile','projectId','options']);if(!id(d.profile)||typeof d.projectId!=='string'||!/^[a-f0-9]{24}$/.test(d.projectId)||typeof d.agent!=='string')throw new ControlError('Choose a known profile and an approved project.');const options=parseLaunchOptions(d.options??{},plane.store.schemaContext());const {plan}=await plane.plan(d.agent,d.profile as string,{id:d.projectId},options);return plane.terminals.remember(plan,{agent:d.agent,profile:d.profile as string,projectId:d.projectId,options});}
+    case '/terminal-emulators/rescan':{approved(value,[]);return plane.terminals.desktopChoices(true);}
+    case '/terminal-emulators/preference':{const d=approved(value,['id']);if(typeof d.id!=='string')throw new ControlError('Choose a terminal.');return plane.terminals.preferDesktop(d.id);}
     case '/sessions/reopen':{const d=approved(value,['id']);if(typeof d.id!=='string')throw new ControlError('Choose a managed session.');return plane.terminals.reopen(d.id);}
-    case '/terminal-launches':{const d=approved(value,['fingerprint','target','requestId']);if(typeof d.fingerprint!=='string'||typeof d.requestId!=='string'||!['terminal','herdr'].includes(String(d.target)))throw new ControlError('Choose a reviewed plan and a terminal.');return plane.terminals.start({fingerprint:d.fingerprint,target:d.target as 'terminal'|'herdr',requestId:d.requestId});}
+    case '/terminal-launches':{const d=approved(value,['fingerprint','target','requestId','emulator']);if(typeof d.fingerprint!=='string'||typeof d.requestId!=='string'||!['terminal','herdr'].includes(String(d.target)))throw new ControlError('Choose a reviewed plan and a terminal.');return plane.terminals.start({fingerprint:d.fingerprint,target:d.target as 'terminal'|'herdr',requestId:d.requestId,emulator:d.emulator as string|undefined});}
     case '/sessions/configure':{const d=approved(value,['id','options']);if(typeof d.id!=='string'||!/^[a-f0-9-]{36}$/.test(d.id))throw new ControlError('Invalid session ID.');return plane.store.setSessionPreference(d.id,d.options);}
     case '/sessions/page':{const d=approved(value,['offset','limit']);if(!Number.isSafeInteger(d.offset)||!Number.isSafeInteger(d.limit))throw new ControlError('Expected bounded session pagination.');const settings=plane.store.accounting(),items=plane.store.sessions(Number(d.offset),Number(d.limit)).map(s=>({...s,accounting:accountSession(s,settings)}));return {items,total:plane.store.sessionCount(),nextOffset:Number(d.offset)+items.length};}
     case '/sessions/discard':{const d=approved(value,['id']);if(typeof d.id!=='string'||!/^[a-f0-9-]{36}$/.test(d.id))throw new ControlError('Invalid session ID.');plane.store.clearSessionPreference(d.id);return {discarded:true};}

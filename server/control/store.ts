@@ -173,5 +173,7 @@ export class ControlStore {
   registryJobs():import('../registry/types.js').DiscoveryJob[]{return (this.db.prepare('SELECT value FROM registry_jobs ORDER BY rowid DESC LIMIT 5').all() as {value:string}[]).map(r=>this.decode(r.value));}
   saveRegistryJob(value:import('../registry/types.js').DiscoveryJob){this.db.prepare('INSERT INTO registry_jobs(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run(value.id,JSON.stringify(value));this.db.exec('DELETE FROM registry_jobs WHERE rowid NOT IN (SELECT rowid FROM registry_jobs ORDER BY rowid DESC LIMIT 20)');}
   onboarding():{completed:boolean;updatedAt:string|null}{const row=this.db.prepare('SELECT value FROM settings WHERE id=?').get('onboarding') as {value:string}|undefined;return row?this.decode(row.value):{completed:false,updatedAt:null};}
+  terminalPreference():string|null {const row=this.db.prepare("SELECT value FROM settings WHERE id='terminal-preference'").get() as {value:string}|undefined;return row?this.decode<string>(row.value):null;}
+  setTerminalPreference(id:string){this.db.prepare('INSERT INTO settings(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run('terminal-preference',JSON.stringify(id));}
   completeOnboarding(){this.db.prepare('INSERT INTO settings(id,value) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET value=excluded.value').run('onboarding',JSON.stringify({completed:true,updatedAt:new Date().toISOString()}));}
 }

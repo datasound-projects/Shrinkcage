@@ -10,7 +10,7 @@ The native folder picker uses macOS's folder dialog, Windows FolderBrowserDialog
 
 ## Herdr support and persistence
 
-Browser launches always use Herdr. The native Terminal/desktop window displays its TUI; it is not an alternate session mode. Reviewed Herdr **0.9.5+ in the 0.9 family** is supported on macOS/Linux. Missing or unsupported Herdr blocks launch with a diagnostic; no silent terminal fallback or installer runs. [Official installation](https://herdr.dev/tui/docs/install/).
+Browser launches always use Herdr. The selected terminal emulator displays its TUI; it is not an alternate session mode. New Session discovers compatible installed apps, hides a single-choice menu and remembers an optional local default. See [terminal discovery and adapter support](TERMINAL_ADAPTERS.md). Reviewed Herdr **0.9.5+ in the 0.9 family** is supported on macOS/Linux. Missing or unsupported Herdr blocks launch with a diagnostic; no silent terminal fallback or installer runs. [Official installation](https://herdr.dev/tui/docs/install/).
 
 Each launch has a generated named Herdr session and private configuration. Reopen attaches to that existing live session and does not start another agent. It verifies the saved launcher/config hashes, rejects moved or symlinked resources, and checks that the exact named server is still running. It never types into an unrelated pane. Earlier records without a saved binding cannot be reopened through this feature.
 
@@ -32,4 +32,4 @@ Only non-secret path/port context is retained privately for executable discovery
 - **Changed configuration or expired approval:** review again. Saved approvals cannot bypass revalidation.
 - **No activity:** selected/configured tools are not marked used until actual receipts are observed.
 
-The existing CLI and reviewed legacy terminal API remain compatible for advanced use. Native terminal openers use fixed macOS `open`, Windows PowerShell and a small Linux desktop allowlist. No generic browser-to-shell route exists. A window opening, tool installation or successful process start is not evidence of cost savings.
+The existing CLI and reviewed legacy terminal API remain compatible for advanced use. Native terminal adapters use validated OS-discovered apps and fixed argument arrays. Terminal emulators and shells remain separate. No generic browser-to-shell route exists. A window opening, tool installation or successful process start is not evidence of cost savings.

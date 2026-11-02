@@ -31,8 +31,9 @@ No Docker, cloud service or Shrinkcage account is needed. Install and sign in to
 1. Open **Projects** and click **Add project**. Choose its folder in the native dialog.
 2. Select the project and click **New session**. Pick Codex or Claude Code.
 3. Keep the recommended tools or switch them on/off for this session. Billing can stay on **Detect automatically**.
-4. Click **Review session**, check the changes and approve. Click **Open in Herdr**.
-5. Work in Herdr. Detach with **Ctrl+B, then Q**. Choose **Reopen in Herdr** in Shrinkcage to return to the same running session.
+4. Choose a detected **Terminal** (a single terminal is selected automatically). Leave **Remember my choice** on to save a default, or turn it off for this session only. Use **Rescan terminals** after installing or removing an app.
+5. Click **Review session**, check the changes and approve. Click **Open in Herdr**.
+6. Work in Herdr. Detach with **Ctrl+B, then Q**. Choose **Reopen in Herdr** in Shrinkcage to return to the same running session.
 
 Browser launches always use a separate Herdr session. Install a reviewed **Herdr 0.9.5+ in the 0.9 family** on macOS/Linux first; Shrinkcage does not install it automatically. A stopped server or computer restart does not keep live agent processes running. Windows Herdr launching remains unsupported. Native sign-in, project trust and approvals still apply. [Terminal support and safeguards →](docs/TERMINALS.md)
 
@@ -66,7 +67,7 @@ Replace the path with your project folder, for example `C:\Projects\my-app` on W
 
 Each launch has its own ID, tools and configuration, including concurrent sessions in the same project. Stack edits prepare the next launch; they do not reconfigure a running agent. Existing external hooks can limit isolation, and the plan explains that limitation. Native sandbox, trust and approval rules remain in place.
 
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.6.1.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
+For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.7.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
 
 ## What works
 
