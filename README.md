@@ -67,7 +67,7 @@ Replace the path with your project folder, for example `C:\Projects\my-app` on W
 
 Each launch has its own ID, tools and configuration, including concurrent sessions in the same project. Stack edits prepare the next launch; they do not reconfigure a running agent. Existing external hooks can limit isolation, and the plan explains that limitation. Native sandbox, trust and approval rules remain in place.
 
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.7.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
+For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.8.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
 
 ## What works
 
@@ -97,3 +97,5 @@ Shrinkcage stores allowlisted metadata, not prompts, source code, tool arguments
 Tests cover supported agent/billing/tool combinations, real isolated subprocess launches, accounting, cleanup, failure recovery and browser workflows. CI runs macOS, Windows and Linux with Node 22/24. Native interface and MCP checks are distinct from authenticated model-backed quality/savings tests; universal compatibility or perfect optimization is not claimed. Screenshots use labeled test data. [Executed checks and limits →](docs/VALIDATION.md)
 
 [Setup & troubleshooting](docs/SETUP.md) · [Architecture](docs/CONTROL_PLANE.md) · [Privacy](docs/PRIVACY.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)
+
+The interface keeps everyday actions visible. Expand **Policy & settings** for profile rules, **Coverage, budget & accounting rules** for usage context, and **Catalog source & last sync** for registry provenance. Launch errors, compatibility blockers and approval controls remain visible. All existing tools, advanced settings, history and diagnostics remain available.

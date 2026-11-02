@@ -6,6 +6,7 @@ import './style.css';
 import './workspace.css';
 import './silver.css';
 import './help.css';
+import './clarity.css';
 import Screen from './Screen';
 import SerenaActivityLog from './SerenaActivityLog';
 import DetailTabs from './DetailTabs';
@@ -161,7 +162,7 @@ function App() {
   const serenaUnit = s && s.calls !== null ? `observed tool calls · ${s.reportingInstances} of ${s.instances.length} ${s.instances.length === 1 ? 'instance' : 'instances'}` : s?.activity === 'empty' ? 'dashboards reachable · no counters recorded' : 'reported tool-call statistics';
   const selectedInstance = s?.instances.find(instance => instance.port === instancePort) ?? s?.instances.find(instance => instance.calls !== null) ?? s?.instances[0];
   const group = [...navigation,helpNavigation].find(n=>n.screens.includes(active))??navigation[0];
-  const descriptions:Record<string,string>={overview:'A clear view of your sessions and optimizer activity.',managed:'Your projects, with separate sessions and tools for each.',setup:'Pick a project, choose tools and open Herdr.',registry:'Find a tool. Check compatibility. Add it to one stack.', 'cost-usage':'Understand reported usage and qualified cost estimates.',settings:'Your local preferences, billing and connections.',help:'Simple steps for sessions, tools, costs and everyday use.'};
+  const descriptions:Record<string,string>={profiles:'Save a reusable tool setup for future sessions.',sessions:'Find past sessions by agent, project or model.',validation:'Check compatibility and resolve setup issues.',optimizers:'See installed tools and their setup options.',benchmarks:'Compare two completed runs of the same task.',analytics:'Explore shared optimizer history.',headroom:'Reported compression from your local proxy.',rtk:'Estimated reductions in terminal output.',serena:'Observed tool calls and connection status.',connectors:'Manage where local session data is read.',health:'Check local services and connection errors.',overview:'A clear view of your sessions and optimizer activity.',managed:'Your projects, with separate sessions and tools for each.',setup:'Pick a project, choose tools and open Herdr.',registry:'Find a tool. Check compatibility. Add it to one stack.', 'cost-usage':'Understand reported usage and qualified cost estimates.',settings:'Your local preferences, billing and connections.',help:'Simple steps for sessions, tools, costs and everyday use.'};
   const activeLabel = sections.find(([id]) => id === active)?.[2] ?? 'Overview';
   return <div className="app-shell"><button className="skip-link" onClick={()=>document.getElementById('main-content')?.focus()}>Skip to content</button>
     <aside className="sidebar"><a href="#managed" className="brand"><img src="/icon.svg" className="brand-logo" alt=""/><div>Shrinkcage<small>LESS CONTEXT. MORE CLARITY.</small></div></a>

@@ -91,7 +91,7 @@ try{
   const claudePreview=await cli(['plan','claude','--billing','subscription','--profile','balanced','--project',f.project,'--json'],claudeEnv,f.project);assert.equal(claudePreview.code,0,claudePreview.stderr);const claudePlan=JSON.parse(claudePreview.stdout);assert.ok(claudePlan.tools.includes('headroom'));
   const claudeRun=await cli(['run','claude','--billing','subscription','--profile','balanced','--project',f.project,'--approve',claudePlan.fingerprint],claudeEnv,f.project);assert.equal(claudeRun.code,0,claudeRun.stderr);
   await recheck();await page.getByRole('button',{name:'Refresh',exact:true}).waitFor();
-  await view('settings');await page.getByRole('button',{name:'Add model price',exact:true}).click();await page.getByRole('textbox',{name:'Price model 1',exact:true}).fill('fixture-model');
+  await view('settings');await page.getByText('Billing, pricing & budget alerts',{exact:true}).click();await page.getByRole('button',{name:'Add model price',exact:true}).click();await page.getByRole('textbox',{name:'Price model 1',exact:true}).fill('fixture-model');
   for(const [key,value]of Object.entries({input:'2',output:'8',cached:'0.2',cacheWrite:'2.5'}))await page.getByRole('spinbutton',{name:`Price ${key} 1`,exact:true}).fill(value);
   await page.getByRole('textbox',{name:'Price source 1',exact:true}).fill('https://example.org/pricing');await page.getByRole('spinbutton',{name:'Monthly API budget',exact:true}).fill('0.001');
   await page.getByRole('button',{name:'Save accounting settings',exact:true}).click();await page.getByText('Pricing and budget settings saved. Estimates use exact model IDs only.',{exact:true}).waitFor();

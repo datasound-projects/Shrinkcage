@@ -110,3 +110,7 @@ Installed **Headroom 0.42.0** was separately run with its real `wrap codex` and 
 ## Terminal discovery · 1.7.0
 
 158 unit/integration tests passed locally, including custom PATH discovery, headless/missing apps, preference persistence, fixed adapter argv, invalid IDs, removed selection before opening and failed opening without an agent. Browser tests extend the approved Herdr flow with terminal selection, saved preference and recorded selected-emulator assertions. Native read-only macOS discovery found Terminal, iTerm2 and Ghostty in approximately 0.14 seconds; no GUI emulator launch was exercised. Windows registration/PATH and Linux discovery use platform-aware implementations; CI fixtures do not constitute native GUI coverage. Windows Herdr launching remains unsupported. [Adapter scope and limitations](TERMINAL_ADAPTERS.md).
+
+## UI clarity · 1.8.0
+
+Frontend-only hierarchy/layout and progressive-disclosure changes preserve routes, controls, calculations and launch authorization. Backend implementation changes are limited to the version constant. The browser suite sweeps all 18 destinations at 390/1440px, retains the existing 320/768/1024 checks, verifies text contrast and keyboard policy disclosure access, and exercises session/terminal selection, approvals, profiles, pricing, registry, error recovery and help. Reference details are collapsed; errors, blockers, permissions and explicit launch approvals remain visible. Screenshots use synthetic fixtures. Native authenticated model task quality or savings are not inferred from UI checks.
