@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "headroom",
+  "reviewer": "datasound-projects (Codex-assisted)",
+  "reviewedAt": "2026-11-02T02:52:01.255Z",
+  "decision": "approve",
+  "scope": "managed-adapter",
+  "reason": "Owner-authorized extension of the existing reviewed Headroom adapter to native subscription/API Codex and Claude sessions; credential-free fixture coverage is separate from paid model task validation.",
+  "reviewedVersion": "v0.42.0",
+  "source": "Existing approved adapter and installed upstream 0.42.0 interfaces; no executable was downloaded or installed.",
+  "evidence": [
+    "tests/headroom-routing.test.ts",
+    "tests/control-stack-matrix.test.ts",
+    "scripts/terminal-ui-test.mjs",
+    "docs/VALIDATION.md"
+  ],
+  "limitations": [
+    "Claude cloud-provider and different custom-gateway routes need a separately reviewed adapter.",
+    "Shared proxy counters cannot prove per-session token or cash savings; retrieval MCP receipts do not prove compressed model traffic.",
+    "Upstream mentions and public review are separate from local installation, native account support and actual session activation."
+  ]
+}

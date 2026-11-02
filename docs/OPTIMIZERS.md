@@ -6,7 +6,7 @@ The reviewed registry lives in `server/control/optimizers`. Adapter API **2**, i
 |---|---|---|
 | RTK | Codex/Claude native process hook; shared gain/history monitoring | Inherited external hooks cannot be selectively disabled; reductions are estimates, not provider savings |
 | Serena | Owned Codex/Claude stdio MCP; successful tool-name/count receipts; shared dashboard activity | Project indexing/dependencies may be prepared by Serena; activity is not a savings measurement |
-| Headroom | Codex API wrapper + retrieval MCP, reusing verified loopback proxy | No subscription route, Claude managed wrapper, owned proxy lifecycle or session savings attribution |
+| Headroom | Codex scoped wrapper or Claude process-only routing + retrieval MCP; subscription/API native auth; verified loopback proxy | No Claude cloud/custom-gateway route, owned proxy lifecycle or session savings attribution |
 | context-mode | Guided official MCP/hook setup reference | Sandboxing, permissions, session memory and attribution not verified as an isolated stack |
 | LeanCTX | Guided `yvgude/lean-ctx` context gateway reference | Hooks, proxy paths, indexing and broad uninstall have not been reviewed for safe per-session ownership |
 | codemem | Guided official plugin/memory setup | Capture, account and indexing costs need separate review |

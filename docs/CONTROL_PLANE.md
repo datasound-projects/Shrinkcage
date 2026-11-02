@@ -25,7 +25,7 @@ Every launch has a random ID, an ownership token whose hash is stored, an owned 
 - **Claude:** a fresh `--session-id`, inline `--settings` hooks and a strict process MCP configuration. External MCP servers are omitted in this new process, including an empty baseline; native permission settings, inherited hooks and administrator restrictions still apply. Serena uses its native `claude-code` context.
 - **RTK:** a reviewed native `rtk hook AGENT` subprocess rewrites input. Codex's PreToolUse contract requires `allow` with a rewrite; its result is not a PermissionRequest approval. Claude rewrites omit `allow`, preserving its permission evaluation. Original tool-input fields remain intact.
 - **Serena:** a dedicated stdio server/relay belongs to the session. Project indexes or language-server dependencies remain Serena's behavior and can be shared on disk; process configuration isolation is not filesystem sandboxing.
-- **Headroom:** Codex **API-billed** sessions can reuse an independently started, verified loopback proxy with `wrap codex --no-proxy --no-mcp --code-memory none`. No proxy ownership or subscription gateway is assumed. Proxy savings remain shared.
+- **Headroom:** supported Codex and Claude Code sessions can reuse a verified loopback proxy with native subscription or API authentication. Codex uses `wrap codex --no-proxy --no-mcp --code-memory none`; Claude uses process-only endpoint settings merged with RTK/usage hooks and a dedicated retrieval MCP. No global authentication or project settings are changed. Shared proxy hot settings are not updated by a session. Retrieval activity is observable; compression totals remain shared.
 
 Native hook trust and managed policies are never bypassed. Unsupported interfaces block required tools or produce explicit optional omissions. A checkbox is intent, not proof of installation or execution.
 
@@ -35,7 +35,7 @@ Native configuration layers merge hooks. Individual external RTK hooks cannot re
 
 Codex user, ancestor and project configuration is inspected conservatively. Claude user/project/local settings are inspected without opening OAuth files. Unknown aliases, plugins and administrator policy can add behavior outside this audit. Native activation receipts remain required.
 
-Existing Headroom routing is a separate dependency: its retrieval MCP is preserved when removing it would break external compression. Such a baseline is explicitly not isolated. Claude launches with externally inherited Headroom routing are blocked because this release cannot safely replace that integration.
+Existing Headroom routing is a separate dependency: its retrieval MCP is preserved when removing it would break external compression. Such a baseline is explicitly not isolated. Claude can explicitly select the same verified Headroom route with its owned retrieval MCP. An off selection with inherited external Headroom routing remains blocked; the app cannot claim an isolated baseline. Different Claude gateways and cloud routes block only managed Headroom until a reviewed adapter supports them.
 
 Session stack edits are stored separately from running session records. They show **Requires restart** and produce a fresh, independent terminal launch plan. No hot reconfiguration or automatic restart is performed. Discarding a pending edit leaves both the current process and original launch configuration intact.
 
@@ -46,7 +46,7 @@ Session stack edits are stored separately from running session records. They sho
 | Baseline | No Shrinkcage-managed optimizers; inherited effects are disclosed |
 | Lean | Optional RTK |
 | Balanced | Compatible RTK, Serena and Headroom; optional omissions shown |
-| Maximum Savings | Full reviewed stack; blocks any unavailable tool; currently Codex API only |
+| Maximum Savings | Full compatible stack for either supported agent/billing mode; blocks any unavailable tool |
 | Custom | Explicit tools and supported configuration |
 | Memory | Backward-compatible RTK/Serena preset with guided codemem omission |
 

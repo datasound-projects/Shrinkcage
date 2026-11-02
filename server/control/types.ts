@@ -26,6 +26,8 @@ export interface Detection {
   status: EvidenceStatus; checkedAt: string; binaryFingerprint: string | null;
   evidence: Evidence[]; diagnostics: string[];
   endpointPort?: number;
+  agentSupport?: Partial<Record<ControlAgent,boolean>>;
+  compressionEnabled?: boolean | null;
 }
 export interface AgentDetection { id: ControlAgent; installed: boolean; version: string | null; compatible: boolean; binaryFingerprint: string | null }
 export interface ProfileTool { id: ToolId; required: boolean; priority: number; config?: ToolConfiguration }
@@ -63,6 +65,7 @@ export interface ConfigFacts {
   hooksDisabled?: boolean;
   headroomEntries?: number; replaceSerenaEntry?: boolean; replaceHeadroomEntry?: boolean;
   externalHeadroomRouting?: boolean;
+  headroomRoutingConflict?: string;
 }
 export interface PlanAction {
   id: string; tool: ToolId; phase: 'preflight' | 'activate' | 'verify' | 'cleanup';

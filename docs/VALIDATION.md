@@ -1,4 +1,4 @@
-# Validation record · 1.6.0
+# Validation record · 1.6.1
 
 Release checks cover the existing monitor and the session optimization control plane. Production adapters never substitute fixture measurements. The [historical 1.1 record](history/VALIDATION_1_1.md) is preserved.
 
@@ -23,8 +23,8 @@ Run heavy build/test/browser gates sequentially. Native probes deliberately time
 
 | Check | Exercised behavior |
 |---|---|
-| Unit/integration | 148 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
-| Exhaustive stack matrix | 192 agent/billing/platform/tool-subset combinations; twenty supported Codex/Claude API/subscription stacks through real isolated subprocesses, receipt counts, exact cache accounting, permissions and owned cleanup |
+| Unit/integration | 154 tests covering original collectors, malformed/offline sources, sessions, billing/cache/prices, strict manifests, compatibility/dependencies/conflicts, inheritance, isolation, permissions and ownership |
+| Exhaustive stack matrix | 192 agent/billing/platform/tool-subset combinations; all 32 Codex/Claude API/subscription tool subsets through real isolated subprocesses, receipt counts, exact cache accounting, permissions and owned cleanup |
 | Usage-scope regression | Seven tests for freshest cumulative records, cross-agent identity, stale data, conflicting billing, budget deduplication, cache pricing and qualified experiment rejection |
 | Critical coverage | 25 planner/transaction tests; 100% statements/lines/functions and over 85% branches; threshold retained |
 | Managed mechanics | Real isolated fake Codex/Claude subprocesses, four agent × billing paths, parallel same-project sessions, native hooks/MCP, failures, interruption/owner crash, cleanup and external-service survival |
@@ -52,7 +52,7 @@ Read-only native checks on the development host found Codex 0.165.0, RTK 1.1.0, 
 - Generic SDK execution supports foreground stdio MCP only. Unknown patterns remain Integration required with review scaffolding/tests. No arbitrary GitHub code or executable update runs automatically.
 - A private workspace/environment is not an OS sandbox. Approved programs retain user permissions. Fingerprints cover the executable/entry script, not transitive imports or a whole installation.
 - External hooks, native trust and administrator policy can limit isolation. Current sessions are never silently restarted or reconfigured.
-- Headroom managed routing is Codex API only. Shared Headroom/RTK counters are not assigned to sessions or summed. Serena calls do not imply token/cash savings.
+- Headroom supports native subscription/API authentication for reviewed Codex and Claude interfaces through an existing verified local proxy. Claude cloud/custom-gateway routes remain unsupported. Shared Headroom/RTK counters are not assigned to sessions or summed. Serena calls do not imply token/cash savings.
 - Provider limits, invoice charges, inference latency, optimizer overhead and causal quality improvements stay N/A without genuine sources/qualified experiments. Mixed, sampled or stale usage cannot become a complete cost estimate.
 
 See [compatibility](COMPATIBILITY.md), [SDK](PLUGINS.md), [accounting](ACCOUNTING.md), [architecture](CONTROL_PLANE.md) and [security](../SECURITY.md).
@@ -98,3 +98,11 @@ Six additional tests cover native-picker argument contracts, cancellation, canon
 Native macOS validation used actual **Herdr 0.9.5** in an allocated PTY with an isolated fake Codex CLI and a real managed RTK fixture receipt. Ctrl+B/Q detached the client; the owned agent stayed running. The saved Reopen action reattached the same named Herdr session, with exactly one managed agent before and after. Both clients detached cleanly, then only that owned Herdr session was stopped and test data removed. This is a terminal/process check, not an authenticated model task or savings benchmark. Apple's real `osacompile` accepted the exact macOS folder-dialog script. Native graphical dialog interaction could not be completed because the GUI automation connection timed out; cancellation/selection and all authorization boundaries were exercised with isolated dialog fixtures. Native Windows/Linux graphical dialog interaction was not performed.
 
 The launch browser test also holds a real Codex preview response, switches the selected agent, and verifies that the stale response cannot become the current review. Controls wait for recommendations for the current agent/billing context. CI recovery checks wait for the actual Review-ready state rather than a transitional checkbox frame. Lost successful launch responses retry the original request ID and retain one agent/window.
+
+## Headroom subscription and Claude routing correction · 1.6.1
+
+Removed the API-only checks from the setup UI, recommendations, registry contract, validation gates and launch planner. Headroom discovery checks its retrieval interface and reports agent-specific support. A missing/unhealthy proxy or explicitly disabled compression blocks only Headroom. Native billing contradictions still block a launch. Claude routing is merged with native RTK/telemetry hooks in a single process-only settings object; existing project files and authentication remain unchanged. Codex wrapper launches cannot hot-update shared proxy settings from inherited environment knobs. Changes to selected tool versions or health invalidate the setup preview.
+
+The 192 planning combinations and all 32 Codex/Claude API/subscription tool subsets use isolated fixtures, real backend/SQLite/managed subprocesses, route assertions, tool receipts, accounting and cleanup. Six additional tests cover shared compatibility/validation, agent-specific interfaces, disabled compression, revalidation, cloud/gateway conflicts, shared settings and concurrent full/baseline stacks. Browser regression checks cover Headroom selection in all four agent/billing scenarios, disabled-compression recovery and stale approval invalidation.
+
+Installed **Headroom 0.42.0** was separately run with its real `wrap codex` and `wrap claude` commands for subscription/API scenarios. Isolated CLI and HTTP fixtures confirmed routing and unchanged Codex/Claude settings. No provider secrets or authenticated model calls were used. The host has Codex 0.165.0 and an unsupported old Claude Code 0.2.29; modern Claude behavior is covered by fixtures, not a native authenticated Claude task. Proxy compression counts stay shared; successful retrieval calls do not prove compressed model traffic or causal token/cash savings.

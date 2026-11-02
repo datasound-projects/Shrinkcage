@@ -25,7 +25,7 @@ Listening ports, reachable HTTP, installed CLIs and confirmed adapter activity r
 | Claude | 2.x, minimum 2.1.0 plus verified `--settings`, `--session-id`, `--mcp-config`, `--strict-mcp-config`; older builds are unsupported | Native subscription/API authentication retained; exact auth-status help must exist before a status query |
 | RTK | installed **1.1.0**, native `rtk hook codex` / `rtk hook claude` with documented PreToolUse/Bash JSON | Actual returned command rewrite, not merely hook-file presence |
 | Serena | installed **2.1.0**, `start-mcp-server --project-from-cwd --context=codex|claude-code --transport stdio` | Successful MCP initialize + initialized notification, safe successful tool responses |
-| Headroom | installed **0.42.0**, Codex API-only scoped wrapper no-write flags plus `mcp serve --proxy-url ... --transport stdio` | Proxy health is separate; successful retrieval MCP handshake/activity provides managed evidence; savings remain shared |
+| Headroom | reviewed **0.42.x**, Codex scoped wrapper or Claude process-only endpoint settings plus `mcp serve --proxy-url ... --transport stdio`; native subscription/API authentication | Proxy health is separate; successful retrieval MCP handshake/activity provides managed evidence; savings remain shared |
 
 Minimum/version-family guards are compatibility boundaries, not a claim that every future patch/platform combination has been manually tested. CLI help/version checks fail closed when a required interface is absent. Known Windows npm Node shims are resolved to fixed sidecar modules without `shell: true`; unusual shell wrappers are unsupported. Nothing downloads tools during discovery.
 

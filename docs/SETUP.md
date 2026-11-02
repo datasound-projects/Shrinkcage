@@ -52,7 +52,7 @@ shrinkcage run claude --billing api --profile lean --project .
 
 Use your actual project path after `--project` if the terminal is elsewhere. Windows paths such as `C:\Projects\my-app` work. Native authentication must match the declared billing mode; the flag does not switch accounts. Omit `--billing` for native detection, or use `unknown`/`hybrid` when the account/routing cannot be represented accurately.
 
-New RTK hooks do not need persistent project setup. Review native hooks through the CLI's normal trust interface. Serena starts as a session-owned MCP. Headroom requires an already-running verified proxy and is only managed for Codex API sessions. A subscription Balanced plan omits managed Headroom instead of inserting an API gateway.
+New RTK hooks do not need persistent project setup. Review native hooks through the CLI's normal trust interface. Serena starts as a session-owned MCP. Headroom requires an already-running verified local proxy. Supported Codex and Claude subscription/API sessions can enable it without changing native sign-in. Different Claude cloud/gateway routes need a separately reviewed adapter.
 
 Each launch is independent, including concurrent sessions in the same project. Stop one with Ctrl+C in its own terminal. Keep the current development session untouched and start a new terminal to try a different stack.
 

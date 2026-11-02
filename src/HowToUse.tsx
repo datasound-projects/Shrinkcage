@@ -18,7 +18,7 @@ export default function HowToUse(){
         <dl>
           <div><dt>RTK</dt><dd>Shortens command output before the agent reads it. Its token reductions are estimates.</dd></div>
           <div><dt>Serena</dt><dd>Helps the agent find relevant code. Tool calls show activity, not a money-saved total.</dd></div>
-          <div><dt>Headroom</dt><dd>Compresses context. Managed routing currently supports Codex with API billing.</dd></div>
+          <div><dt>Headroom</dt><dd>Compresses context through your local proxy. Works with supported Codex and Claude sessions using subscription or API billing.</dd></div>
         </dl>
         <p>A selected tool is a request. The session must actually load and use it before activity is verified.</p>
         <a href="#registry">Explore the Optimizer Library →</a>

@@ -30,9 +30,20 @@ try{
   await manager.getByRole('button',{name:'Add project',exact:true}).click();await page.locator('.project-buttons').getByRole('button',{name:/^project /}).waitFor();
   const project=plane.store.projects().find(p=>p.label==='project');assert.ok(project);assert.equal(plane.store.projects().length,1);
   await manager.getByRole('link',{name:'New session',exact:true}).click();assert.equal(await page.getByRole('combobox',{name:'Setup project',exact:true}).inputValue(),project.id);
-  const recommended=page.waitForResponse(r=>r.url().endsWith('/stacks/recommend'));await page.getByRole('combobox',{name:'Setup billing',exact:true}).selectOption('api');await recommended;
+  const headroomSwitch=page.getByRole('switch',{name:'Setup enable Headroom',exact:true});
+  for(const agent of ['codex','claude'])for(const billing of ['subscription','api']){
+    await page.getByRole('combobox',{name:'Setup agent',exact:true}).selectOption(agent);await page.getByRole('combobox',{name:'Setup billing',exact:true}).selectOption(billing);
+    await page.waitForFunction(()=>document.querySelector('[aria-label="Review session configuration"]')?.disabled===false);
+    assert.equal(await headroomSwitch.isDisabled(),false,agent+'/'+billing+' supports Headroom');await headroomSwitch.check();assert.equal(await headroomSwitch.isChecked(),true);
+    assert.equal(await page.getByText('Requires Codex with API billing',{exact:true}).count(),0);
+  }
+  await page.getByRole('combobox',{name:'Setup agent',exact:true}).selectOption('codex');
+  await page.getByRole('combobox',{name:'Setup billing',exact:true}).selectOption('api');
   await page.waitForFunction(()=>!document.querySelector('[aria-label="Review session configuration"]')?.disabled);
   for(const name of ['RTK','Serena'])await page.getByRole('switch',{name:'Setup enable '+name,exact:true}).check();
+  f.headroomState.optimize=false;await page.getByRole('button',{name:'Refresh',exact:true}).click();await page.getByText('Headroom is running with compression disabled.',{exact:false}).waitFor();
+  await page.getByRole('button',{name:'Review session configuration',exact:true}).click();await page.locator('[aria-label="Setup configuration preview"]').getByText('A few things need attention',{exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Open in Herdr',exact:true}).isDisabled(),true);
+  f.headroomState.optimize=true;await page.getByRole('button',{name:'Refresh',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.simple-tool-list .unavailable'));assert.equal(await page.locator('[aria-label="Setup configuration preview"]').count(),0,'health recovery invalidates the old approval');
   await page.getByRole('switch',{name:'Setup enable Headroom',exact:true}).uncheck();
   let releasePlan;const heldPlan=new Promise(r=>{releasePlan=r;});let capturedPlan=false;
   const delayPlan=async route=>{const response=await route.fetch();capturedPlan=true;await heldPlan;await route.fulfill({response});};

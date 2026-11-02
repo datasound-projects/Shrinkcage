@@ -14,6 +14,29 @@ import { ControlError } from './schema.js';
 import { prepareRuntime,receiptEvents,runtimeEntry, type ReceiptEvent } from './runtime.js';
 import type { LaunchOptions,ManagedSession,MetricObservation,OptimizationPlan } from './types.js';
 
+
+
+/** A shared proxy's hot settings must never be changed by one session's inherited environment. */
+export function headroomEnvironment(env:NodeJS.ProcessEnv):NodeJS.ProcessEnv {
+  const isolated={...env};
+  for(const key of ['HEADROOM_OUTPUT_SHAPER','HEADROOM_VERBOSITY_LEVEL','HEADROOM_VERBOSITY_AUTOTUNE','HEADROOM_OUTPUT_HOLDOUT','HEADROOM_INTERCEPT_READ_MIN_CHARS','HEADROOM_VERIFY_TRUNCATION_ON_DISK','HEADROOM_VERIFY_TRUNCATION_MAX_BYTES','HEADROOM_WEB_SEARCH_HISTORY','HEADROOM_BUFFERED_UPSTREAM_STREAM'])delete isolated[key];
+  return isolated;
+}
+
+/** Merge only trusted process settings so Headroom routing never replaces native RTK/usage hooks. */
+export function mergeClaudeOverrides(args:string[]):string[]{
+  const servers:Record<string,unknown>={},settings:{env?:Record<string,string>;hooks?:Record<string,unknown[]>}={},other:string[]=[];
+  for(let i=0;i<args.length;i++){
+    if(args[i]==='--mcp-config')Object.assign(servers,JSON.parse(args[++i]).mcpServers);
+    else if(args[i]==='--settings'){
+      const value=JSON.parse(args[++i]);if(!value||Array.isArray(value)||Object.keys(value).some(k=>!['env','hooks'].includes(k)))throw new ControlError('Unexpected managed Claude settings.');
+      if(value.env)settings.env={...settings.env,...value.env};
+      if(value.hooks){settings.hooks??={};for(const [event,groups]of Object.entries(value.hooks)){if(!Array.isArray(groups))throw new ControlError('Invalid managed hooks.');settings.hooks[event]=[...(settings.hooks[event]??[]),...groups];}}
+    }else other.push(args[i]);
+  }
+  return [...other,'--strict-mcp-config','--mcp-config',JSON.stringify({mcpServers:servers}),...(Object.keys(settings).length?['--settings',JSON.stringify(settings)]:[])];
+}
+
 export function validateAgentArguments(args:string[],plan:OptimizationPlan){
   if(args.length>100||args.reduce((n,a)=>n+a.length,0)>16384||args.some(a=>typeof a!=='string'||a.includes('\0')))throw new ControlError('Agent arguments exceed the safe limit.');
   for(let i=0;i<args.length;i++){
@@ -47,7 +70,7 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
   if(!plan.ready)throw new ControlError('Plan is blocked: '+plan.errors.join(' '));
   if(plan.fingerprint!==input.approved)throw new ControlError('Run approval is stale. Preview and approve the current plan fingerprint.','approval',409);
   validateAgentArguments(input.args,plan);
-  const program=plan.tools.includes('headroom')?'headroom':plan.agent,binary=await executable(program as 'codex'|'claude'|'headroom',plane.env);if(!binary)throw new ControlError('The approved executable is no longer available.');
+  const program=plan.tools.includes('headroom')&&plan.agent==='codex'?'headroom':plan.agent,binary=await executable(program as 'codex'|'claude'|'headroom',plane.env);if(!binary)throw new ControlError('The approved executable is no longer available.');
   const pluginSnapshots:Record<string,RuntimePlugin>={};
   for(const name of [plan.agent,...plan.tools] as const){if(![...TOOL_IDS,'codex','claude','gemini'].includes(name)){const plugin=plane.store.plugin(name);if(!plugin||plugin.binding.fingerprint!==plan.binaryFingerprints[name]||!await verifyBinding(plugin.binding))throw new ControlError('Plugin changed after approval. Review it again.');pluginSnapshots[name]={manifest:plugin.manifest,binding:plugin.binding,configuration:pluginConfiguration(plugin.manifest,plan.toolConfig?.[name]??{})};continue;}const current=await executable(name as Parameters<typeof executable>[0],plane.env);if(!current||current.fingerprint!==plan.binaryFingerprints[name])throw new ControlError('An executable changed after approval. Preview the plan again.','approval',409);}
   const id=randomUUID(),token=randomBytes(32).toString('hex'),now=new Date().toISOString();
@@ -58,15 +81,16 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
     plane.store.createSession(session,token,Object.fromEntries(Object.entries(pluginSnapshots).map(([id,p])=>[id,p.binding.fingerprint])));created=true;options.onCreated?.(session);
     for(const tool of plan.tools)applied.push(await adapter(tool,plane,pluginSnapshots[tool]).apply({...context,events:[]}));
     let appliedOverrides=applied.flatMap(a=>a.overrides);
-    if(plan.agent==='claude'){const servers:Record<string,unknown>={},other:string[]=[];for(let i=0;i<appliedOverrides.length;i++){if(appliedOverrides[i]==='--mcp-config')Object.assign(servers,JSON.parse(appliedOverrides[++i]).mcpServers);else other.push(appliedOverrides[i]);}appliedOverrides=[...other,'--strict-mcp-config','--mcp-config',JSON.stringify({mcpServers:servers})];}
-    const agentArgs=[...(plan.agent==='codex'?['--no-daemon']:['--session-id',id]),...sessionHookOverrides(plan.agent,plan.tools.includes('rtk')&&plan.isolation?.rtk==='process'),...(plan.suppressedMcp??[]).flatMap(name=>['--config','mcp_servers.'+name+'.enabled=false']),...appliedOverrides,...(plan.model?['--model',plan.model]:[]),...input.args];
+    const hooks=sessionHookOverrides(plan.agent,plan.tools.includes('rtk')&&plan.isolation?.rtk==='process');
+    if(plan.agent==='claude')appliedOverrides=mergeClaudeOverrides([...hooks,...appliedOverrides]);
+    const agentArgs=[...(plan.agent==='codex'?['--no-daemon',...hooks]:['--session-id',id]),...(plan.suppressedMcp??[]).flatMap(name=>['--config','mcp_servers.'+name+'.enabled=false']),...appliedOverrides,...(plan.model?['--model',plan.model]:[]),...input.args];
     const args=program==='headroom'?['wrap','codex','--no-proxy','--no-mcp','--code-memory','none','--port',String(plan.headroomPort),'--',...agentArgs]:agentArgs;
     session.metrics=await (options.snapshot??(()=>sharedObservations(plane.env)))();
     session.status='starting';plane.store.updateSession(session,token);
     // Windows libuv kills non-detached children when the parent's job closes.
     // Only the guardian escapes that job; it retains inherited streams, live IPC
     // and ownership of the actual agent, and exits after durable owner acknowledgement.
-    const entry=runtimeEntry('supervisor');const child=spawn(entry.command,entry.args,{cwd:projectPath,env:{...plane.env,SHRINKCAGE_DATA_DIR:plane.canonicalDataDir,SHRINKCAGE_SESSION_ID:id,SHRINKCAGE_SESSION_TOKEN:token,SHRINKCAGE_AGENT:plan.agent,SHRINKCAGE_PROJECT_ROOT:projectPath,SHRINKCAGE_HEADROOM_PORT:String(plan.headroomPort??8787),HEADROOM_BEACON:'off',HEADROOM_OFFLINE:'1',DO_NOT_TRACK:'1'},shell:false,stdio:['inherit','inherit','inherit','ipc'],detached:process.platform==='win32',windowsHide:process.platform==='win32'});
+    const entry=runtimeEntry('supervisor');const child=spawn(entry.command,entry.args,{cwd:projectPath,env:{...(program==='headroom'?headroomEnvironment(plane.env):plane.env),SHRINKCAGE_DATA_DIR:plane.canonicalDataDir,SHRINKCAGE_SESSION_ID:id,SHRINKCAGE_SESSION_TOKEN:token,SHRINKCAGE_AGENT:plan.agent,SHRINKCAGE_PROJECT_ROOT:projectPath,SHRINKCAGE_HEADROOM_PORT:String(plan.headroomPort??8787),HEADROOM_BEACON:'off',HEADROOM_OFFLINE:'1',DO_NOT_TRACK:'1'},shell:false,stdio:['inherit','inherit','inherit','ipc'],detached:process.platform==='win32',windowsHide:process.platform==='win32'});
     supervisor=child;
     if(!options.quiet)console.error(`Shrinkcage managed session ${id.slice(0,8)} · ${plan.profile}. Stop in this terminal with Ctrl+C.`);
     let ready=false,launchError=false,actualCode:number|null=null,actualSignal:string|null=null;let reportExit:(code:number)=>void=()=>{};

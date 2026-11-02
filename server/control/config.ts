@@ -60,9 +60,16 @@ export async function inspectConfiguration(project:string,env:NodeJS.ProcessEnv=
   result.baselineConfounders=[...new Set(result.baselineConfounders)].sort();return result;
 }
 
+function claudeHeadroomConflict(env:Record<string,unknown>,context:NodeJS.ProcessEnv):string|undefined {
+  if(['CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY'].some(k=>['1','true'].includes(String(env[k]??'').toLowerCase())))return 'This Claude cloud-provider route needs a separate reviewed Headroom adapter. Native RTK/Serena remain available.';
+  const url=env.ANTHROPIC_BASE_URL;if(typeof url==='string'&&url&&!headroomRoute(url,context)&&!['https://api.anthropic.com','https://api.anthropic.com/'].includes(url))return 'An external Claude gateway is configured. Headroom cannot replace its route safely; keep the gateway or review that integration separately.';
+  return undefined;
+}
+
 /** Only settings files are inspected, never Claude's OAuth/credential files. */
 export async function inspectClaudeConfiguration(project:string,env:NodeJS.ProcessEnv=process.env,home=homedir()):Promise<ConfigFacts>{
   const result:ConfigFacts={digests:{},errors:[],rtkHooks:0,headroomHooks:0,memoryHooks:0,serenaEntries:0,reservedMcp:false,ownedRtk:false,baselineConfounders:[]};
+  result.headroomRoutingConflict=claudeHeadroomConflict(env,env);
   const files=[['user',join(env.CLAUDE_CONFIG_DIR||join(home,'.claude'),'settings.json')],['project',join(project,'.claude','settings.json')],['local',join(project,'.claude','settings.local.json')],['mcp',join(project,'.mcp.json')]];
   for(const [label,path] of files)try{
     const bytes=await readBounded(path);result.digests[label]=bytes?digest(bytes):'absent';if(!bytes)continue;
@@ -78,6 +85,7 @@ export async function inspectClaudeConfiguration(project:string,env:NodeJS.Proce
         result.baselineConfounders.push('External '+label+' Claude hooks remain inherited; individual external hooks cannot be disabled by a session overlay.');
       }
     }
+    if(data.env&&typeof data.env==='object')result.headroomRoutingConflict??=claudeHeadroomConflict(data.env,env);
     if(data.env&&Object.keys(data.env).some(k=>/BASE_URL|PROVIDER|BEDROCK|VERTEX/.test(k)))result.baselineConfounders.push('External Claude routing settings may affect billing and baseline results.');
     if(headroomRoute(data.env?.ANTHROPIC_BASE_URL,env)||headroomRoute(env.ANTHROPIC_BASE_URL,env))result.externalHeadroomRouting=true;
   }catch{result.digests[label]='unsafe';result.errors.push('Cannot safely inspect Claude '+label+' settings.');}

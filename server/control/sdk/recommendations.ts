@@ -1,3 +1,4 @@
+import { toolCompatibility } from '../compatibility.js';
 import type { BillingMode, ControlAgent, Detection, OptimizerManifest } from '../types.js';
 import { TOOL_IDS } from '../types.js';
 
@@ -5,10 +6,8 @@ export function recommendStack(catalog:OptimizerManifest[],detections:Detection[
   const reasons:{id:string;reason:string}[]=[],omitted:{id:string;reason:string}[]=[],tools:string[]=[];const seen=new Set<string>();
   const candidates=catalog.filter(m=>m.mode==='managed').sort((a,b)=>Number(!TOOL_IDS.includes(a.id as never))-Number(!TOOL_IDS.includes(b.id as never))||a.id.localeCompare(b.id));
   for(const m of candidates){const d=detections.find(d=>d.id===m.id),layers=m.layers.join(' ').toLowerCase(),registered=!TOOL_IDS.includes(m.id as never);
-    let reason='';if(!m.agents.includes(context.agent)||!m.platforms.includes(process.platform))reason='Unsupported agent or operating system.';
-    else if(!d?.installed||!d.compatible)reason='Installation or validation is unavailable.';
-    else if(m.id==='headroom'&&(context.billing!=='api'||d.serviceHealthy!==true))reason='Requires Codex API billing and a verified existing proxy.';
-    else if(m.billingModes&&!m.billingModes.includes(context.billing))reason='Billing mode is outside the adapter contract.';
+    let reason=toolCompatibility(m,d,{...context,platform:process.platform})??'';
+    if(reason){/* keep the shared compatibility diagnosis */}
     else if(registered&&context.intent!=='experimental')reason='Registered protocol support is verified; resource benefit is unmeasured. Opt in through Custom or Experimental.';
     else if(['minimal','terminal'].includes(context.intent)&&!(/output/.test(layers)&&m.mechanism==='hook'))reason='This intent prefers the reviewed terminal rewrite path.';
     else if(context.intent==='navigation'&&!/semantic|navigation|retrieval/.test(layers))reason='This intent focuses on symbol-aware navigation.';

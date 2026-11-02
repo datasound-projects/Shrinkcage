@@ -8,7 +8,7 @@ Shrinkcage uses `codex login status` and, only when its exact help contract is p
 
 `--billing subscription|api|hybrid|unknown` is an explicit user declaration, labeled as such. It does not log in, switch accounts or change billing. A declaration that contradicts a known native authentication mode blocks launch. A native status describes authentication, not an invoice: subscription extra usage, gateways and account policies may require an explicit hybrid/unknown declaration.
 
-Subscription sessions need no API key or mandatory gateway. Headroom's reviewed managed route is restricted to Codex API sessions. Existing external routing is disclosed separately.
+Subscription sessions need no API key or mandatory gateway. Headroom can compress supported Codex and Claude subscription/API sessions through an existing local proxy without changing native authentication. Reduced subscription tokens do not automatically equal cash savings. Existing external routing is disclosed separately.
 
 ## Native token categories
 
