@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.8.0
+
+- Simplify the shared page hierarchy, button sizing, typography, silver/graphite surfaces, tables and mobile spacing.
+- Use four numbered launch choices; put Project and Agent side by side on wide screens and keep the single-column mobile flow.
+- Move profile tool policies, accounting reference rules and registry snapshot metadata into labeled keyboard-accessible disclosures. Keep critical errors, compatibility, permissions and approvals visible.
+- Make Settings a compact list, shorten routine instructions and provide a friendly unreadable-library recovery message.
+- Preserve all backend behavior and existing controls; extend browser coverage to all 18 pages at desktop/mobile widths and keyboard access to collapsed policy controls.
+
+
 ## 1.7.0
 
 - Discover installed terminal emulators using macOS bundle metadata, Windows registration/PATH and Linux desktop/PATH checks.

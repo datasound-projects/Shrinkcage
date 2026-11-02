@@ -1,0 +1,36 @@
+/* Shared reading hierarchy. Functional controls and errors remain visible. */
+body{background:linear-gradient(125deg,#59616b,#414a56) fixed;line-height:1.55}
+.dark body{background:linear-gradient(125deg,#222831,#171c23) fixed}
+.page-heading>.eyebrow,.page-heading>div>.eyebrow,.section-heading>div>.eyebrow{display:none}
+main{padding-top:24px;max-width:1280px}
+.page-heading{margin-bottom:18px;gap:16px}.page-heading h1{font-size:25px;letter-spacing:-.65px}.page-heading p{margin-top:5px;color:var(--muted);line-height:1.6}
+.topbar{height:60px}.brand{margin-bottom:34px}.sidebar nav{gap:4px}
+.context-navigation{margin-bottom:20px;gap:4px;flex-wrap:wrap}.context-navigation a{font-size:12px;padding:7px 11px}
+.panel{border-radius:12px;box-shadow:0 3px 14px #1118200a}.section-heading{padding-top:18px;padding-bottom:16px;gap:12px}.section-heading h2{font-size:17px;letter-spacing:-.25px}
+.button{font-size:12px;min-height:34px;padding:7px 12px;border-radius:7px;line-height:1.4}.button.primary{font-weight:600}
+button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.control-intro,.registry-top>p{font-size:12px;line-height:1.65;color:var(--muted);margin-top:0;margin-bottom:16px}
+.control-help{line-height:1.65}.control-error,[role=alert]{line-height:1.6}
+details>summary{font-size:12px;line-height:1.6;cursor:pointer;min-height:32px;padding-top:6px;padding-bottom:6px}
+details[open]>summary{color:var(--text);margin-bottom:8px}
+.clarity-details{border-top:1px solid var(--line);padding:9px 0;margin:12px 0}.clarity-details>p{margin:8px 0}
+.simple-setup-body{max-width:850px;padding-top:4px;padding-bottom:22px}.simple-setup .setup-step{padding-top:20px;padding-bottom:20px;gap:14px}.simple-setup .setup-step h3{font-size:14px;margin-bottom:10px}.simple-setup .step-number{width:23px;height:23px;font-size:11px}
+.simple-setup .simple-tool{padding:12px 14px;min-height:62px;border-radius:9px}.simple-setup .simple-tool-list{gap:7px}.simple-setup .simple-tool small{line-height:1.5}.simple-review{padding-top:18px;margin-top:8px}
+.terminal-picker{padding:17px 0;border-top:1px solid var(--line)}.terminal-picker>p{margin-bottom:0}.terminal-picker select{min-width:165px}.terminal-picker .checkbox-label{margin-top:10px;font-size:12px}
+.simple-plan{padding:18px}.simple-plan h3{font-size:16px}.plan-approval{padding:12px 0;line-height:1.6}.plan-preview pre,.registry-modal pre{max-height:240px;overflow:auto}
+.registry-cards{gap:12px}.registry-card{padding:17px;border-radius:10px;box-shadow:none}.registry-card-title h3{font-size:15px}.registry-monogram{width:30px;height:30px;font-size:10px}.registry-card>p{font-size:12px;line-height:1.65;min-height:0}.registry-status{gap:8px;flex-wrap:wrap;font-size:11px}.registry-card-actions{gap:7px;margin-top:14px}.registry-footer{font-size:11px}
+.profile-tools>div{padding:12px}.profile-policy{margin-top:5px}.profile-policy>.profile-required{margin:8px 0}.profile-policy .profile-priority{max-width:210px;margin:8px 0}.profile-policy .plugin-options{margin-top:10px}
+.managed-facts{gap:12px}.managed-activity{max-height:180px;overflow:auto}.managed-detail h4{font-size:13px;margin-top:18px}.managed-list button{padding:12px}.project-rail{padding:15px}.project-buttons button{padding:10px 11px}
+.control-table th,.data-table th{font-size:11px;font-weight:550;color:var(--muted)}.control-table td,.data-table td{font-size:12px;padding-top:11px;padding-bottom:11px}
+.connector-card{box-shadow:none}.connector-card p{line-height:1.65}.recommendation-list article{padding:14px;border-radius:9px}.recommendation-list article strong{font-size:12px}
+.help-guide{line-height:1.7}.help-guide details{margin-bottom:8px}.help-guide li+li{margin-top:9px}
+@media(max-width:700px){main{padding:20px 16px 0}.page-heading h1{font-size:23px}.topbar{height:56px}.context-navigation{gap:3px}.context-navigation a{padding:7px 9px}.simple-setup-body{padding-left:16px;padding-right:16px}.simple-setup .setup-step{gap:10px;padding-top:17px;padding-bottom:17px}.terminal-picker select{max-width:100%}.section-heading{flex-wrap:wrap}.registry-card-actions{flex-wrap:wrap}.button{min-height:36px}.profile-workspace{gap:16px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+/* Fit the normal launch decisions together without shrinking the text. */
+@media(min-width:1100px){.simple-setup .simple-setup-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;max-width:none;margin:0;padding:0 22px 20px}.simple-setup .setup-step:nth-child(n+3),.simple-setup .simple-review,.simple-setup .simple-plan,.simple-setup-body>p[role=alert]{grid-column:1/-1}.simple-setup .simple-tool-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.simple-setup .simple-tool{align-items:center;min-width:0}.simple-setup .simple-tool>span{min-width:0}.simple-setup .setup-step{margin:0}.simple-setup .project-select-row{display:flex;flex-wrap:wrap}.simple-setup .project-select-row>select{flex:1;min-width:150px}.simple-setup .project-select-row>.native-project-picker{min-width:0}}
+#settings.control-section>details{margin:0 20px;padding:8px 0;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;background:transparent}
+#settings.control-section>details>summary{padding:7px 0;min-height:36px}
+.registry-card-actions>.button:first-child{background:transparent;border-color:transparent}
+#cost-usage .section-heading>div{flex-shrink:0}
+#cost-usage .section-heading>select{width:auto;min-width:165px;max-width:100%;margin-left:auto}
+.profile-guided-tools{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}.profile-guided-tools>div{padding:12px 0;border-bottom:1px solid var(--line)}
