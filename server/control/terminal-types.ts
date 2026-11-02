@@ -7,6 +7,7 @@ export interface TerminalLaunch {
   id:string; fingerprint:string; target:TerminalTarget; createdAt:string; expiresAt:number;
   state:'opening'|'waiting'|'claimed'|'started'|'exited'|'failed';
   sessionId:string|null; error:string|null; preview:LaunchPreview; scriptHash?:string;
+  emulator?:string;
   herdr?:{name:string;configHash:string;startHash:string};
 }
 export type PublicTerminalLaunch = Pick<TerminalLaunch,'id'|'fingerprint'|'target'|'createdAt'|'expiresAt'|'state'|'sessionId'|'error'>;

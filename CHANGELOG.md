@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0
+
+- Discover installed terminal emulators using macOS bundle metadata, Windows registration/PATH and Linux desktop/PATH checks.
+- Choose a terminal before session review, auto-select a single app, remember a local default or override it for one session, and rescan without editing configuration.
+- Keep Herdr persistence and reviewed optimizer launch files inside the chosen emulator. Revalidate removed apps and preserve idempotent launch retries.
+- Add terminal-adapter contracts, SQLite preference, discovery/argument/failure tests and an end-to-end selection/preference check. Native discovery found Terminal, iTerm2 and Ghostty; emulator GUI launch coverage remains explicitly limited.
+
+
 ## 1.6.1
 
 - Enable Headroom for supported Codex and Claude subscription/API sessions; remove the incorrect API-only UI, registry and planner restrictions.

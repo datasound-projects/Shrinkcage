@@ -1,3 +1,4 @@
+import {chosenTerminal} from './TerminalPicker';
 import { chooseSession } from './projectChoice';
 import { useEffect,useRef,useState } from 'react';
 import type { OptimizationPlan } from '../../server/control/types';
@@ -6,7 +7,7 @@ import type { PublicTerminalLaunch,TerminalChoice } from '../../server/control/t
 const BASE='/api/control/v1';
 type Props={plan:OptimizationPlan;reviewed:boolean;mutate:(path:string,value:unknown)=>Promise<any>;refresh:(force?:boolean)=>Promise<void>};
 export function TerminalStart({plan,reviewed,mutate,refresh}:Props){
-  const request=useRef({id:crypto.randomUUID(),settled:false});
+  const request=useRef({id:crypto.randomUUID(),settled:false,emulator:undefined as string|undefined,attempted:false});
   const [choices,setChoices]=useState<TerminalChoice[]>([]),[launch,setLaunch]=useState<PublicTerminalLaunch|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[discovery,setDiscovery]=useState(0);
   useEffect(()=>{const abort=new AbortController();void fetch(BASE+'/terminals',{signal:abort.signal,cache:'no-store'}).then(async r=>{if(!r.ok)throw Error(r.status===404?'Restart the Shrinkcage dashboard to enable Start session. Copy command remains available.':'Terminal discovery is unavailable. Copy command remains available.');return r.json();}).then(setChoices).catch(e=>{if(!abort.signal.aborted)setError(e.message);});return()=>abort.abort();},[discovery]);
   const waiting=!!launch&&['opening','waiting','claimed'].includes(launch.state);
@@ -20,7 +21,7 @@ export function TerminalStart({plan,reviewed,mutate,refresh}:Props){
   const target='herdr' as const;
   const selected=choices.find(c=>c.id==='herdr');
   useEffect(()=>{if(!launch?.sessionId)return;chooseSession(launch.sessionId,plan.project.id);window.location.hash='managed';},[launch?.sessionId]);
-  const start=async()=>{if(request.current.settled)request.current={id:crypto.randomUUID(),settled:false};setBusy(true);setError('');try{const value=await mutate('/terminal-launches',{fingerprint:plan.fingerprint,target,requestId:request.current.id,approved:true});request.current.settled=true;setLaunch(value);if(value.sessionId)void refresh();}catch(e){setError(e instanceof TypeError||e instanceof Error&&e.name==='AbortError'?'The launch was not confirmed. Check Herdr, then retry safely.':e instanceof Error?e.message:'Herdr could not open.');}finally{setBusy(false);}};
+  const start=async()=>{if(request.current.settled)request.current={id:crypto.randomUUID(),settled:false,emulator:undefined,attempted:false};if(!request.current.attempted){request.current.emulator=chosenTerminal();request.current.attempted=true;}setBusy(true);setError('');try{const value=await mutate('/terminal-launches',{fingerprint:plan.fingerprint,target,emulator:request.current.emulator,requestId:request.current.id,approved:true});request.current.settled=true;setLaunch(value);if(value.sessionId)void refresh();}catch(e){setError(e instanceof TypeError||e instanceof Error&&e.name==='AbortError'?'The launch was not confirmed. Check Herdr, then retry safely.':e instanceof Error?e.message:'Herdr could not open.');}finally{setBusy(false);}};
   return <div className="terminal-start" aria-label="Start reviewed session">
     <div className="terminal-start-controls"><button className="button primary" disabled={!plan.ready||!reviewed||busy||waiting||!selected?.available} onClick={()=>void start()}>{busy?'Opening Herdr…':waiting?'Waiting for Herdr…':'Open in Herdr'}</button><span className="control-help">A persistent Herdr session with its own configuration.</span></div>
     <p className="control-help">{selected?.available?'Herdr keeps the session running when you detach. Your native sign-in and permissions still apply.':selected?.reason??'Checking Herdr availability…'}</p>

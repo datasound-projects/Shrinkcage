@@ -8,6 +8,7 @@ export default function HowToUse(){
           <li><strong>Add your project.</strong> Open <a href="#managed">Projects</a>. Click Add project. Choose its folder in the native dialog. You only need to add it once.</li>
           <li><strong>Create a session.</strong> Select the project, then New session. Choose Codex or a supported Claude Code installation. Keep billing on Detect automatically if unsure. Your login stays the same.</li>
           <li><strong>Choose tools.</strong> Compatible tools are recommended. Switch each tool on or off for this session. Advanced tool settings holds extra options.</li>
+          <li><strong>Choose your terminal.</strong> Pick an installed terminal if several are listed. Remember my choice saves a default; turn it off for a one-session override. Use Rescan terminals after installing an app.</li>
           <li><strong>Review and open.</strong> Click Review session. Read the changes and notices. Fix any blocked items. Approve the configuration, then Open in Herdr.</li>
           <li><strong>Work and come back.</strong> Type your task in Herdr. To detach, press Ctrl+B, then Q. In Projects, select the session and click Reopen in Herdr to return to that same running session.</li>
         </ol>
