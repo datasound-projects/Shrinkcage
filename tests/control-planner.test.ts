@@ -51,9 +51,11 @@ test('T04 complete plans cover activation, evidence, scoped ownership and finger
   const changed=config();changed.digests['user/config.toml']='modified';assert.notEqual(p.fingerprint,plan(balanced(),changed).fingerprint);
 });
 test('T04 unavailable optional tools have explicit omissions; required or blocked fallback fails',()=>{
-  const variants=[{id:'rtk',patch:{installed:false}},{id:'serena',patch:{compatible:false}},{id:'headroom',patch:{serviceHealthy:false}}] as const;
+  const variants=[{id:'rtk',patch:{installed:false}},{id:'serena',patch:{compatible:false}}] as const;
   for(const v of variants){const tools=detections().map(d=>d.id===v.id?{...d,...v.patch}:d);const p=plan(balanced(),config(),tools);assert.equal(p.ready,true);assert.equal(p.omitted[0].id,v.id);const required=balanced();required.profile.tools.forEach(t=>{if(t.id===v.id)t.required=true;});assert.equal(plan(required,config(),tools).ready,false);const blocked=balanced();blocked.profile.fallback='block';assert.equal(plan(blocked,config(),tools).ready,false);}
   const facts=config();facts.rtkHooks=0;assert.equal(plan(balanced(),facts).isolation?.rtk,'process');assert.ok(plan(balanced(),facts).tools.includes('rtk'));
+  const offline=detections().map(d=>d.id==='headroom'?{...d,serviceHealthy:false}:d);assert.ok(plan(balanced(),config(),offline).tools.includes('headroom'));
+  const claudeProfile=balanced();claudeProfile.profile.agent='claude';const claude=composePlan({profile:claudeProfile,project,agent:{...agent,id:'claude',version:'2.1.118'},config:config(),detections:offline,platform:process.platform,billing:{mode:'api',nativeMode:'api',source:'native-status',checkedAt:'2026-01-01',limitations:[]}});assert.ok(claude.omitted.some(t=>t.id==='headroom'));
   assert.equal(plan(DEFAULT_PROFILES.find(p=>p.profile.id==='memory')!).omitted.some(t=>t.id==='codemem'),true);
 });
 test('T04 agent, OS and dependency restrictions do not get misreported as active',()=>{

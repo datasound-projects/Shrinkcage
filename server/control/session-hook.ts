@@ -4,6 +4,10 @@ import { linkNativeSession } from './session-telemetry.js';
 
 export async function handleHook(event:string,input:unknown,env:NodeJS.ProcessEnv=process.env):Promise<unknown|null> {
   await linkNativeSession(input,env).catch(()=>{});
+if(event==='observe'&&input&&typeof input==='object'&&(input as {hook_event_name?:unknown}).hook_event_name==='SessionStart'){
+const context=await runtimeContext(env);
+if(context?.tools.includes('rtk'))return {hookSpecificOutput:{hookEventName:'SessionStart',additionalContext:'RTK is enabled for this session. Prefix supported shell commands with `rtk` (for example `rtk git status`) unless already prefixed. Run unsupported commands normally. Native approvals and sandbox rules still apply.'}};
+}
   if(event!=='rtk'||!input||typeof input!=='object')return null;
   const context=await runtimeContext(env);if(!context?.tools.includes('rtk'))return null;
   const binary=await executable('rtk',env);if(!binary||binary.fingerprint!==context.fingerprints.rtk)return null;

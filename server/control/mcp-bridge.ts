@@ -13,7 +13,7 @@ export async function bridge(tool:string){
   let binary:{command:string;prefix:string[];fingerprint:string},args:string[],env:NodeJS.ProcessEnv,plugin:RuntimePlugin|null=null;
   if(tool==='serena'||tool==='headroom'){
     const found=await executable(tool);if(!found||context.fingerprints[tool]&&context.fingerprints[tool]!==found.fingerprint)throw Error('Managed MCP executable is missing or changed.');binary=found;
-    args=tool==='serena'?['start-mcp-server','--project-from-cwd','--context='+(process.env.SHRINKCAGE_AGENT==='claude'?'claude-code':'codex'),'--transport','stdio','--enable-web-dashboard','false','--open-web-dashboard','false','--enable-gui-log-window','false']:['mcp','serve','--proxy-url',`http://127.0.0.1:${headroomPort()}`,'--transport','stdio'];
+    args=tool==='serena'?['start-mcp-server','--project-from-cwd','--context='+(process.env.SHRINKCAGE_AGENT==='claude'?'claude-code':'codex'),'--agent-interface','tools','--transport','stdio','--enable-web-dashboard','false','--open-web-dashboard','false','--enable-gui-log-window','false']:['mcp','serve','--proxy-url',`http://127.0.0.1:${headroomPort()}`,'--transport','stdio'];
     env={...process.env,HEADROOM_BEACON:'off',HEADROOM_OFFLINE:'1',DO_NOT_TRACK:'1'};
   }else{
     if(!/^[a-z][a-z0-9-]{0,47}$/.test(tool))throw Error('Unknown runtime optimizer.');

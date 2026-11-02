@@ -19,9 +19,9 @@ test('Headroom subscription/API capability checks agree across both agents, reco
     for(const agent of ['codex','claude'] as const)for(const billing of ['subscription','api','unknown','hybrid'] as const){
       assert.equal(toolCompatibility(manifest,detection,{agent,billing}),null);
       assert.equal(builtinValidation(manifest,detection,{agent,billing}).canActivate,true);
-      const offline=builtinValidation(manifest,{...detection,serviceHealthy:false},{agent,billing});assert.equal(offline.canActivate,false);assert.equal(offline.gates.find(g=>g.id===2)?.status,'passed');assert.equal(offline.gates.find(g=>g.id===4)?.status,'failed');
+      const offline=builtinValidation(manifest,{...detection,serviceHealthy:false},{agent,billing});assert.equal(offline.canActivate,agent==='codex');assert.equal(offline.gates.find(g=>g.id===2)?.status,'passed');assert.equal(offline.gates.find(g=>g.id===4)?.status,agent==='codex'?'passed':'failed');
       assert.ok(recommendStack([manifest],[detection],{agent,billing,intent:'balanced'}).tools.includes('headroom'));
-      assert.match(toolCompatibility(manifest,{...detection,serviceHealthy:false},{agent,billing})!,/offline/);
+      if(agent==='codex')assert.equal(toolCompatibility(manifest,{...detection,serviceHealthy:false},{agent,billing}),null);else assert.match(toolCompatibility(manifest,{...detection,serviceHealthy:false},{agent,billing})!,/offline/);
       assert.match(toolCompatibility(manifest,{...detection,compressionEnabled:false},{agent,billing})!,/compression disabled/);
     }
     const partial=await detectTool('headroom',{...f.env,FIXTURE_HEADROOM_NO_WRAPPER:'1'});
@@ -61,12 +61,13 @@ test('Claude cloud/gateway conflicts block only Headroom and preserve existing f
   }finally{await f.close();}
 });
 
-test('disabled compression and a proxy failure are revalidated before a session can start',async()=>{
+test('disabled compression is blocked, while Codex wrapper can recover an offline proxy',async()=>{
   const f=await fakeWorkspace(),plane=new ControlPlane({env:f.env,dataDir:f.data,home:f.home});try{
     const options={billing:'api' as const,tools:['headroom']},input={agent:'codex',profile:'custom',project:{path:f.project},options,args:[]};
     const {plan}=await plane.plan('codex','custom',{path:f.project},options);assert.equal(plan.ready,true);
     f.headroomState.optimize=false;await assert.rejects(runManaged(plane,{...input,approved:plan.fingerprint},{quiet:true}),/compression disabled/);assert.equal(plane.store.sessionCount(),0);
-    f.headroomState.optimize=true;f.headroomState.healthy=false;await assert.rejects(runManaged(plane,{...input,approved:plan.fingerprint},{quiet:true}),/offline/);assert.equal(plane.store.sessionCount(),0);
+    f.headroomState.optimize=true;f.headroomState.healthy=false;const recovered=await plane.plan('codex','custom',{path:f.project},options);assert.ok(recovered.plan.tools.includes('headroom'));assert.equal(await runManaged(plane,{...input,approved:recovered.plan.fingerprint},{quiet:true}),0);assert.equal(plane.store.sessionCount(),1);
+    const claude=await plane.plan('claude','custom',{path:f.project},options);assert.equal(claude.plan.ready,false);assert.ok(claude.plan.errors.some(error=>/offline/.test(error)));
   }finally{plane.close();await f.close();}
 });
 

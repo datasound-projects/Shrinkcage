@@ -9,6 +9,28 @@ import { runtimeEntry, type ReceiptEvent } from './runtime.js';
 import type { Detection,Evidence,ManagedSession,MetricObservation,OptimizationPlan,OptimizerManifest,ToolId } from './types.js';
 import type { RuntimePlugin } from './sdk/types.js';
 
+const SERENA_READ_TOOLS = [
+  'initial_instructions',
+  'get_current_config',
+  'serena_info',
+  'read_file',
+  'list_dir',
+  'find_file',
+  'search_for_pattern',
+  'get_symbols_overview',
+  'find_symbol',
+  'find_referencing_symbols',
+  'find_implementations',
+  'find_declaration',
+  'get_diagnostics_for_file',
+  'get_diagnostics_for_symbol',
+  'list_memories',
+  'read_memory',
+] as const;
+
+const HEADROOM_TOOLS = ['headroom_compress', 'headroom_retrieve', 'headroom_stats'] as const;
+const RTK_SESSION_INSTRUCTIONS = 'RTK is enabled for this session. Prefix supported shell commands with `rtk` (for example `rtk git status`, `rtk test`, and `rtk rg pattern`) unless already prefixed. Run unsupported commands normally. Do not change native approvals or sandbox policy.';
+
 export interface AppliedResources {tool:ToolId;overrides:string[];wrapper:boolean;scope:'process'|'project';ownedProcessIds:never[]}
 export interface AdapterContext {plane:ControlPlane;plan:OptimizationPlan;approved:string;session:ManagedSession;events:ReceiptEvent[];plugins?:Record<string,RuntimePlugin>}
 export interface OptimizerAdapter {
@@ -31,10 +53,15 @@ export function adapter(id:ToolId,plane?:ControlPlane,snapshot?:RuntimePlugin):O
       if(!context.plan.ready||context.approved!==context.plan.fingerprint||!context.plan.tools.includes(id))throw new ControlError('The approved plan does not authorize this adapter.','approval',403);
       const errors=optimizerRegistry.validate(id,context.plan.agent,context.plan.billing?.mode??'unknown');if(errors.length)throw new ControlError(errors.join(' '));
       const overrides:string[]=[];
+if(id==='rtk'&&context.plan.agent==='codex')overrides.push('--config',`developer_instructions=${JSON.stringify(RTK_SESSION_INSTRUCTIONS)}`);
       if(context.plan.agent==='codex'&&context.plan.shadowedMcp.includes(id as 'serena'|'headroom'))overrides.push('--config',`mcp_servers.${id}.enabled=false`);
       if(id!=='rtk'){
         const entry=runtimeEntry('mcp-bridge'),name=id==='serena'?'shrinkcage_serena':'shrinkcage_headroom';
-        const config:Record<string,unknown>={command:entry.command,args:[...entry.args,'--tool',id],cwd:context.plane.store.projectPath(context.plan.project.id),env_vars:['SHRINKCAGE_DATA_DIR','SHRINKCAGE_SESSION_ID','SHRINKCAGE_SESSION_TOKEN','SHRINKCAGE_HEADROOM_PORT','SHRINKCAGE_AGENT'],startup_timeout_sec:25,tool_timeout_sec:context.plan.toolConfig?.[id]?.timeoutSeconds??60,required:context.plan.requiredTools?.includes(id)??false};
+const config:Record<string,unknown>={command:entry.command,args:[...entry.args,'--tool',id],cwd:context.plane.store.projectPath(context.plan.project.id),env_vars:['SHRINKCAGE_DATA_DIR','SHRINKCAGE_SESSION_ID','SHRINKCAGE_SESSION_TOKEN','SHRINKCAGE_HEADROOM_PORT','SHRINKCAGE_AGENT'],startup_timeout_sec:25,tool_timeout_sec:context.plan.toolConfig?.[id]?.timeoutSeconds??60,required:context.plan.requiredTools?.includes(id)??false};
+if(context.plan.agent==='codex'){
+config.enabled_tools=id==='serena'?SERENA_READ_TOOLS:HEADROOM_TOOLS;
+config.default_tools_approval_mode='approve';
+}
         if(context.plan.agent==='claude')overrides.push('--mcp-config',JSON.stringify({mcpServers:{[name]:{command:entry.command,args:config.args}}}));
         else for(const [key,value] of Object.entries(config))overrides.push('--config',`mcp_servers.${name}.${key}=${JSON.stringify(value)}`);
       }

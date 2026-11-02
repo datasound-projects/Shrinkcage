@@ -77,6 +77,8 @@ test('process hooks use agent-specific native rewrite contracts without changing
     const plane=new ControlPlane({dataDir:f.data,env:f.env,home:f.home});const p=await plane.plan('codex','lean',{path:f.project});plane.close();
     assert.equal(p.plan.ready,true,p.plan.errors.join('; '));const id='b'.repeat(36),token='c'.repeat(64);runtime=await prepareRuntime(f.data,id,token,['rtk'],p.plan.binaryFingerprints);
     const env={...f.env,SHRINKCAGE_SESSION_ID:id,SHRINKCAGE_SESSION_TOKEN:token,SHRINKCAGE_AGENT:'codex',SHRINKCAGE_PROJECT_ROOT:f.project};
+    const start=await handleHook('observe',{hook_event_name:'SessionStart'},env) as {hookSpecificOutput:{additionalContext:string}};
+    assert.match(start.hookSpecificOutput.additionalContext,/Prefix supported shell commands with `rtk`/);
     const output=await handleHook('rtk',{hook_event_name:'PreToolUse',tool_name:'Bash',permission_mode:'default',tool_input:{command:'git status',secret:'PRIVATE_PAYLOAD'}},env) as {hookSpecificOutput:Record<string,unknown>};
     assert.deepEqual(output,{hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'allow',updatedInput:{command:'rtk git status',secret:'PRIVATE_PAYLOAD'}}});
     assert.equal(sessionHookOverrides('codex',true).some(s=>s.includes('PermissionRequest')),false);const claude=await handleHook('rtk',{tool_input:{command:'git status',timeout:1234}},{...env,SHRINKCAGE_AGENT:'claude'}) as {hookSpecificOutput:Record<string,unknown>};assert.equal(Object.hasOwn(claude.hookSpecificOutput,'permissionDecision'),false);assert.deepEqual(claude.hookSpecificOutput.updatedInput,{command:'rtk git status',timeout:1234});assert.equal((await receiptEvents(runtime.path)).length,2);

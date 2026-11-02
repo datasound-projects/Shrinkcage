@@ -18,3 +18,4 @@ snapshots.json
 .DS_Store
 coverage/
 test-results/
+.serena/

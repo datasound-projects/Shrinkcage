@@ -12,6 +12,7 @@ import { pluginConfiguration } from './sdk/manifest.js';
 import type { RuntimePlugin } from './sdk/types.js';
 import { ControlError } from './schema.js';
 import { prepareRuntime,receiptEvents,runtimeEntry, type ReceiptEvent } from './runtime.js';
+import { prepareSerenaProject } from './serena.js';
 import type { LaunchOptions,ManagedSession,MetricObservation,OptimizationPlan } from './types.js';
 
 
@@ -68,11 +69,16 @@ export async function updateEvidence(session:ManagedSession,context:Omit<Adapter
 export async function runManaged(plane:ControlPlane,input:{agent:string;profile:string;project:{path?:string;id?:string};approved:string;args:string[];options?:LaunchOptions},options:{snapshot?:()=>Promise<MetricObservation[]>;quiet?:boolean;onCreated?:(session:ManagedSession)=>void}={}):Promise<number>{
   const {plan,projectPath}=await plane.plan(input.agent,input.profile,input.project,input.options);
   if(!plan.ready)throw new ControlError('Plan is blocked: '+plan.errors.join(' '));
-  if(plan.fingerprint!==input.approved)throw new ControlError('Run approval is stale. Preview and approve the current plan fingerprint.','approval',409);
+if(plan.fingerprint!==input.approved)throw new ControlError(`Run approval is stale (expected ${plan.fingerprint.slice(0,8)}, received ${input.approved.slice(0,8)}). Preview and approve the current plan fingerprint.`,'approval',409);
   validateAgentArguments(input.args,plan);
   const program=plan.tools.includes('headroom')&&plan.agent==='codex'?'headroom':plan.agent,binary=await executable(program as 'codex'|'claude'|'headroom',plane.env);if(!binary)throw new ControlError('The approved executable is no longer available.');
   const pluginSnapshots:Record<string,RuntimePlugin>={};
   for(const name of [plan.agent,...plan.tools] as const){if(![...TOOL_IDS,'codex','claude','gemini'].includes(name)){const plugin=plane.store.plugin(name);if(!plugin||plugin.binding.fingerprint!==plan.binaryFingerprints[name]||!await verifyBinding(plugin.binding))throw new ControlError('Plugin changed after approval. Review it again.');pluginSnapshots[name]={manifest:plugin.manifest,binding:plugin.binding,configuration:pluginConfiguration(plugin.manifest,plan.toolConfig?.[name]??{})};continue;}const current=await executable(name as Parameters<typeof executable>[0],plane.env);if(!current||current.fingerprint!==plan.binaryFingerprints[name])throw new ControlError('An executable changed after approval. Preview the plan again.','approval',409);}
+if(plan.tools.includes('serena')){
+const serena=await executable('serena',plane.env);
+if(!serena)throw new ControlError('Serena is no longer available. Preview the stack again.');
+await prepareSerenaProject(serena,projectPath,plane.env);
+}
   const id=randomUUID(),token=randomBytes(32).toString('hex'),now=new Date().toISOString();
   const session:ManagedSession={schemaVersion:1,id,origin:'managed',project:plan.project,agent:plan.agent,agentVersion:plan.agentVersion,profile:plan.profile,profileRevision:plan.profileRevision,planFingerprint:plan.fingerprint,status:'preflight',startedAt:now,endedAt:null,heartbeatAt:now,exitCode:null,signal:null,plannedTools:plan.tools,appliedTools:[],evidence:plan.evidence.map(e=>({...e,status:'configured',scope:e.tool==='rtk'&&plan.isolation?.rtk==='external-inherited'?'shared':'process',confidence:'inconclusive'})),diagnostics:[...plan.warnings,'Running means an owned launch process; tool connections and usage require separate receipt evidence.'],elapsedMs:null,toolActivity:[],metrics:[],isolation:plan.isolation,inheritedConfiguration:plan.inheritedConfiguration,billing:plan.billing,model:plan.model,toolConfig:plan.toolConfig,usage:null};
   const runtime=await prepareRuntime(plane.canonicalDataDir,id,token,plan.tools,plan.binaryFingerprints,pluginSnapshots);let created=false;const applied:AppliedResources[]=[];let heartbeat:ReturnType<typeof setInterval>|undefined,beating=false;const started=Date.now();let lastSignal:NodeJS.Signals|null=null;
@@ -84,7 +90,7 @@ export async function runManaged(plane:ControlPlane,input:{agent:string;profile:
     const hooks=sessionHookOverrides(plan.agent,plan.tools.includes('rtk')&&plan.isolation?.rtk==='process');
     if(plan.agent==='claude')appliedOverrides=mergeClaudeOverrides([...hooks,...appliedOverrides]);
     const agentArgs=[...(plan.agent==='codex'?['--no-daemon',...hooks]:['--session-id',id]),...(plan.suppressedMcp??[]).flatMap(name=>['--config','mcp_servers.'+name+'.enabled=false']),...appliedOverrides,...(plan.model?['--model',plan.model]:[]),...input.args];
-    const args=program==='headroom'?['wrap','codex','--no-proxy','--no-mcp','--code-memory','none','--port',String(plan.headroomPort),'--',...agentArgs]:agentArgs;
+    const args=program==='headroom'?['wrap','codex','--no-mcp','--code-memory','none','--port',String(plan.headroomPort),'--',...agentArgs]:agentArgs;
     session.metrics=await (options.snapshot??(()=>sharedObservations(plane.env)))();
     session.status='starting';plane.store.updateSession(session,token);
     // Windows libuv kills non-detached children when the parent's job closes.

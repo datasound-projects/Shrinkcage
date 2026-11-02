@@ -60,7 +60,10 @@ console.log(JSON.stringify({summary:{total_commands:2,total_input:100,total_outp
 `;
 const SERENA=COMMON+`
 if(args.includes('--version')){console.log('Serena 2.1.0');process.exit(0);}
-if(args.includes('--help')){console.log('--project-from-cwd --context --transport --enable-web-dashboard --open-web-dashboard --enable-gui-log-window');process.exit(0);}
+if(args.includes('--help')){console.log('--project-from-cwd --context --agent-interface --transport --enable-web-dashboard --open-web-dashboard --enable-gui-log-window');process.exit(0);}
+if(args[0]==='project'&&args[1]==='create'){const at=args.indexOf('--language'),language=at>=0?args[at+1]:'';mkdirSync(join(process.cwd(),'.serena'),{recursive:true});writeFileSync(join(process.cwd(),'.serena','project.yml'),'project_name: fixture\\nlanguage_servers: ['+language+']\\n');process.exit(0);}
+if(args[0]==='project'&&args[1]==='health-check')process.exit(process.env.FIXTURE_SERENA_UNHEALTHY?'7':'0');
+if(process.env.FIXTURE_SERENA_CAPTURE)writeFileSync(process.env.FIXTURE_SERENA_CAPTURE,JSON.stringify(args));
 if(process.env.FIXTURE_SERENA_CRASH)process.exit(8);
 ${MCP}`;
 const HEADROOM=COMMON+`
@@ -68,12 +71,14 @@ if(args.includes('--version')){console.log('headroom, version '+(process.env.FIX
 if(args.includes('--help')){console.log(args[0]==='mcp'?(process.env.FIXTURE_HEADROOM_NO_MCP?'unsupported':'--proxy-url --transport'):(process.env.FIXTURE_HEADROOM_NO_WRAPPER?'unsupported':'--no-proxy --no-mcp --code-memory --port'));process.exit(0);}
 if(args[0]==='mcp'){${MCP}}else{
 if(process.env.FIXTURE_WRAPPER_FAIL)process.exit(9);
-if(!args.includes('--no-proxy')||!args.includes('--no-mcp')||!args.includes('--code-memory'))process.exit(10);
+if(!args.includes('--no-mcp')||!args.includes('--code-memory'))process.exit(10);
+if(process.env.FIXTURE_WRAPPER_CAPTURE)writeFileSync(process.env.FIXTURE_WRAPPER_CAPTURE,JSON.stringify(args));
 const pass=args.slice(args.indexOf('--')+1),port=args[args.indexOf('--port')+1],url='http://127.0.0.1:'+port+'/v1';const c=spawn(process.execPath,[join(root,args[1]+'.mjs'),'--config','openai_base_url='+JSON.stringify(url),...pass],{stdio:'inherit',env:{...process.env,OPENAI_BASE_URL:url},shell:false});
 process.on('SIGTERM',()=>c.kill('SIGTERM'));process.on('SIGINT',()=>c.kill('SIGINT'));c.on('close',(code,signal)=>{process.exitCode=signal?1:code??1;});}
 `;
 export async function fakeWorkspace(){
   const temporary=await mkdtemp(join(tmpdir(),'shrinkcage-control-'));const root=await realpath(temporary);const bin=join(root,'bin'),project=join(root,'project'),home=join(root,'home'),data=join(root,'data');await Promise.all([bin,project,home,join(home,'.codex')].map(p=>mkdir(p,{recursive:true})));
+await writeFile(join(project,'package.json'),'{}');
   for(const [name,code] of Object.entries({codex:CODEX,claude:CLAUDE,rtk:RTK,serena:SERENA,headroom:HEADROOM})){
     await writeFile(join(bin,name+'.mjs'),code);
     if(process.platform==='win32')await writeFile(join(bin,name+'.cmd'),'@echo off\r\nnode "%~dp0'+name+'.mjs" %*\r\n');

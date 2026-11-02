@@ -77,7 +77,7 @@ export async function detectTool(id:BuiltinToolId,env:NodeJS.ProcessEnv=process.
   try{
     const safeEnv={...env,HEADROOM_BEACON:'off',DO_NOT_TRACK:'1',HEADROOM_OFFLINE:'1'};
     const args=id==='rtk'?['hook','--help']:id==='headroom'?['wrap','codex','--help']:['start-mcp-server','--help'];const [result,help]=await Promise.all([runBounded(binary,['--version'],{env:safeEnv}),runBounded(binary,args,{env:safeEnv})]);d.version=versionOf(result.stdout);d.compatible=result.code===0&&versionCompatible(d.version,manifest.minVersion,manifest.maxMajor);
-    const flags=id==='rtk'?['codex']:id==='headroom'?['--no-proxy','--no-mcp','--code-memory']:['--project-from-cwd','--context','--transport','--enable-web-dashboard'];
+const flags=id==='rtk'?['codex']:id==='headroom'?['--no-proxy','--no-mcp','--code-memory']:['--project-from-cwd','--context','--agent-interface','--transport','--enable-web-dashboard'];
     d.compatible=d.compatible&&help.code===0&&flags.every(flag=>help.stdout.includes(flag));
     if(id==='headroom'){
       const mcp=await runBounded(binary,['mcp','serve','--help'],{env:safeEnv});

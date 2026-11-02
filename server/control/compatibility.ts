@@ -8,7 +8,9 @@ export function toolCompatibility(manifest:OptimizerManifest,detection:Detection
   if(context.architecture&&manifest.architectures&&!manifest.architectures.includes('any')&&!manifest.architectures.includes(context.architecture))return 'Not supported on this machine architecture.';
   if(!detection?.installed)return 'Not installed. Install the tool, then recheck.';
   if(!detection.compatible||detection.agentSupport?.[context.agent]===false)return 'The installed tool does not expose the required interfaces for this agent. Recheck or use a supported version.';
-  if(context.checkService!==false&&manifest.id==='headroom'&&detection.serviceHealthy!==true)return 'Headroom proxy is offline or unverified. Start its local proxy, then recheck.';
-  if(context.checkService!==false&&manifest.id==='headroom'&&detection.compressionEnabled===false)return 'Headroom is running with compression disabled. Enable optimization in Headroom, then recheck.';
+// Codex uses Headroom's reviewed wrapper, which owns proxy startup. Claude's
+// endpoint adapter can only attach to an already verified service.
+if(context.checkService!==false&&manifest.id==='headroom'&&context.agent==='claude'&&detection.serviceHealthy!==true)return 'Headroom proxy is offline or unverified. Start its local proxy, then recheck.';
+if(context.checkService!==false&&manifest.id==='headroom'&&detection.serviceHealthy===true&&detection.compressionEnabled===false)return 'Headroom is running with compression disabled. Enable optimization in Headroom, then recheck.';
   return null;
 }

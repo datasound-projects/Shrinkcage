@@ -29,12 +29,13 @@ export function validatePluginContext(plugin:RegisteredPlugin,context:{agent:Con
 }
 export function builtinValidation(manifest:OptimizerManifest,detection:Detection|undefined,context:{agent:ControlAgent;billing:BillingMode;agentVersion?:string|null;agentCompatible?:boolean;evidence?:Evidence}):ValidationReport {
   const executable=manifest.mode==='managed',reason=toolCompatibility(manifest,detection,{...context,platform:process.platform,checkService:false}),compatible=context.agentCompatible!==false&&!reason;
+  const serviceReason=manifest.id==='headroom'?toolCompatibility(manifest,detection,{...context,platform:process.platform}):null;
   const e=context.evidence;
   return report(manifest.id,detection?.version??null,[
     gate(1,detection?.installed?'passed':'pending','native-interface',[detection?.installed?'Installed fixed-name CLI found.':'Install separately and recheck; nothing is downloaded automatically.']),
     gate(2,compatible?'passed':detection?.installed?'failed':'pending','native-interface',[compatible?'Reviewed version/interface and requested context match.':reason??'The coding CLI’s native interfaces are not supported.']),
     gate(3,executable?'passed':'pending','boundary-check',['Reviewed built-in code, fixed argument arrays, native permission policy and owned child cleanup.']),
-    gate(4,manifest.id==='headroom'&&(detection?.serviceHealthy!==true||detection.compressionEnabled===false)?'failed':executable?'passed':'pending','boundary-check',[manifest.id==='headroom'?(toolCompatibility(manifest,detection,{...context,platform:process.platform})??'Verified local proxy; the launch plan still checks project routing and conflicts.'):'A project-specific launch plan still checks inherited hooks, routing, dependencies and conflicts.']),
+    gate(4,serviceReason?'failed':executable?'passed':'pending','boundary-check',[manifest.id==='headroom'?(serviceReason??(context.agent==='codex'?'Reviewed wrapper can start or reuse the loopback proxy; the launch plan still checks project routing and conflicts.':'Verified local proxy; the launch plan still checks project routing and conflicts.')):'A project-specific launch plan still checks inherited hooks, routing, dependencies and conflicts.']),
     gate(5,executable&&detection?.compatible?'passed':'pending','fixture-conformance',['Release conformance tests exercise the reviewed adapter with isolated fixtures. This is distinct from an authenticated model-backed test.']),
     gate(6,e?.status==='failed'?'failed':e?.status==='usage_observed'?'passed':'pending',e?'session-observation':'unavailable',[e?e.source:'Awaiting owned native session activation/use evidence.']),
     gate(7,'unavailable','unavailable',['Task quality and savings need a qualified paired comparison; installation is not effectiveness.'])

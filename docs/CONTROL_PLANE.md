@@ -23,9 +23,11 @@ Every launch has a random ID, an ownership token whose hash is stored, an owned 
 
 - **Codex:** embedded `--no-daemon` mode and documented process `--config` overrides. New RTK hooks need no project-file setup. Known external Serena/Headroom MCP aliases may be suppressed or replaced for this process only, with explicit plan warnings.
 - **Claude:** a fresh `--session-id`, inline `--settings` hooks and a strict process MCP configuration. External MCP servers are omitted in this new process, including an empty baseline; native permission settings, inherited hooks and administrator restrictions still apply. Serena uses its native `claude-code` context.
-- **RTK:** a reviewed native `rtk hook AGENT` subprocess rewrites input. Codex's PreToolUse contract requires `allow` with a rewrite; its result is not a PermissionRequest approval. Claude rewrites omit `allow`, preserving its permission evaluation. Original tool-input fields remain intact.
+- **RTK:** a reviewed native `rtk hook AGENT` subprocess rewrites input when the native hook is trusted. Codex also receives process-scoped developer guidance to prefix supported commands with `rtk`, so no global AGENTS/config edit is needed. Codex's PreToolUse contract requires `allow` for a rewrite; this is not a PermissionRequest bypass. Claude rewrites omit `allow`, preserving its permission evaluation.
 - **Serena:** a dedicated stdio server/relay belongs to the session. Project indexes or language-server dependencies remain Serena's behavior and can be shared on disk; process configuration isolation is not filesystem sandboxing.
-- **Headroom:** supported Codex and Claude Code sessions can reuse a verified loopback proxy with native subscription or API authentication. Codex uses `wrap codex --no-proxy --no-mcp --code-memory none`; Claude uses process-only endpoint settings merged with RTK/usage hooks and a dedicated retrieval MCP. No global authentication or project settings are changed. Shared proxy hot settings are not updated by a session. Retrieval activity is observable; compression totals remain shared.
+- **Headroom:** Codex uses `wrap codex --no-mcp --code-memory none`; the reviewed wrapper starts or reuses its loopback proxy and stays outside Codex. Claude uses process-only endpoint settings with an already verified proxy. Both retain native subscription/API authentication and use a dedicated retrieval MCP. No global authentication or project settings are changed. Retrieval activity is observable; compression totals remain shared.
+
+For the full Codex stack, launch order is: validate binaries and Serena project health → compose RTK guidance/hook and the Serena/Headroom MCP relays → start Headroom wrapper → Headroom launches Codex → Codex starts the session-owned relays. A failed preflight prevents Codex from starting; global configuration is not rewritten.
 
 Native hook trust and managed policies are never bypassed. Unsupported interfaces block required tools or produce explicit optional omissions. A checkbox is intent, not proof of installation or execution.
 
@@ -54,7 +56,7 @@ Custom profiles retain required/optional tools, priority and explicit/block fall
 
 ## Evidence and accounting
 
-Configured → connected → observed use are separate states. MCP receipts require matched initialization and successful responses. RTK receipts prove a native hook rewrite, not a successful terminal command or financial savings. Only safe names, counts and observation timestamps are retained.
+Configured → connected → observed use are separate states. MCP receipts require matched initialization and successful responses. RTK receipts prove a native hook rewrite. A direct `rtk ...` command produced from process-scoped guidance can work without a receipt and therefore remains conservatively marked configured unless separately observed. Only safe names, counts and observation timestamps are retained.
 
 Passive SessionStart/SessionEnd hooks correlate a native ID, approved transcript location and project to the owned launch. Existing bounded metadata parsers extract usage without retaining task payloads. Source formats are version-dependent; unavailable, stale or sampled records cannot establish a complete cost. [Accounting rules](ACCOUNTING.md) define overlapping token categories, billing evidence and price estimates.
 

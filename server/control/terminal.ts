@@ -83,7 +83,7 @@ export class TerminalLauncher {
     const dir=join(root,value.id);await mkdir(dir,{mode:0o700});if(await realpath(dir)!==dir||(await lstat(dir)).isSymbolicLink())throw new ControlError('The owned launch directory changed. Review and start again.');await chmod(dir,0o700);
     // The compiled package and the source tests have different parent depths.
     const entry=fileURLToPath(new URL(import.meta.url.includes('/dist-server/')?'../../../bin/shrinkcage.mjs':'../../bin/shrinkcage.mjs',import.meta.url));
-    const args=[process.execPath,entry,'sessions','start-ticket',value.id];
+const args=[process.execPath,'--disable-warning=ExperimentalWarning',entry,'sessions','start-ticket',value.id];
     const file=join(dir,process.platform==='win32'?'start.ps1':'start.command');
     const ending=value.target==='herdr'?'unset HERDR_AGENT\nexec /bin/sh -i\n':'exit "$result"\n';
     const body=process.platform==='win32'?`$env:SHRINKCAGE_DATA_DIR = ${powershellQuote(this.plane.canonicalDataDir)}\nSet-Location -LiteralPath ${powershellQuote(projectPath)}\n& ${args.map(powershellQuote).join(' ')}\nWrite-Host ('Shrinkcage exited with code ' + $LASTEXITCODE)\n`:`#!/bin/sh\ncd ${shellQuote(projectPath)} || exit 1\nexport SHRINKCAGE_DATA_DIR=${shellQuote(this.plane.canonicalDataDir)}\n${args.map(shellQuote).join(' ')}\nresult=$?\nprintf '\\nShrinkcage session finished (exit %s). You can close this window.\\n' "$result"\n${ending}`;
