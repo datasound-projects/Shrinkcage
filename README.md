@@ -4,98 +4,79 @@
 
 **Local-first token and cost optimization for AI coding sessions.**
 
-Choose a stack for each Codex or Claude Code session. See what actually ran, understand usage and compare results without guessing at savings.
+Choose tools per Codex or Claude Code session. Track their activity and reported usage.
 
 [![Build and tests](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml/badge.svg)](https://github.com/datasound-projects/Shrinkcage/actions/workflows/ci.yml)
 
-[Download ZIP](https://github.com/datasound-projects/Shrinkcage/archive/refs/heads/main.zip) · [Setup help](docs/SETUP.md) · [Supported tools](docs/COMPATIBILITY.md) · [Report a problem](https://github.com/datasound-projects/Shrinkcage/issues)
+[Download ZIP](https://github.com/datasound-projects/Shrinkcage/archive/refs/heads/main.zip) · [Setup help](docs/SETUP.md) · [Supported tools](docs/COMPATIBILITY.md) · [Report an issue](https://github.com/datasound-projects/Shrinkcage/issues)
 
-## Download, install and open
+## Install and open
 
-1. Install [Node.js 22.13 or newer](https://nodejs.org/en/download), including npm.
-2. [Download Shrinkcage](https://github.com/datasound-projects/Shrinkcage/archive/refs/heads/main.zip) and extract it.
-3. Open a terminal in that folder and run:
+1. Install [Node.js 22.13+ with npm](https://nodejs.org/en/download).
+2. Download the ZIP above and extract it.
+3. Open a terminal in the extracted folder and run:
 
    ```sh
    node scripts/start.mjs
    ```
 
-This installs dependencies, builds the app and opens **[localhost:8790](http://localhost:8790)**. Keep the terminal open; press **Ctrl+C** to stop. macOS/Linux users can run `./start.sh`; Windows users can use `start.cmd` or `.\start.ps1`.
+This installs dependencies, builds the app and opens **[localhost:8790](http://localhost:8790)**. Keep the terminal open. Press **Ctrl+C** to stop.
 
-No Docker, cloud service or Shrinkcage account is needed. Install and sign in to your coding CLI separately. Optional tools can be absent.
+Alternative launchers: `./start.sh` on macOS/Linux; `start.cmd` on Windows. No Docker, cloud service or Shrinkcage account is required.
 
-![Shrinkcage silver workspace — illustrative test data](docs/images/overview.png)
+## Start a session
 
-## Start your first session
+1. **Projects → Add project:** choose your project folder.
+2. **New session:** choose Codex or Claude Code and billing mode. Use **Detect automatically** if unsure.
+3. Choose tools and a detected terminal. **Remember my choice** saves your terminal preference.
+4. Click **Review session**, approve the changes, then **Open in Herdr**.
 
-1. Open **Projects** and click **Add project**. Choose its folder in the native dialog.
-2. Select the project and click **New session**. Pick Codex or Claude Code.
-3. Keep the recommended tools or switch them on/off for this session. Billing can stay on **Detect automatically**.
-4. Choose a detected **Terminal** (a single terminal is selected automatically). Leave **Remember my choice** on to save a default, or turn it off for this session only. Use **Rescan terminals** after installing or removing an app.
-5. Click **Review session**, check the changes and approve. Click **Open in Herdr**.
-6. Work in Herdr. Detach with **Ctrl+B, then Q**. Choose **Reopen in Herdr** in Shrinkcage to return to the same running session.
+Use **Reopen in Herdr** to return to a running session. To detach, press **Ctrl+B, then Q**.
 
-Browser launches always use a separate Herdr session. Install a reviewed **Herdr 0.9.5+ in the 0.9 family** on macOS/Linux first; Shrinkcage does not install it automatically. A stopped server or computer restart does not keep live agent processes running. Windows Herdr launching remains unsupported. Native sign-in, project trust and approvals still apply. [Terminal support and safeguards →](docs/TERMINALS.md)
+Sign in through your CLI. Browser launches require **Herdr 0.9.5+ (0.9.x)** on macOS/Linux; Windows browser launching is unsupported. Detaching preserves sessions; computer restarts do not. [Terminal setup](docs/TERMINALS.md) · [CLI commands](docs/SETUP.md)
 
-- **Overview:** recent sessions and separate optimizer contributions.
-- **Projects:** choose a folder, see its sessions, pick tools for each and reopen Herdr. Profiles and saved history are available as secondary views.
-- **Optimizers:** a reviewed registry, local installations and validation details.
-- **Cost & usage:** reported tokens, qualified price estimates and controlled comparisons.
-- **Settings:** local discovery, billing, prices, privacy and diagnostics.
+## What each screen does
 
-Open **How to use** at the bottom of the sidebar for the in-app manual. It covers each feature in short steps, with links to the right screens. On phones, the guide link sits below the main navigation. The guide also works when metric sources are offline.
+Secondary screens appear in tabs under their main sidebar section.
 
-One screen is shown at a time. Context tabs hold secondary tools; drafts survive navigation. Choose silver or graphite appearance. Existing deep links still work, even when a metrics source is offline.
-
-![Projects, sessions and independent tool choices — illustrative test data](docs/images/projects.png)
-
-[See the session launch screen](docs/images/start-session.png).
-
-## Launch from your terminal
-
-From the Shrinkcage folder:
-
-```sh
-# Codex with a ChatGPT subscription
-node bin/shrinkcage.mjs run codex --billing subscription --profile balanced --project "/path/to/project"
-
-# Claude Code with API billing
-node bin/shrinkcage.mjs run claude --billing api --profile lean --project "/path/to/project"
-```
-
-Replace the path with your project folder, for example `C:\Projects\my-app` on Windows. Review the plan and enter its first eight fingerprint characters when prompted. The CLI opens in that terminal. **A billing label does not change your login.** Codex API billing and Claude subscriptions are also supported.
-
-Each launch has its own ID, tools and configuration, including concurrent sessions in the same project. Stack edits prepare the next launch; they do not reconfigure a running agent. Existing external hooks can limit isolation, and the plan explains that limitation. Native sandbox, trust and approval rules remain in place.
-
-For a global `shrinkcage` command, run `npm run package`, then `npm install -g ./release/shrinkcage-monitor-1.8.0.tgz`. ZIP users can keep using `node bin/shrinkcage.mjs`. [Full CLI reference →](docs/SETUP.md)
-
-## What works
-
-| Integration | Support |
+| Screen | Use it to |
 |---|---|
-| Codex CLI | Managed sessions, native usage and subscription/API billing awareness |
-| Modern Claude Code | Managed sessions, native usage and subscription/API billing awareness; version 2.1+ and required interfaces are checked |
-| RTK | Session-scoped output-rewrite hooks; shared output-token estimates |
-| Serena | Session-owned MCP with observed calls; shared dashboard monitoring |
-| Headroom | Codex and Claude subscription/API sessions through an existing verified local proxy; shared compression metrics |
-| SDK v2 MCP plugins | Approved local stdio servers, typed settings, protocol checks and owned removal |
-| Gemini CLI | Read-only saved-session discovery and usage |
-| Other registry tools | Scoped catalog review and guidance; automatic activation requires a reviewed adapter |
+| Projects & sessions | Add folders, find sessions and reopen Herdr. |
+| New session | Pick an agent, tools and terminal; review before launching. |
+| Profiles | Save reusable tool setups and advanced settings. |
+| Saved history | Browse recorded CLI sessions by project, agent or model. |
+| Overview | See recent sessions and separate optimizer activity. |
+| Optimizer Registry | Find tools, check support and add reviewed adapters. |
+| Installed tools | Inspect local tools, configuration and health. |
+| Validation | Check compatibility and find setup fixes. |
+| Headroom | View reported context compression and proxy history. |
+| RTK | View estimated output reductions and command history. |
+| Serena | See tool calls, activity logs and dashboard availability. |
+| Cost & usage | Read tokens, reported charges and qualified cost estimates. |
+| Shared analytics | Explore shared optimizer history. |
+| Experiments | Compare completed baseline and optimized runs of the same task. |
+| Settings | Manage billing, prices, privacy and local preferences. |
+| Connectors | Choose where Shrinkcage reads existing CLI session records. |
+| System health | Check services, ports and connection errors. |
+| How to use | Follow short instructions with links to each screen. |
 
-**Installed, configured and observed are different states.** The registry ships offline with ten reviewed entries. Other discoveries stay in a review queue; Token Savior remains under review. Unknown interfaces stay **Integration required**. Nothing downloads and runs repository code or silently updates executables. [Registry guide](docs/REGISTRY.md) · [Plugin SDK](docs/PLUGINS.md)
+## Support and accuracy
 
-## Read the numbers correctly
+**Codex and supported Claude Code:** managed subscription/API sessions. **Gemini CLI:** read-only history. **Headroom, RTK, Serena and approved SDK MCP plugins:** managed adapters. Other tools may be guided-only. [Compatibility](docs/COMPATIBILITY.md) · [Plugin SDK](docs/PLUGINS.md)
 
-Headroom and RTK savings can overlap and are never added together. Serena activity is not converted into fictional savings. Missing measurements stay N/A.
+Each managed launch has separate tool settings. Changes require a new launch; inherited external hooks may limit isolation. A selected tool is not proof it ran.
 
-Configure exact-model prices in Settings to see estimates. API spending and subscription API-equivalent value remain separate; fewer subscription tokens do not automatically mean money saved. Summaries and budget alerts count a repeated native usage scope once. Conflicting billing declarations withhold monetary attribution, and stale/overlapping usage cannot qualify a before/after experiment. [Accounting details →](docs/ACCOUNTING.md)
+Savings can overlap and are never added together. Subscription API-equivalent estimates are not charges. Missing values stay **N/A**. [Accounting rules](docs/ACCOUNTING.md)
 
-## Privacy, testing and help
+Stored metadata excludes prompts, code, tool outputs and OAuth credentials. Native CLI authentication and approvals remain unchanged. [Privacy](docs/PRIVACY.md) · [Testing and limits](docs/VALIDATION.md)
 
-Shrinkcage stores allowlisted metadata, not prompts, source code, tool arguments/results or OAuth credentials. Authentication stays with the native CLI. Approved local programs retain OS permissions; a private validation workspace is not an OS sandbox.
+<details>
+<summary>Screenshot · illustrative test data</summary>
 
-Tests cover supported agent/billing/tool combinations, real isolated subprocess launches, accounting, cleanup, failure recovery and browser workflows. CI runs macOS, Windows and Linux with Node 22/24. Native interface and MCP checks are distinct from authenticated model-backed quality/savings tests; universal compatibility or perfect optimization is not claimed. Screenshots use labeled test data. [Executed checks and limits →](docs/VALIDATION.md)
+![Shrinkcage workspace](docs/images/overview.png)
 
-[Setup & troubleshooting](docs/SETUP.md) · [Architecture](docs/CONTROL_PLANE.md) · [Privacy](docs/PRIVACY.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)
+[Projects and sessions](docs/images/projects.png) · [Session setup](docs/images/start-session.png)
 
-The interface keeps everyday actions visible. Expand **Policy & settings** for profile rules, **Coverage, budget & accounting rules** for usage context, and **Catalog source & last sync** for registry provenance. Launch errors, compatibility blockers and approval controls remain visible. All existing tools, advanced settings, history and diagnostics remain available.
+</details>
+
+[Architecture](docs/CONTROL_PLANE.md) · [Registry guide](docs/REGISTRY.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [MIT license](LICENSE)
