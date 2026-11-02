@@ -1,6 +1,6 @@
 {
   "name": "shrinkcage-monitor",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -74,7 +74,8 @@
     "docs/REGISTRY.md",
     "docs/images/registry.png",
     "docs/TERMINALS.md",
-    "docs/images/start-session.png"
+    "docs/images/start-session.png",
+    "docs/images/projects.png"
   ],
   "repository": {
     "type": "git",

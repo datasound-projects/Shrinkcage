@@ -11,6 +11,8 @@ import { accountSession, inspectBilling, recommendations } from './accounting.js
 import { CATALOG } from './catalog.js';
 import { ControlStore } from './store.js';
 import { ControlError, fingerprint, parseBenchmark, parseManifest, parseLaunchOptions } from './schema.js';
+import { sensitiveLocation } from './sdk/binding.js';
+import { pickProjectDirectory } from './project-picker.js';
 import { projectDirectory } from './paths.js';
 import { detectAgent, detectTool } from './probe.js';
 import { inspectConfiguration, inspectClaudeConfiguration } from './config.js';
@@ -18,8 +20,13 @@ import { composePlan } from './planner.js';
 import { applySetup, previewSetup, previewUndo, undoSetup } from './transactions.js';
 import type { BuiltinToolId, LaunchOptions, AgentDetection, Benchmark, ControlState, Detection, OptimizationPlan, ProjectRef, SavedProfile, ToolId } from './types.js';
 
-export interface CoreOptions { dataDir?:string; env?:NodeJS.ProcessEnv; home?:string; registry?:RegistryOptions; terminal?:TerminalOptions }
+export interface CoreOptions { dataDir?:string; env?:NodeJS.ProcessEnv; home?:string; registry?:RegistryOptions; terminal?:TerminalOptions; pickDirectory?:(env:NodeJS.ProcessEnv)=>Promise<string|null> }
 export class ControlPlane {
+  private pickingProject=false;
+  async pickProject(){
+    if(this.pickingProject)throw new ControlError('A folder picker is already open. Finish or cancel it first.','busy',409);
+    this.pickingProject=true;try{const path=await (this.options.pickDirectory??pickProjectDirectory)(this.env);if(path===null)return {cancelled:true};if(typeof path!=='string'||!isAbsolute(path)||path.length>4096||/[\0\r\n]/.test(path)||sensitiveLocation(path))throw new ControlError('Choose an absolute project folder outside credential directories.');return {cancelled:false,project:(await this.project({path})).ref};}finally{this.pickingProject=false;}
+  }
   private terminalService?:TerminalLauncher;
   get terminals(){return this.terminalService??=new TerminalLauncher(this,this.options.terminal);}
   private registryService?:RegistryService;
@@ -48,7 +55,7 @@ export class ControlPlane {
   }
   async state(token=''):Promise<ControlState>{
     await this.discover();const store=this.store;const guided=this.guidedEntries();const accounting=store.accounting();const sessions=store.sessions().map(s=>({...s,accounting:accountSession(s,accounting)}));
-    return {schemaVersion:1,version:VERSION,platform:process.platform,updatedAt:new Date().toISOString(),catalog:this.catalog(),detections:this.cache!.detections,agents:this.cache!.agents,profiles:store.profiles(),projects:store.projects(),sessions:sessions.slice(0,50),benchmarks:store.comparisons(),receipts:store.receipts().map(({id,tool,projectId,status,createdAt,version})=>({id,tool,projectId,status,createdAt,version})),diagnostics:[...guided.rejected.map(id=>'Guided entry '+id+' conflicts with a registered/reserved identity or no longer validates. Metadata is preserved; use extension remove ID to remove only that entry.'),'Reviewed browser launches open a native terminal using a one-time plan approval. Arbitrary commands and process termination are not exposed.','A managed launch process is distinct from a confirmed optimizer connection.','Installations are guided: no package manager, remote script or agent-global setup runs automatically.','The dashboard shows the latest 50 managed records. CLI metadata queries are bounded to the latest 200.'],csrfToken:token,accounting,plugins:store.plugins().map(publicPlugin),candidates:store.candidates(),onboarding:store.onboarding(),validations:await this.validationReports('codex','unknown'),validationHistory:store.validationHistory(),managedCount:store.sessionCount(),activeManagedCount:store.activeCount(),recommendations:recommendations(sessions,accounting)};
+    return {schemaVersion:1,version:VERSION,platform:process.platform,updatedAt:new Date().toISOString(),catalog:this.catalog(),detections:this.cache!.detections,agents:this.cache!.agents,profiles:store.profiles(),projects:store.projects(),sessions:sessions.slice(0,50),herdrSessions:this.terminals.links(),benchmarks:store.comparisons(),receipts:store.receipts().map(({id,tool,projectId,status,createdAt,version})=>({id,tool,projectId,status,createdAt,version})),diagnostics:[...guided.rejected.map(id=>'Guided entry '+id+' conflicts with a registered/reserved identity or no longer validates. Metadata is preserved; use extension remove ID to remove only that entry.'),'Reviewed browser launches open a native terminal using a one-time plan approval. Arbitrary commands and process termination are not exposed.','A managed launch process is distinct from a confirmed optimizer connection.','Installations are guided: no package manager, remote script or agent-global setup runs automatically.','The dashboard shows the latest 50 managed records. CLI metadata queries are bounded to the latest 200.'],csrfToken:token,accounting,plugins:store.plugins().map(publicPlugin),candidates:store.candidates(),onboarding:store.onboarding(),validations:await this.validationReports('codex','unknown'),validationHistory:store.validationHistory(),managedCount:store.sessionCount(),activeManagedCount:store.activeCount(),recommendations:recommendations(sessions,accounting)};
   }
   async validationReports(agent:'codex'|'claude',billing:import('./types.js').BillingMode){
     await this.discover();const agentInfo=this.cache!.agents.find(a=>a.id===agent);const sessions=this.store.sessions(),active=sessions.filter(s=>['running','degraded','starting'].includes(s.status));

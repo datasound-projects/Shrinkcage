@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { StringDecoder } from 'node:string_decoder';
 import { constants } from 'node:fs';
 import { access, lstat, open, realpath, stat } from 'node:fs/promises';
 import { delimiter, dirname, extname, join } from 'node:path';
@@ -42,12 +43,13 @@ export function runBounded(binary:Executable,args:string[],options:{env?:NodeJS.
   return new Promise((resolve,reject)=>{
     if(options.signal?.aborted){reject(new ControlError('Probe cancelled.','cancelled'));return;}
     const child=spawn(binary.command,[...binary.prefix,...args],{cwd:options.cwd,env:options.env??process.env,shell:false,stdio:['pipe','pipe','pipe'],windowsHide:true});
+    const outDecoder=new StringDecoder('utf8'),errDecoder=new StringDecoder('utf8');
     let stdout='',stderr='',size=0,settled=false;let killTimer:ReturnType<typeof setTimeout>|undefined;
-    const finish=(error?:Error,code:number|null=null)=>{if(settled)return;settled=true;clearTimeout(timer);if(killTimer&&!error)clearTimeout(killTimer);options.signal?.removeEventListener('abort',cancel);if(error)reject(error);else resolve({code,stdout,stderr});};
+    const finish=(error?:Error,code:number|null=null)=>{if(settled)return;settled=true;clearTimeout(timer);if(killTimer&&!error)clearTimeout(killTimer);options.signal?.removeEventListener('abort',cancel);if(error)reject(error);else resolve({code,stdout:stdout+outDecoder.end(),stderr:stderr+errDecoder.end()});};
     const stop=(reason:string)=>{if(settled)return;child.kill('SIGTERM');killTimer=setTimeout(()=>{if(child.exitCode===null&&child.signalCode===null)child.kill('SIGKILL');},400);killTimer.unref();finish(new ControlError(reason));};
     const cancel=()=>stop('Probe cancelled.');options.signal?.addEventListener('abort',cancel,{once:true});
     const timer=setTimeout(()=>stop('Probe timed out.'),options.timeout??4000);
-    const collect=(chunk:Buffer,error:boolean)=>{size+=chunk.length;if(size>65536){stop('Probe output exceeded its limit.');return;}if(error)stderr+=chunk.toString('utf8');else stdout+=chunk.toString('utf8');};
+    const collect=(chunk:Buffer,error:boolean)=>{size+=chunk.length;if(size>65536){stop('Probe output exceeded its limit.');return;}if(error)stderr+=errDecoder.write(chunk);else stdout+=outDecoder.write(chunk);};
     child.stdout.on('data',chunk=>collect(chunk,false));child.stderr.on('data',chunk=>collect(chunk,true));child.on('error',()=>finish(new ControlError('Executable could not start.')));child.on('close',code=>{if(killTimer)clearTimeout(killTimer);finish(undefined,code);});
     child.stdin.on('error',()=>{});child.stdin.end(options.input??'');
   });

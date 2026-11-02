@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 — projects and persistent Herdr sessions
+
+- Open on Projects: add a folder, see its sessions and start another with independent tool choices.
+- Add native folder selection with cancellation, strict path validation and manual-path fallback.
+- Simplify launch to project, agent and tool switches, then a reviewed Herdr-only action. Keep advanced configuration available.
+- Retain owned Herdr launch bindings and add Reopen in Herdr for live sessions, with compatibility, identity and file-integrity checks. Reopening never launches a second agent; automatic restoration after server shutdown remains disabled.
+- Extend authorization, isolation, reconnect and browser tests. Preserve monitoring, accounting, profiles, registry and CLI entry points.
+
 ## Unreleased — in-app user guide
 
 - Add How to use at the bottom of the sidebar, with an accessible mobile link and a direct #help route.

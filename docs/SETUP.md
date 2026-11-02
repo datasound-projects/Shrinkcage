@@ -126,7 +126,7 @@ Unsupported installed agents remain visible with guidance, but launch previews a
 
 ## Start from the dashboard
 
-Open **Sessions → Start session**, select agent, billing, project and tools, then review and approve the plan. Choose **Terminal** or supported **Herdr** and click **Start session**. The launcher opens a new interactive CLI and reports its actual session ID. Saved profiles and pending session-stack previews provide the same action. Native login/trust/approvals still apply. [Terminal compatibility and recovery](TERMINALS.md).
+Open **Projects → Add project** and select a folder in the native dialog. Choose the project, click **New session**, select agent and tools, then **Review session**. Approve the changes and click **Open in Herdr**. Each session keeps its own tool choices. Use **Reopen in Herdr** to reattach to a running session without starting a second agent. Saved profiles and pending session-stack previews also open through Herdr. Native login/trust/approvals still apply. [Terminal compatibility and recovery](TERMINALS.md).
 
 ## In-app manual
 
