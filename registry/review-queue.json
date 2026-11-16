@@ -304,6 +304,2200 @@
       },
       "diagnostics": [],
       "previousVersion": null
+    },
+    {
+      "schemaVersion": 1,
+      "id": "headroom",
+      "entry": {
+        "id": "headroom",
+        "name": "headroom",
+        "summary": "Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 20% fewer tokens for coding agents, 60-95% fewer tokens for JSON, same answers. Library, proxy, MCP server.",
+        "category": "output-optimization",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "headroomlabs-ai/headroom",
+          "repositoryId": 1129940957,
+          "url": "https://github.com/headroomlabs-ai/headroom",
+          "documentation": "https://docs.headroomlabs.ai/docs",
+          "licenseUrl": "https://github.com/headroomlabs-ai/headroom/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/headroomlabs-ai/headroom/blob/main/README.md",
+          "readmeSha": "9752d595596e19aab55a9e920f6207ac28ac5fa1",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "Apache-2.0",
+          "family": "open-source",
+          "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+        },
+        "upstream": {
+          "version": "v0.44.0",
+          "releaseUrl": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.44.0",
+          "releasedAt": "2026-11-10T01:58:31Z",
+          "pushedAt": "2026-11-16T08:43:08Z",
+          "checkedAt": "2026-11-16T15:48:31.875Z",
+          "archived": false,
+          "issues": 322,
+          "ci": "https://github.com/headroomlabs-ai/headroom/actions/runs/43897839233",
+          "history": [
+            {
+              "version": "v0.44.0",
+              "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.44.0",
+              "publishedAt": "2026-11-10T01:58:31Z"
+            },
+            {
+              "version": "v0.43.1",
+              "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.43.1",
+              "publishedAt": "2026-11-05T19:34:01Z"
+            },
+            {
+              "version": "v0.43.0",
+              "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.43.0",
+              "publishedAt": "2026-11-05T18:36:48Z"
+            },
+            {
+              "version": "v0.42.0",
+              "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.42.0",
+              "publishedAt": "2026-10-26T23:03:53Z"
+            },
+            {
+              "version": "v0.41.0",
+              "url": "https://github.com/headroomlabs-ai/headroom/releases/tag/v0.41.0",
+              "publishedAt": "2026-10-14T22:46:09Z"
+            }
+          ]
+        },
+        "packages": [
+          {
+            "registry": "pypi",
+            "name": "headroom-ai",
+            "version": "0.44.0",
+            "url": "https://pypi.org/project/headroom-ai/",
+            "repositoryMatches": true,
+            "integrity": "2ab9d0c7ced1b94220597b2a48996693ebc0a61dd1ce38749709ae299b3f51da",
+            "checkedAt": "2026-11-16T15:48:27.608Z"
+          }
+        ],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 2,
+            "checkedAt": "2026-11-16T15:48:32.028Z",
+            "url": "https://github.com/headroomlabs-ai/headroom/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/headroomlabs-ai/headroom",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:31.368Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/headroomlabs-ai/headroom/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:31.644Z"
+            },
+            {
+              "label": "pypi package provenance: headroom-ai",
+              "url": "https://pypi.org/project/headroom-ai/",
+              "kind": "package",
+              "observedAt": "2026-11-16T15:48:27.608Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://docs.headroomlabs.ai/docs",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/headroomlabs-ai/headroom",
+                "https://github.com/headroomlabs-ai/headroom/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://docs.headroomlabs.ai/docs"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/headroomlabs-ai/headroom"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/headroomlabs-ai/headroom"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://docs.headroomlabs.ai/docs"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://docs.headroomlabs.ai/docs"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://docs.headroomlabs.ai/docs"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/headroomlabs-ai/headroom"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:31.071Z",
+      "lastCheckedAt": "2026-11-16T15:48:31.071Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "output-optimization",
+        "confidence": "heuristic",
+        "reasons": [
+          "Command or tool-output reduction is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": "v0.42.0",
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "rtk",
+      "entry": {
+        "id": "rtk",
+        "name": "rtk",
+        "summary": "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
+        "category": "output-optimization",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "rtk-ai/rtk",
+          "repositoryId": 1139971460,
+          "url": "https://github.com/rtk-ai/rtk",
+          "documentation": "https://www.rtk-ai.app/",
+          "licenseUrl": "https://github.com/rtk-ai/rtk/blob/develop/LICENSE",
+          "readmeUrl": "https://github.com/rtk-ai/rtk/blob/develop/README.md",
+          "readmeSha": "f61826987e43ed2f8d79681ffb1056f5ac3e1213",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "Apache-2.0",
+          "family": "open-source",
+          "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+        },
+        "upstream": {
+          "version": "v1.2.0",
+          "releaseUrl": "https://github.com/rtk-ai/rtk/releases/tag/v1.2.0",
+          "releasedAt": "2026-11-08T10:46:00Z",
+          "pushedAt": "2026-11-16T01:21:18Z",
+          "checkedAt": "2026-11-16T15:48:33.292Z",
+          "archived": false,
+          "issues": 1662,
+          "ci": "https://github.com/rtk-ai/rtk/actions/runs/43895366383",
+          "history": [
+            {
+              "version": "dev-1.2.1-rc.640",
+              "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.2.1-rc.640",
+              "publishedAt": "2026-11-16T01:21:18Z"
+            },
+            {
+              "version": "dev-1.2.1-rc.638",
+              "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.2.1-rc.638",
+              "publishedAt": "2026-11-16T00:23:27Z"
+            },
+            {
+              "version": "dev-1.2.1-rc.637",
+              "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.2.1-rc.637",
+              "publishedAt": "2026-11-12T03:13:33Z"
+            },
+            {
+              "version": "dev-1.2.1-rc.636",
+              "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.2.1-rc.636",
+              "publishedAt": "2026-11-12T02:55:32Z"
+            },
+            {
+              "version": "dev-1.2.1-rc.635",
+              "url": "https://github.com/rtk-ai/rtk/releases/tag/dev-1.2.1-rc.635",
+              "publishedAt": "2026-11-12T02:17:38Z"
+            }
+          ]
+        },
+        "packages": [],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 3,
+            "checkedAt": "2026-11-16T15:48:33.585Z",
+            "url": "https://github.com/rtk-ai/rtk/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/rtk-ai/rtk",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:32.878Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/rtk-ai/rtk/blob/develop/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:33.148Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://www.rtk-ai.app/",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/rtk-ai/rtk",
+                "https://github.com/rtk-ai/rtk/blob/develop/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://www.rtk-ai.app/"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/rtk-ai/rtk"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/rtk-ai/rtk"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://www.rtk-ai.app/"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://www.rtk-ai.app/"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://www.rtk-ai.app/"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/rtk-ai/rtk"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:32.484Z",
+      "lastCheckedAt": "2026-11-16T15:48:32.484Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "output-optimization",
+        "confidence": "heuristic",
+        "reasons": [
+          "Command or tool-output reduction is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": "v1.1.0",
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "serena",
+      "entry": {
+        "id": "serena",
+        "name": "serena",
+        "summary": "A powerful MCP toolkit for coding, providing semantic retrieval and editing capabilities  - the IDE for your agent",
+        "category": "semantic-retrieval",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "oraios/serena",
+          "repositoryId": 953683578,
+          "url": "https://github.com/oraios/serena",
+          "documentation": "https://oraios.github.io/serena",
+          "licenseUrl": "https://github.com/oraios/serena/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/oraios/serena/blob/main/README.md",
+          "readmeSha": "5965015ca4ea4b3192d1d7c147a8bc325a40feaa",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "GPL-3.0-or-later; MIT components",
+          "family": "open-source",
+          "notes": "The Serena application is GPL-3.0-or-later; SolidLSP is MIT. The upstream overview explains combined distributions."
+        },
+        "upstream": {
+          "version": "v2.1.0",
+          "releaseUrl": "https://github.com/oraios/serena/releases/tag/v2.1.0",
+          "releasedAt": "2026-10-19T17:30:43Z",
+          "pushedAt": "2026-11-15T16:01:19Z",
+          "checkedAt": "2026-11-16T15:48:34.638Z",
+          "archived": false,
+          "issues": 159,
+          "ci": "https://github.com/oraios/serena/actions/runs/43893816958",
+          "history": [
+            {
+              "version": "v2.1.0",
+              "url": "https://github.com/oraios/serena/releases/tag/v2.1.0",
+              "publishedAt": "2026-10-19T17:30:43Z"
+            },
+            {
+              "version": "v2.0.0",
+              "url": "https://github.com/oraios/serena/releases/tag/v2.0.0",
+              "publishedAt": "2026-10-13T12:25:45Z"
+            },
+            {
+              "version": "v1.7.0",
+              "url": "https://github.com/oraios/serena/releases/tag/v1.7.0",
+              "publishedAt": "2026-08-09T18:38:06Z"
+            },
+            {
+              "version": "v1.6.1",
+              "url": "https://github.com/oraios/serena/releases/tag/v1.6.1",
+              "publishedAt": "2026-07-21T15:40:54Z"
+            },
+            {
+              "version": "v1.6.0",
+              "url": "https://github.com/oraios/serena/releases/tag/v1.6.0",
+              "publishedAt": "2026-07-16T11:58:20Z"
+            }
+          ]
+        },
+        "packages": [
+          {
+            "registry": "pypi",
+            "name": "serena-agent",
+            "version": "2.1.0",
+            "url": "https://pypi.org/project/serena-agent/",
+            "repositoryMatches": true,
+            "integrity": "cc6ae542c39b4de5d98cdf35a4ceb0b551f316c5f22e9d0f0b0c5f35d6b95d87",
+            "checkedAt": "2026-11-16T15:48:27.629Z"
+          }
+        ],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 3,
+            "checkedAt": "2026-11-16T15:48:34.947Z",
+            "url": "https://github.com/oraios/serena/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/oraios/serena",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:34.240Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/oraios/serena/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:34.487Z"
+            },
+            {
+              "label": "pypi package provenance: serena-agent",
+              "url": "https://pypi.org/project/serena-agent/",
+              "kind": "package",
+              "observedAt": "2026-11-16T15:48:27.629Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://oraios.github.io/serena",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/oraios/serena",
+                "https://github.com/oraios/serena/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://oraios.github.io/serena"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/oraios/serena"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/oraios/serena"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://oraios.github.io/serena"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://oraios.github.io/serena"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://oraios.github.io/serena"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/oraios/serena"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:33.935Z",
+      "lastCheckedAt": "2026-11-16T15:48:33.935Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "semantic-retrieval",
+        "confidence": "heuristic",
+        "reasons": [
+          "Code-aware navigation or retrieval is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": "v2.1.0",
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "context-mode",
+      "entry": {
+        "id": "context-mode",
+        "name": "context-mode",
+        "summary": "Free, local plugin that keeps tool output out of your coding agent's context window. Sandbox and SQLite FTS5 search, 99% fewer bytes in context. Works with Claude Code, Codex, Pi, OMP, OpenCode, Gemini CLI, Copilot CLI and 4 more agents. Zero telemetry.",
+        "category": "output-optimization",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "mksglu/context-mode",
+          "repositoryId": 1164477708,
+          "url": "https://github.com/mksglu/context-mode",
+          "documentation": "https://contextmode.ai/",
+          "licenseUrl": "https://github.com/mksglu/context-mode/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/mksglu/context-mode/blob/main/README.md",
+          "readmeSha": "9f7ad59e3cf4d45d94508db908658006937e2715",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "Elastic-2.0",
+          "family": "source-available",
+          "notes": "Source-available license with restrictions. This is not labeled OSI open source; review the upstream license."
+        },
+        "upstream": {
+          "version": "v2.2.0",
+          "releaseUrl": "https://github.com/mksglu/context-mode/releases/tag/v2.2.0",
+          "releasedAt": "2026-11-14T15:54:28Z",
+          "pushedAt": "2026-11-16T05:50:47Z",
+          "checkedAt": "2026-11-16T15:48:35.981Z",
+          "archived": false,
+          "issues": 13,
+          "ci": "https://github.com/mksglu/context-mode/actions/runs/43819423873",
+          "history": [
+            {
+              "version": "v2.2.0",
+              "url": "https://github.com/mksglu/context-mode/releases/tag/v2.2.0",
+              "publishedAt": "2026-11-14T15:54:28Z"
+            },
+            {
+              "version": "v2.1.10",
+              "url": "https://github.com/mksglu/context-mode/releases/tag/v2.1.10",
+              "publishedAt": "2026-11-12T15:38:16Z"
+            },
+            {
+              "version": "v2.1.9",
+              "url": "https://github.com/mksglu/context-mode/releases/tag/v2.1.9",
+              "publishedAt": "2026-11-12T11:43:07Z"
+            },
+            {
+              "version": "v2.1.8",
+              "url": "https://github.com/mksglu/context-mode/releases/tag/v2.1.8",
+              "publishedAt": "2026-11-11T22:09:13Z"
+            },
+            {
+              "version": "v2.1.7",
+              "url": "https://github.com/mksglu/context-mode/releases/tag/v2.1.7",
+              "publishedAt": "2026-11-08T15:00:33Z"
+            }
+          ]
+        },
+        "packages": [
+          {
+            "registry": "npm",
+            "name": "context-mode",
+            "version": "2.2.0",
+            "url": "https://www.npmjs.com/package/context-mode",
+            "repositoryMatches": true,
+            "integrity": "sha512-IiBaAyw9bfhAH0Sc/hKUBEL/1AJhupOBHO4VlSSsvFagDFPWk9LpivyeKVW10fetMU50s94Fq9zYh4eIAhyRRg==",
+            "checkedAt": "2026-11-16T15:48:27.712Z"
+          }
+        ],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 0,
+            "checkedAt": "2026-11-16T15:48:36.113Z",
+            "url": "https://github.com/mksglu/context-mode/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/mksglu/context-mode",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:35.624Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/mksglu/context-mode/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:35.820Z"
+            },
+            {
+              "label": "npm package provenance: context-mode",
+              "url": "https://www.npmjs.com/package/context-mode",
+              "kind": "package",
+              "observedAt": "2026-11-16T15:48:27.712Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://contextmode.ai/",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/mksglu/context-mode",
+                "https://github.com/mksglu/context-mode/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://contextmode.ai/"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/mksglu/context-mode"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/mksglu/context-mode"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://contextmode.ai/"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://contextmode.ai/"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://contextmode.ai/"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/mksglu/context-mode"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:35.250Z",
+      "lastCheckedAt": "2026-11-16T15:48:35.250Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "output-optimization",
+        "confidence": "heuristic",
+        "reasons": [
+          "Command or tool-output reduction is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": "v1.0.169",
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "codemem",
+      "entry": {
+        "id": "codemem",
+        "name": "codemem",
+        "summary": "A lightweight persistent-memory companion for OpenCode & Claude",
+        "category": "semantic-retrieval",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "kunickiaj/codemem",
+          "repositoryId": 1133829259,
+          "url": "https://github.com/kunickiaj/codemem",
+          "documentation": "https://codemem.sh/",
+          "licenseUrl": "https://github.com/kunickiaj/codemem/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/kunickiaj/codemem/blob/main/README.md",
+          "readmeSha": "f0fea52a69c58c9d2c80d42baf4810561d0b5246",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "MIT",
+          "family": "open-source",
+          "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+        },
+        "upstream": {
+          "version": "v0.49.1",
+          "releaseUrl": "https://github.com/kunickiaj/codemem/releases/tag/v0.49.1",
+          "releasedAt": "2026-11-15T20:36:18Z",
+          "pushedAt": "2026-11-16T03:20:53Z",
+          "checkedAt": "2026-11-16T15:48:37.335Z",
+          "archived": false,
+          "issues": 6,
+          "ci": "https://github.com/kunickiaj/codemem/actions/runs/43841627175",
+          "history": [
+            {
+              "version": "v0.49.1",
+              "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.49.1",
+              "publishedAt": "2026-11-15T20:36:18Z"
+            },
+            {
+              "version": "v0.49.0",
+              "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.49.0",
+              "publishedAt": "2026-11-15T02:19:38Z"
+            },
+            {
+              "version": "v0.49.0-beta.7",
+              "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.49.0-beta.7",
+              "publishedAt": "2026-11-14T01:13:05Z"
+            },
+            {
+              "version": "v0.49.0-beta.5",
+              "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.49.0-beta.5",
+              "publishedAt": "2026-11-13T18:31:42Z"
+            },
+            {
+              "version": "v0.49.0-beta.4",
+              "url": "https://github.com/kunickiaj/codemem/releases/tag/v0.49.0-beta.4",
+              "publishedAt": "2026-11-13T01:02:05Z"
+            }
+          ]
+        },
+        "packages": [
+          {
+            "registry": "npm",
+            "name": "codemem",
+            "version": "0.49.1",
+            "url": "https://www.npmjs.com/package/codemem",
+            "repositoryMatches": true,
+            "integrity": "sha512-SG+S+osECxKKRe6I+rkBZMLKhqQ7WOV5v2o2Sa+h2tHuQA23iQW/MvvlnMI0wl1x2JbBpdt4D8OTSAN+ZsBRLQ==",
+            "checkedAt": "2026-11-16T15:48:27.824Z"
+          }
+        ],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 0,
+            "checkedAt": "2026-11-16T15:48:37.418Z",
+            "url": "https://github.com/kunickiaj/codemem/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/kunickiaj/codemem",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:36.905Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/kunickiaj/codemem/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:37.185Z"
+            },
+            {
+              "label": "npm package provenance: codemem",
+              "url": "https://www.npmjs.com/package/codemem",
+              "kind": "package",
+              "observedAt": "2026-11-16T15:48:27.824Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://codemem.sh/",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/kunickiaj/codemem",
+                "https://github.com/kunickiaj/codemem/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://codemem.sh/"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/kunickiaj/codemem"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/kunickiaj/codemem"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://codemem.sh/"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://codemem.sh/"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://codemem.sh/"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/kunickiaj/codemem"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:36.574Z",
+      "lastCheckedAt": "2026-11-16T15:48:36.574Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "semantic-retrieval",
+        "confidence": "heuristic",
+        "reasons": [
+          "Code-aware navigation or retrieval is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": "v0.47.3",
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "litellm",
+      "entry": {
+        "id": "litellm",
+        "name": "litellm",
+        "summary": "The fastest, litest AI Gateway. Rust core with Python SDK. Call 100+ LLM APIs in OpenAI (or native) format with cost tracking, guardrails, load balancing, and logging [Bedrock, Azure, OpenAI, Anthropic, OpenAI, VertexAI, vLLM, Nvidia NIM]",
+        "category": "model-routing",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "BerriAI/litellm",
+          "repositoryId": 671269505,
+          "url": "https://github.com/BerriAI/litellm",
+          "documentation": "https://docs.litellm.ai/docs/",
+          "licenseUrl": "https://github.com/BerriAI/litellm/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/BerriAI/litellm/blob/main/README.md",
+          "readmeSha": "1bb84d193748733467af91ddba210ae617a1a0c4",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "MIT core; separate enterprise terms",
+          "family": "mixed",
+          "notes": "Core and enterprise directories have different terms. Review the authoritative license; no upstream executable is redistributed here."
+        },
+        "upstream": {
+          "version": "v1.109.1",
+          "releaseUrl": "https://github.com/BerriAI/litellm/releases/tag/v1.109.1",
+          "releasedAt": "2026-11-12T02:07:01Z",
+          "pushedAt": "2026-11-16T15:46:27Z",
+          "checkedAt": "2026-11-16T15:48:38.616Z",
+          "archived": false,
+          "issues": 5230,
+          "ci": "https://github.com/BerriAI/litellm/actions/runs/43900049973",
+          "history": [
+            {
+              "version": "v1.111.0-dev.4",
+              "url": "https://github.com/BerriAI/litellm/releases/tag/v1.111.0-dev.4",
+              "publishedAt": "2026-11-15T04:17:20Z"
+            },
+            {
+              "version": "v1.111.0-dev.3",
+              "url": "https://github.com/BerriAI/litellm/releases/tag/v1.111.0-dev.3",
+              "publishedAt": "2026-11-15T05:09:18Z"
+            },
+            {
+              "version": "v1.110.0-rc.3",
+              "url": "https://github.com/BerriAI/litellm/releases/tag/v1.110.0-rc.3",
+              "publishedAt": "2026-11-15T01:10:14Z"
+            },
+            {
+              "version": "v1.108.9",
+              "url": "https://github.com/BerriAI/litellm/releases/tag/v1.108.9",
+              "publishedAt": "2026-11-14T22:00:02Z"
+            },
+            {
+              "version": "v1.107.0-rc.4",
+              "url": "https://github.com/BerriAI/litellm/releases/tag/v1.107.0-rc.4",
+              "publishedAt": "2026-11-14T23:46:31Z"
+            }
+          ]
+        },
+        "packages": [],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 19,
+            "checkedAt": "2026-11-16T15:48:38.934Z",
+            "url": "https://github.com/BerriAI/litellm/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/BerriAI/litellm",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:38.157Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/BerriAI/litellm/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:38.391Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://docs.litellm.ai/docs/",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/BerriAI/litellm",
+                "https://github.com/BerriAI/litellm/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://docs.litellm.ai/docs/"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/BerriAI/litellm"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/BerriAI/litellm"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://docs.litellm.ai/docs/"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://docs.litellm.ai/docs/"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://docs.litellm.ai/docs/"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/BerriAI/litellm"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:37.854Z",
+      "lastCheckedAt": "2026-11-16T15:48:37.854Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "model-routing",
+        "confidence": "heuristic",
+        "reasons": [
+          "API routing or model gateway control is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": "v1.106.6",
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "repo-ac74255f56a2277f",
+      "entry": {
+        "id": "repo-ac74255f56a2277f",
+        "name": "Supercompress",
+        "summary": "Query-aware context compression for LLMs and coding agents. Cut ~65% of input tokens.",
+        "category": "mcp-discovery",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "Supercompress/Supercompress",
+          "repositoryId": 1318436431,
+          "url": "https://github.com/Supercompress/Supercompress",
+          "documentation": "https://www.supercompress.dev/",
+          "licenseUrl": "https://github.com/Supercompress/Supercompress/blob/main/LICENSE",
+          "readmeUrl": "https://github.com/Supercompress/Supercompress/blob/main/README.md",
+          "readmeSha": "8430e951b74071d8dce40d1393f26148473a72cb",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "MIT",
+          "family": "open-source",
+          "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+        },
+        "upstream": {
+          "version": "v0.5.37",
+          "releaseUrl": "https://github.com/Supercompress/Supercompress/releases/tag/v0.5.37",
+          "releasedAt": "2026-10-01T03:03:44Z",
+          "pushedAt": "2026-11-16T14:30:30Z",
+          "checkedAt": "2026-11-16T15:48:40.277Z",
+          "archived": false,
+          "issues": 13,
+          "ci": "https://github.com/Supercompress/Supercompress/actions/runs/43886451450",
+          "history": [
+            {
+              "version": "v0.5.37",
+              "url": "https://github.com/Supercompress/Supercompress/releases/tag/v0.5.37",
+              "publishedAt": "2026-10-01T03:03:44Z"
+            },
+            {
+              "version": "v0.5.36",
+              "url": "https://github.com/Supercompress/Supercompress/releases/tag/v0.5.36",
+              "publishedAt": "2026-10-01T02:48:50Z"
+            },
+            {
+              "version": "v0.5.23",
+              "url": "https://github.com/Supercompress/Supercompress/releases/tag/v0.5.23",
+              "publishedAt": "2026-08-15T18:47:12Z"
+            },
+            {
+              "version": "v0.5.22",
+              "url": "https://github.com/Supercompress/Supercompress/releases/tag/v0.5.22",
+              "publishedAt": "2026-08-15T18:37:42Z"
+            },
+            {
+              "version": "v0.5.7",
+              "url": "https://github.com/Supercompress/Supercompress/releases/tag/v0.5.7",
+              "publishedAt": "2026-07-31T15:42:05Z"
+            }
+          ]
+        },
+        "packages": [],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 0,
+            "checkedAt": "2026-11-16T15:48:40.361Z",
+            "url": "https://github.com/Supercompress/Supercompress/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/Supercompress/Supercompress",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:39.911Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/Supercompress/Supercompress/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:40.132Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://www.supercompress.dev/",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/Supercompress/Supercompress",
+                "https://github.com/Supercompress/Supercompress/blob/main/LICENSE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://www.supercompress.dev/"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/Supercompress/Supercompress"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/Supercompress/Supercompress"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://www.supercompress.dev/"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://www.supercompress.dev/"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://www.supercompress.dev/"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/Supercompress/Supercompress"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:39.649Z",
+      "lastCheckedAt": "2026-11-16T15:48:39.649Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "mcp-discovery",
+        "confidence": "heuristic",
+        "reasons": [
+          "Selective MCP discovery or schema overhead is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": null,
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "repo-8fbeb8acc2e86efc",
+      "entry": {
+        "id": "repo-8fbeb8acc2e86efc",
+        "name": "tokfold",
+        "summary": "Reversible, structure-aware context compression engine for LLM agents (Rust) — cuts token cost of tool outputs, JSON and logs. Deterministic, sans-io, zero network.",
+        "category": "output-optimization",
+        "tags": [],
+        "role": "direct",
+        "source": {
+          "repository": "IvanBBaev/tokfold",
+          "repositoryId": 1296845345,
+          "url": "https://github.com/IvanBBaev/tokfold",
+          "documentation": "https://github.com/IvanBBaev/tokfold#readme",
+          "licenseUrl": "https://github.com/IvanBBaev/tokfold/blob/main/LICENSE-APACHE",
+          "readmeUrl": "https://github.com/IvanBBaev/tokfold/blob/main/README.md",
+          "readmeSha": "440edcd32ca3ca99c826baf567648846ed47855d",
+          "forkOf": null
+        },
+        "license": {
+          "expression": "Apache-2.0",
+          "family": "open-source",
+          "notes": "License metadata describes the upstream project, not an audit or a change to Shrinkcage licensing."
+        },
+        "upstream": {
+          "version": null,
+          "releaseUrl": null,
+          "releasedAt": null,
+          "pushedAt": "2026-11-16T13:52:42Z",
+          "checkedAt": "2026-11-16T15:48:40.993Z",
+          "archived": false,
+          "issues": 0,
+          "ci": "https://github.com/IvanBBaev/tokfold/actions/runs/43886426819",
+          "history": []
+        },
+        "packages": [],
+        "compatibility": {
+          "agents": [
+            {
+              "id": "codex",
+              "support": "unknown",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            },
+            {
+              "id": "claude",
+              "support": "documented",
+              "notes": "Extracted from upstream README text; no local activation, account or version compatibility is implied."
+            }
+          ],
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ],
+          "architectures": [],
+          "billing": {
+            "subscription": "unknown",
+            "api": "unknown"
+          },
+          "mechanisms": [
+            "mcp"
+          ],
+          "dependencies": [],
+          "conflicts": [],
+          "isolation": "unknown",
+          "requirements": [
+            "Review documented installation and permissions before local registration."
+          ],
+          "limitations": [
+            "Documented mentions are not independently tested client or platform support.",
+            "Billing and session isolation are unknown until a reviewed adapter validates them."
+          ]
+        },
+        "integration": {
+          "adapterId": null,
+          "capabilities": [
+            "catalog",
+            "guided-install"
+          ],
+          "executables": [],
+          "minVersion": null,
+          "maxMajor": null
+        },
+        "security": {
+          "permissions": [
+            "Not independently audited"
+          ],
+          "network": "Upstream network behavior requires review; discovery does not run its code.",
+          "warnings": [
+            "No executable, install script or candidate code was executed."
+          ],
+          "advisories": {
+            "state": "checked",
+            "count": 0,
+            "checkedAt": "2026-11-16T15:48:41.594Z",
+            "url": "https://github.com/IvanBBaev/tokfold/security/advisories"
+          },
+          "dependencyAudit": "not-performed"
+        },
+        "evidence": {
+          "references": [
+            {
+              "label": "Canonical repository metadata",
+              "url": "https://github.com/IvanBBaev/tokfold",
+              "kind": "repository",
+              "observedAt": "2026-11-16T15:48:40.993Z"
+            },
+            {
+              "label": "Upstream README",
+              "url": "https://github.com/IvanBBaev/tokfold/blob/main/README.md",
+              "kind": "documentation",
+              "observedAt": "2026-11-16T15:48:41.344Z"
+            }
+          ],
+          "benchmarks": [
+            {
+              "kind": "not-measured",
+              "summary": "Discovery does not establish token savings, task quality or API expenditure improvements.",
+              "url": "https://github.com/IvanBBaev/tokfold#readme",
+              "methodology": "No task benchmark was executed.",
+              "limitations": [
+                "Do not infer savings from installation, popularity or an upstream description."
+              ]
+            }
+          ],
+          "gates": [
+            {
+              "id": 1,
+              "name": "Identity & provenance",
+              "status": "passed",
+              "method": "static-metadata",
+              "summary": "Canonical upstream identity, pinned documentation and license provenance are recorded. Package provenance is separate.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold",
+                "https://github.com/IvanBBaev/tokfold/blob/main/LICENSE-APACHE"
+              ]
+            },
+            {
+              "id": 2,
+              "name": "Optimization relevance",
+              "status": "passed",
+              "method": "upstream-documentation",
+              "summary": "Direct optimization relevance is recorded; candidate classification still requires maintainer review.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold#readme"
+              ]
+            },
+            {
+              "id": 3,
+              "name": "Maintenance & reliability",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Release and activity observations are recorded. Issue counts and popularity do not prove responsiveness, safety or quality.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold"
+              ]
+            },
+            {
+              "id": 4,
+              "name": "Security & supply chain",
+              "status": "partial",
+              "method": "static-metadata",
+              "summary": "Static source, license and declared permissions checked. Advisory visibility is recorded; transitive dependencies and installation behavior have not been independently audited.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold"
+              ]
+            },
+            {
+              "id": 5,
+              "name": "Functional validation",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented interfaces only. No candidate executable or installer was run by discovery.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold#readme"
+              ]
+            },
+            {
+              "id": 6,
+              "name": "Compatibility",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Documented clients and platform restrictions are separate from local version checks, native login and session isolation. Unknown values are retained.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold#readme"
+              ]
+            },
+            {
+              "id": 7,
+              "name": "Optimization evidence",
+              "status": "partial",
+              "method": "upstream-documentation",
+              "summary": "Upstream resource claims are attributed and qualified. No cross-tool additive or independent causal savings claim is made.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold#readme"
+              ]
+            },
+            {
+              "id": 8,
+              "name": "Maintainer publication",
+              "status": "unavailable",
+              "method": "unavailable",
+              "summary": "Discovery cannot grant official approval. A documented maintainer review and repository publication are required.",
+              "references": [
+                "https://github.com/IvanBBaev/tokfold"
+              ]
+            }
+          ]
+        },
+        "trust": {
+          "state": "under_review",
+          "reviewedAt": null,
+          "reviewer": null,
+          "scope": "candidate",
+          "reviewedVersion": null,
+          "decision": "Automatically collected candidate; official publication requires maintainer review.",
+          "limitations": [
+            "Not approved by Shrinkcage."
+          ]
+        }
+      },
+      "discoveredAt": "2026-11-16T15:48:40.700Z",
+      "lastCheckedAt": "2026-11-16T15:48:40.700Z",
+      "sources": [
+        "scheduled-discovery"
+      ],
+      "classification": {
+        "category": "output-optimization",
+        "confidence": "heuristic",
+        "reasons": [
+          "Command or tool-output reduction is described.",
+          "Deterministic extraction is candidate evidence, not official approval."
+        ]
+      },
+      "diagnostics": [],
+      "previousVersion": null,
+      "adapterProposal": {
+        "template": "review-required",
+        "manifest": null,
+        "diagnostics": [
+          "No reviewed declarative adapter manifest found. Interface claims and implementation require review; no CLI flags were guessed."
+        ]
+      }
     }
   ]
 }
